@@ -1,0 +1,17 @@
+@import 'colors';
+
+main.mainContainer {
+  width: 100%;
+  max-width: 120rem;
+  height: 100vh;
+  display: flex;
+  background: $background;
+
+  @media screen and (max-width: 1920px) {
+    margin: 0 auto;
+  }
+}
+
+section.main {
+  width: 100%;
+}

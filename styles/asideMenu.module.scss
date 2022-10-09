@@ -1,0 +1,235 @@
+@import 'colors';
+
+
+.asideMenu {
+  overflow-y: scroll;
+  width: 100%;
+  height: 100%;
+  max-width: 15.875rem;
+  background-color: $primary;
+  color: $text;
+  transition: max-width 0.3s ease-in;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $text; 
+    border-radius: 3.5px;
+  }
+}
+
+.asideMenuClosed {
+  width: 100%;
+  height: 100%;
+  max-width: 4.375rem;
+  background-color: $primary;
+  color: $text;
+  transition: max-width 0.3s ease-in;
+}
+
+.logoContainer {
+  width: 100%;
+  padding: 1.75rem 0;
+  text-align: center;
+
+  .logo {
+    font-weight: bold;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+}
+
+nav ul li.linkContainer {
+  position: relative;
+  z-index: 10;
+}
+
+.profile {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .profileImage {
+    width: 3.125rem;
+    height: 3.125rem;
+    border-radius: 999px;
+    border: 3px solid #fff;
+  }
+
+  .profileDetails {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.475rem;
+    h2 {
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    button {
+      font-size: 0.8rem;
+      color: $title;
+      transition: color 0.3s ;
+
+      &:hover {
+        color: $text;
+      }
+    }
+
+  }
+}
+
+.asideMenuClosed .profile {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  
+  .profileImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 3px solid #fff;
+  }
+
+  .profileDetails {
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    right: -200px;
+    top: -10px;
+    min-width: 200px;
+  }
+
+  &:hover .profileDetails {
+    top: 0;
+    transition: all 0.3s ease-in-out;
+    opacity: 1;
+    pointer-events: all;
+    background-color: $primary;
+    padding: 1rem;
+    border-bottom-right-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.475rem;
+  }
+}
+
+.linkAsideMenu, .linkAsideMenuClosed  {
+  position: relative;
+  z-index: 15;
+  width: 100%;
+  height: 3.375rem;
+  padding: 0 1rem;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: $text;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: color 0.3s ease-in-out;
+  
+  &:hover {
+    color: #fff;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  p {
+    display: inline-block;
+    width: auto;
+    opacity: 1;
+  }
+}
+
+.linkAsideMenuClosed  {
+  position: relative;
+  transition: padding 0.3s linear;
+  padding: 0;
+  justify-content: center;
+
+  p, span {
+    position: absolute;
+    top: 0;
+    left: -500px;
+    width: 0px;
+    opacity: 0;
+  }
+}
+
+.submenu {
+  display: none;
+  width: 100%;
+  padding-left: 3rem;
+  transition: all 0.3s ease;
+  > li {
+    padding: 0.5rem 0;
+
+    &.submenuTitleContainer {
+      display: none;
+    }
+
+    a {
+      display: block;
+      font-size: 0.85rem;
+      transition: color 0.3s ease-in-out;
+
+      &:hover {
+      color: #fff;
+      }
+    }
+  }
+
+  &.showMenu {
+    display: block;
+  }
+
+  
+}
+
+aside.asideMenuClosed nav ul li {
+  .submenu {
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    min-width: 200px;
+    position: absolute;
+    padding: 0.5rem 0 0.5rem 1rem;
+    right: -200px;
+    top: -10px;
+    background: $primary;
+    border-bottom-right-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+
+    & > li.submenuTitleContainer {
+      display: block;
+
+      h3.submenuTitle {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 0.3rem;
+      }
+    }
+  }
+
+  &:hover .submenu {
+    opacity: 1;
+    pointer-events: all;
+    transition: all 0.3s ease;
+    top: 0;
+  } 
+
+}
