@@ -14,12 +14,15 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
-    "sass": "^1.55.0"
+    "react-sortablejs": "^6.1.4",
+    "sass": "^1.55.0",
+    "sortablejs": "^1.15.0"
   },
   "devDependencies": {
     "@types/node": "18.8.1",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
+    "@types/sortablejs": "^1.15.0",
     "autoprefixer": "^10.4.12",
     "eslint": "^8.24.0",
     "eslint-config-next": "12.3.1",

@@ -7,7 +7,7 @@ const Home: NextPage = () => {
   return (
     <section className="w-full p-5 h-full">
       <Title title="Dashboard" size="xl" />
-      <div className={`grid grid-cols-6 grid-rows-8 gap-6`}>
+      <div className={`mt-10 grid grid-cols-6 grid-rows-8 gap-6`}>
         <div
           className={`col-span-6 xl:col-span-4 row-span-1 xl:col-span-4 ${styles.metric} grid grid-cols-3 gap-5`}
         >
@@ -49,28 +49,28 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div
-          className={`col-span-6 lg:col-span-3 xl:col-span-2 row-span-3 ${styles.content2} rounded-md shadow-sm bg-[#fff] p-3`}
+          className={`col-span-6 lg:col-span-3 xl:col-span-2 row-span-3 rounded-md shadow-sm bg-[#fff] p-3`}
         ></div>
         <div
-          className={`col-span-6 lg:col-span-3 xl:col-span-4 row-span-2  ${styles.content3} rounded-md shadow-sm h-96 bg-[#fff] p-3`}
+          className={`col-span-6 lg:col-span-3 xl:col-span-4 row-span-2  rounded-md shadow-sm h-96 bg-[#fff] p-3`}
         ></div>
         <div
-          className={`col-span-6 md:col-span-3 xl:col-span-2 row-span-2 ${styles.content4} rounded-md shadow-sm h-96 bg-[#fff] p-3`}
+          className={`col-span-6 md:col-span-3 xl:col-span-2 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
         ></div>
         <div
-          className={`col-span-6 md:col-span-3 xl:col-span-2 row-span-2 ${styles.content5} rounded-md shadow-sm h-96 bg-[#fff] p-3`}
+          className={`col-span-6 md:col-span-3 xl:col-span-2 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
         ></div>
         <div
-          className={`col-span-6 md:col-span-3 xl:col-span-2 row-span-2 ${styles.content6} rounded-md shadow-sm h-96 bg-[#fff] p-3`}
+          className={`col-span-6 md:col-span-3 xl:col-span-2 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
         ></div>
         <div
-          className={`col-span-6 md:col-span-3 row-span-2 ${styles.content7} rounded-md shadow-sm h-96 bg-[#fff] p-3`}
+          className={`col-span-6 md:col-span-3 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
         ></div>
         <div
-          className={`col-span-6 md:col-span-3 row-span-2 ${styles.content8} rounded-md shadow-sm h-96 bg-[#fff] p-3`}
+          className={`col-span-6 md:col-span-3 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
         ></div>
         <div
-          className={`col-span-6 ${styles.content9} rounded-md shadow-sm h-96 bg-[#fff] p-3`}
+          className={`col-span-6 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
         ></div>
       </div>
     </section>

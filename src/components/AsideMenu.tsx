@@ -3,9 +3,9 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineHome, AiOutlineApartment } from 'react-icons/ai';
 import { BiChevronDown } from 'react-icons/bi';
-import { BsPencilFill, BsPencil } from 'react-icons/bs';
+import { BsPencilFill, BsPencil, BsPeople } from 'react-icons/bs';
 
-import { MdOutlineSpaceDashboard } from 'react-icons/md';
+import { VscSettingsGear } from 'react-icons/vsc';
 
 import styles from '../../styles/asideMenu.module.scss';
 import useWidth from '../hooks/useWidth';
@@ -110,6 +110,11 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
                 </Link>
               </li>
               <li>
+                <Link href="/depoimentos/ordenar">
+                  <a>Ordenar depoimentos</a>
+                </Link>
+              </li>
+              <li>
                 <Link href="/depoimentos/novo">
                   <a>Adicionar depoimento</a>
                 </Link>
@@ -133,7 +138,7 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
             </button>
             <ul className={`${styles.submenu} `}>
               <li className={styles.submenuTitleContainer}>
-                <h3 className={styles.submenuTitle}>Tipo de Link</h3>
+                <h3 className={styles.submenuTitle}>Projetos</h3>
               </li>
               <li>
                 <Link href="/projetos">
@@ -143,6 +148,68 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
               <li>
                 <Link href="/projetos/novo">
                   <a>Adicionar projeto</a>
+                </Link>
+              </li>
+            </ul>
+          </li>
+          <li className={styles.linkContainer}>
+            <button
+              onClick={(e) => handleOpenSubmenu(e)}
+              className={`${styles.linkAsideMenu} ${
+                !menuIsOpen && styles.linkAsideMenuClosed
+              }`}
+            >
+              <div>
+                <BsPeople size={23} />
+                <p>Clientes</p>
+              </div>
+              <span>
+                <BiChevronDown size={23} />
+              </span>
+            </button>
+            <ul className={`${styles.submenu} `}>
+              <li className={styles.submenuTitleContainer}>
+                <h3 className={styles.submenuTitle}>Clientes</h3>
+              </li>
+              <li>
+                <Link href="/clientes">
+                  <a>Listar clientes</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/clientes/cadastrar">
+                  <a>Cadastrar cliente</a>
+                </Link>
+              </li>
+            </ul>
+          </li>
+          <li className={styles.linkContainer}>
+            <button
+              onClick={(e) => handleOpenSubmenu(e)}
+              className={`${styles.linkAsideMenu} ${
+                !menuIsOpen && styles.linkAsideMenuClosed
+              }`}
+            >
+              <div>
+                <VscSettingsGear size={23} />
+                <p>Configurações</p>
+              </div>
+              <span>
+                <BiChevronDown size={23} />
+              </span>
+            </button>
+            <ul className={`${styles.submenu} `}>
+              <li className={styles.submenuTitleContainer}>
+                <h3 className={styles.submenuTitle}>Configurações</h3>
+              </li>
+              <li>
+                <Link href="/configuracoes/adicionar-usuario">
+                  <a>Adicionar usuário</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/configuracoes/perfil">
+                  <a>Meu perfil</a>
                 </Link>
               </li>
             </ul>

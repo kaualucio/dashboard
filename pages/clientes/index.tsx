@@ -4,12 +4,12 @@ import { Title } from '../../src/components/Title';
 
 import { BiDetail, BiCheckDouble, BiTrash } from 'react-icons/bi';
 
-const Projects = () => {
+const Clients = () => {
   return (
     <section className="w-full p-5 h-full">
       <div className="flex items-center justify-between">
-        <Title title="Projetos" size="xl" />
-        <Link href="/projetos/novo">
+        <Title title="Nossos Clientes" size="xl" />
+        <Link href="/clientes/cadastrar">
           <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
             Adicionar novo
           </a>
@@ -26,13 +26,13 @@ const Projects = () => {
                 Nome
               </th>
               <th scope="col" className="py-3 px-6">
-                Responsável
+                E-mail
               </th>
               <th scope="col" className="py-3 px-6">
-                Valor (R$)
+                Projetos Totais
               </th>
               <th scope="col" className="py-3 px-6">
-                Status
+                Projetos em andamento
               </th>
               <th scope="col" className="py-3 px-6">
                 Ações
@@ -47,21 +47,13 @@ const Projects = () => {
               >
                 1
               </th>
-              <td className="py-4 px-6">Desenvolver Landing Page</td>
-              <td className="py-4 px-6">Kauã Lúcio</td>
-              <td className="py-4 px-6">1500,00</td>
-              <td className="py-4 px-6">
-                <span className="inline-block px-3 py-1 bg-blue rounded-full text-[#fff]">
-                  Em andamento
-                </span>
-              </td>
+              <td className="py-4 px-6">Barbearia</td>
+              <td className="py-4 px-6">exemplo@teste.com</td>
+              <td className="py-4 px-6">10</td>
+              <td className="py-4 px-6">3</td>
               <td className="flex items-center justify-center">
                 <button className="text-xl text-blue px-2 py-1">
                   <BiDetail />
-                </button>
-
-                <button className="text-xl text-green px-2 py-1">
-                  <BiCheckDouble />
                 </button>
 
                 <button className="text-xl text-red px-2 py-1">
@@ -69,7 +61,6 @@ const Projects = () => {
                 </button>
               </td>
             </tr>
-
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
               <th
                 scope="row"
@@ -77,14 +68,10 @@ const Projects = () => {
               >
                 2
               </th>
-              <td className="py-4 px-6">Criação de Branding</td>
-              <td className="py-4 px-6">Caio Pessoa</td>
-              <td className="py-4 px-6">5000,00</td>
-              <td className="py-4 px-6">
-                <span className="inline-block px-3 py-1 bg-red rounded-full text-[#fff]">
-                  Cancelado
-                </span>
-              </td>
+              <td className="py-4 px-6">Hospital</td>
+              <td className="py-4 px-6">exemplo2@teste.com</td>
+              <td className="py-4 px-6">25</td>
+              <td className="py-4 px-6">0</td>
               <td className="flex items-center justify-center">
                 <button className="text-xl text-blue px-2 py-1">
                   <BiDetail />
@@ -95,7 +82,6 @@ const Projects = () => {
                 </button>
               </td>
             </tr>
-
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
               <th
                 scope="row"
@@ -103,14 +89,10 @@ const Projects = () => {
               >
                 3
               </th>
-              <td className="py-4 px-6">Gestão de Tráfego</td>
-              <td className="py-4 px-6">Arthur</td>
-              <td className="py-4 px-6">15000,00</td>
-              <td className="py-4 px-6">
-                <span className="inline-block px-3 py-1 bg-green rounded-full text-[#fff]">
-                  Encerrado
-                </span>
-              </td>
+              <td className="py-4 px-6">Restaurante </td>
+              <td className="py-4 px-6">exemplo3@teste.com</td>
+              <td className="py-4 px-6">50</td>
+              <td className="py-4 px-6">10</td>
               <td className="flex items-center justify-center">
                 <button className="text-xl text-blue px-2 py-1">
                   <BiDetail />
@@ -128,4 +110,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default Clients;
