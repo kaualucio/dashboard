@@ -78,7 +78,7 @@ const Projects = () => {
                 2
               </th>
               <td className="py-4 px-6">Criação de Branding</td>
-              <td className="py-4 px-6">Caio Pessoa</td>
+              <td className="py-4 px-6">John Doe</td>
               <td className="py-4 px-6">5000,00</td>
               <td className="py-4 px-6">
                 <span className="inline-block px-3 py-1 bg-red rounded-full text-[#fff]">
@@ -104,7 +104,7 @@ const Projects = () => {
                 3
               </th>
               <td className="py-4 px-6">Gestão de Tráfego</td>
-              <td className="py-4 px-6">Arthur</td>
+              <td className="py-4 px-6">Joahna Doe</td>
               <td className="py-4 px-6">15000,00</td>
               <td className="py-4 px-6">
                 <span className="inline-block px-3 py-1 bg-green rounded-full text-[#fff]">

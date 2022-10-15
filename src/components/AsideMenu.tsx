@@ -3,7 +3,13 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineHome, AiOutlineApartment } from 'react-icons/ai';
 import { BiChevronDown } from 'react-icons/bi';
-import { BsPencilFill, BsPencil, BsPeople } from 'react-icons/bs';
+import {
+  BsPencilFill,
+  BsPencil,
+  BsPeople,
+  BsCalendarEvent,
+} from 'react-icons/bs';
+import { RiArticleLine } from 'react-icons/ri';
 
 import { VscSettingsGear } from 'react-icons/vsc';
 
@@ -191,6 +197,61 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
               }`}
             >
               <div>
+                <RiArticleLine size={23} />
+                <p>Blog</p>
+              </div>
+              <span>
+                <BiChevronDown size={23} />
+              </span>
+            </button>
+            <ul className={`${styles.submenu}`}>
+              <li className={styles.submenuTitleContainer}>
+                <h3 className={styles.submenuTitle}>Depoimentos</h3>
+              </li>
+              <li>
+                <Link href="/blog">
+                  <a>Listar artigos</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog/novo">
+                  <a>Adicionar artigo</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/categorias">
+                  <a>Listar categorias</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/categorias/novo">
+                  <a>Adicionar categoria</a>
+                </Link>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <Link href="/calendario">
+              <a
+                className={`${styles.linkAsideMenu} ${
+                  !menuIsOpen && styles.linkAsideMenuClosed
+                }`}
+              >
+                <div>
+                  <BsCalendarEvent size={23} />
+                  <p>Calendário</p>
+                </div>
+              </a>
+            </Link>
+          </li>
+          <li className={styles.linkContainer}>
+            <button
+              onClick={(e) => handleOpenSubmenu(e)}
+              className={`${styles.linkAsideMenu} ${
+                !menuIsOpen && styles.linkAsideMenuClosed
+              }`}
+            >
+              <div>
                 <VscSettingsGear size={23} />
                 <p>Configurações</p>
               </div>
@@ -208,7 +269,7 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
                 </Link>
               </li>
               <li>
-                <Link href="/configuracoes/perfil">
+                <Link href="/configuracoes/perfil/me">
                   <a>Meu perfil</a>
                 </Link>
               </li>

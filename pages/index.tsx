@@ -11,7 +11,7 @@ const Home: NextPage = () => {
         <div
           className={`col-span-6 xl:col-span-4 row-span-1 xl:col-span-4 ${styles.metric} grid grid-cols-3 gap-5`}
         >
-          <div className="col-span-3 lg:col-span-1 bg-[#fff] h-[100px] max-h-[100px] px-6 shadow-sm rounded-md flex items-center justify-between">
+          <div className="col-span-3 lg:col-span-1 bg-[#fff] h-[100px] max-h-[100px] px-6 md:px-3 shadow-sm rounded-md flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-14 w-14 rounded-xl bg-primary"></div>
               <div>
@@ -21,9 +21,9 @@ const Home: NextPage = () => {
                 <p className="text-xs text-text">Total de artigos:</p>
               </div>
             </div>
-            <p className="text-3xl font-bold text-black">20</p>
+            <p className="text-2xl font-bold text-black">20</p>
           </div>
-          <div className="col-span-3 lg:col-span-1 bg-[#fff] h-[100px] max-h-[100px] px-6 shadow-sm rounded-md flex items-center justify-between">
+          <div className="col-span-3 lg:col-span-1 bg-[#fff] h-[100px] max-h-[100px] px-6 md:px-3 shadow-sm rounded-md flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-14 w-14 rounded-xl bg-primary"></div>
               <div>
@@ -33,9 +33,9 @@ const Home: NextPage = () => {
                 <p className="text-xs text-text">Total de clientes:</p>
               </div>
             </div>
-            <p className="text-3xl font-bold text-black">150</p>
+            <p className="text-2xl font-bold text-black">150</p>
           </div>
-          <div className="col-span-3 lg:col-span-1 bg-[#fff] h-[100px] max-h-[100px] px-6 shadow-sm rounded-md flex items-center justify-between">
+          <div className="col-span-3 lg:col-span-1 bg-[#fff] h-[100px] max-h-[100px] px-6 md:px-3 shadow-sm rounded-md flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-14 w-14 rounded-xl bg-primary"></div>
               <div>
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
                 <p className="text-xs text-text">Total de projetos:</p>
               </div>
             </div>
-            <p className="text-3xl font-bold text-black">200</p>
+            <p className="text-2xl font-bold text-black">200</p>
           </div>
         </div>
         <div
