@@ -71,14 +71,10 @@ nav ul li.linkContainer {
       font-weight: 600;
     }
 
-    button {
+    p {
       font-size: 0.8rem;
       color: $title;
-      transition: color 0.3s ;
-
-      &:hover {
-        color: $text;
-      }
+      font-weight: 500;
     }
 
   }

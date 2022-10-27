@@ -1,10 +1,40 @@
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState, FormEvent } from 'react';
 import { Title } from '../../src/components/Title';
 
 import { BiDetail, BiCheckDouble, BiTrash } from 'react-icons/bi';
+import { FaTimes } from 'react-icons/fa';
+
+import axios from 'axios';
+import Status from '../../src/components/Status';
 
 const Projects = () => {
+  const [projects, setProjects] = useState<any[]>([]);
+
+  function handleToCompleteProject(e: FormEvent, id: string) {
+    axios.post('/api/projects/complete', {
+      id,
+    });
+  }
+
+  function handleToCancelProject(e: FormEvent, id: string) {
+    axios.post('/api/projects/cancel', {
+      id,
+    });
+  }
+
+  function handleToDeleteProject(e: FormEvent, id: string) {
+    axios.post('/api/projects/delete', {
+      id,
+    });
+  }
+
+  useEffect(() => {
+    axios.get('/api/projects/get').then((res) => {
+      setProjects(res.data.data);
+    });
+  }, []);
+
   return (
     <section className="w-full p-5 h-full">
       <div className="flex items-center justify-between">
@@ -40,87 +70,65 @@ const Projects = () => {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th
-                scope="row"
-                className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            {projects?.map((project, index) => (
+              <tr
+                key={project.id}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
               >
-                1
-              </th>
-              <td className="py-4 px-6">Desenvolver Landing Page</td>
-              <td className="py-4 px-6">Kauã Lúcio</td>
-              <td className="py-4 px-6">1500,00</td>
-              <td className="py-4 px-6">
-                <span className="inline-block px-3 py-1 bg-blue rounded-full text-[#fff]">
-                  Em andamento
-                </span>
-              </td>
-              <td className="flex items-center justify-center">
-                <button className="text-xl text-blue px-2 py-1">
-                  <BiDetail />
-                </button>
+                <th
+                  scope="row"
+                  className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                >
+                  {(index += 1)}
+                </th>
+                <td className="py-4 px-6">{project.title}</td>
+                <td className="py-4 px-6">{project.responsible.name}</td>
+                <td className="py-4 px-6">R${project.budget},00</td>
+                <td className="py-4 px-6">
+                  <Status status={project.status} />
+                </td>
+                <td className="flex items-center justify-center">
+                  <button
+                    title="Detalhes"
+                    aria-label="Detalhes"
+                    className="text-xl text-blue px-2 py-1"
+                  >
+                    <BiDetail />
+                  </button>
 
-                <button className="text-xl text-green px-2 py-1">
-                  <BiCheckDouble />
-                </button>
+                  {!project.completed && !project.canceled && (
+                    <button
+                      title="Completar projeto"
+                      aria-label="Completar projeto"
+                      className="text-xl text-green px-2 py-1"
+                      onClick={(e) => handleToCompleteProject(e, project.id)}
+                    >
+                      <BiCheckDouble />
+                    </button>
+                  )}
 
-                <button className="text-xl text-red px-2 py-1">
-                  <BiTrash />
-                </button>
-              </td>
-            </tr>
+                  {!project.completed && !project.canceled && (
+                    <button
+                      title="Cancelar projeto"
+                      aria-label="Cancelar projeto"
+                      className="text-xl text-red px-2 py-1"
+                      onClick={(e) => handleToCancelProject(e, project.id)}
+                    >
+                      <FaTimes />
+                    </button>
+                  )}
 
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th
-                scope="row"
-                className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                2
-              </th>
-              <td className="py-4 px-6">Criação de Branding</td>
-              <td className="py-4 px-6">John Doe</td>
-              <td className="py-4 px-6">5000,00</td>
-              <td className="py-4 px-6">
-                <span className="inline-block px-3 py-1 bg-red rounded-full text-[#fff]">
-                  Cancelado
-                </span>
-              </td>
-              <td className="flex items-center justify-center">
-                <button className="text-xl text-blue px-2 py-1">
-                  <BiDetail />
-                </button>
-
-                <button className="text-xl text-red px-2 py-1">
-                  <BiTrash />
-                </button>
-              </td>
-            </tr>
-
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th
-                scope="row"
-                className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                3
-              </th>
-              <td className="py-4 px-6">Gestão de Tráfego</td>
-              <td className="py-4 px-6">Joahna Doe</td>
-              <td className="py-4 px-6">15000,00</td>
-              <td className="py-4 px-6">
-                <span className="inline-block px-3 py-1 bg-green rounded-full text-[#fff]">
-                  Encerrado
-                </span>
-              </td>
-              <td className="flex items-center justify-center">
-                <button className="text-xl text-blue px-2 py-1">
-                  <BiDetail />
-                </button>
-
-                <button className="text-xl text-red px-2 py-1">
-                  <BiTrash />
-                </button>
-              </td>
-            </tr>
+                  <button
+                    title="Deletar"
+                    aria-label="Deletar"
+                    className="text-xl text-red px-2 py-1"
+                    onClick={(e) => handleToDeleteProject(e, project.id)}
+                  >
+                    <BiTrash />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

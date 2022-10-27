@@ -1,15 +1,43 @@
+import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { Testimonial } from '../../src/components/Testimonial';
 
 import { Title } from '../../src/components/Title';
 
-const arr: number[] = [0, 1, 2, 3, 4, 5, 6, 7];
-
 const Testimonials = () => {
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [status, setStatus] = useState('idle');
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  function handleDeleteTestimonial(id: string | undefined) {
+    if (id) {
+      setIsDisabled(true);
+      setStatus('loading');
+      axios
+        .post(`/api/testimonials/delete`, {
+          id,
+        })
+        .finally(() => {
+          setStatus('idle');
+          setIsDisabled(false);
+        });
+    } else {
+      return;
+    }
+  }
+
+  useEffect(() => {
+    if (status === 'idle') {
+      axios.get('/api/testimonials/get').then((res) => {
+        setTestimonials(res.data.data);
+      });
+    }
+  }, [status]);
+
   return (
     <section className="w-full p-5 h-full">
       <div className="flex items-center justify-between">
@@ -21,12 +49,23 @@ const Testimonials = () => {
         </Link>
       </div>
       <div className="mt-8 flex flex-col items-center gap-10">
-        <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-3 gap-y-5">
-          {arr.map((num) => (
-            <Testimonial key={num} />
-          ))}
-        </div>
-        <div className="flex gap-5 items-center">
+        {testimonials.length > 0 ? (
+          <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-3 gap-y-5">
+            {testimonials?.map((testimonial) => (
+              <Testimonial
+                key={testimonial.id}
+                data={testimonial}
+                handleDeleteTestimonial={handleDeleteTestimonial}
+                isDisabled={isDisabled}
+              />
+            ))}
+          </div>
+        ) : (
+          <h2 className="mt-10 text-lg font-medium text-text">
+            Nenhum depoimento cadastrado ainda!
+          </h2>
+        )}
+        {/* <div className="flex gap-5 items-center">
           <button>
             <FaChevronLeft />
           </button>
@@ -40,7 +79,7 @@ const Testimonials = () => {
           <button>
             <FaChevronRight />
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

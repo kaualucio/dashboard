@@ -1,6 +1,8 @@
-import React from 'react';
+import Image from 'next/image';
+import React, { useState } from 'react';
 
 import { FaBars } from 'react-icons/fa';
+import { DropDownMenuProfile } from './DropDownMenuProfile';
 
 interface TopBarMenuProps {
   menuIsOpen: boolean;
@@ -8,11 +10,33 @@ interface TopBarMenuProps {
 }
 
 const TopBarMenu = ({ menuIsOpen, handleOpenSideBarMenu }: TopBarMenuProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  function handleOpenDropDownProfileMenu() {
+    setIsOpen((prevState) => !prevState);
+  }
+
   return (
     <div className="w-full h-16 flex items-center justify-between px-5 shadow-md ">
       <button onClick={() => handleOpenSideBarMenu(menuIsOpen ? false : true)}>
         <FaBars size={25} />
       </button>
+      <div className="relative">
+        <button
+          onClick={handleOpenDropDownProfileMenu}
+          className="w-10 h-10 rounded-full border-2 border-[#fff] shadow-md"
+        >
+          <Image
+            src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGVyc29ufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
+            alt=""
+            height={40}
+            width={40}
+            objectFit="cover"
+            style={{ borderRadius: 999 }}
+          />
+        </button>
+        <DropDownMenuProfile isOpen={isOpen} />
+      </div>
     </div>
   );
 };

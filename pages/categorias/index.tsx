@@ -1,10 +1,32 @@
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Title } from '../../src/components/Title';
 
 import { BiPencil, BiTrash } from 'react-icons/bi';
+import axios from 'axios';
+import moment from 'moment';
 
-const Categorys = () => {
+interface Categories {
+  id: string;
+  name: string;
+  slug: string;
+  articles: any[];
+  created_at: any;
+  updated_at: any;
+}
+
+const Categories = () => {
+  const [categories, setCategories] = useState<Categories[]>([]);
+
+  useEffect(() => {
+    axios
+      .get('/api/categories/get')
+      .then((res) => {
+        setCategories(res.data.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
   return (
     <section className="w-full p-5 h-full">
       <div className="flex items-center justify-between">
@@ -43,36 +65,42 @@ const Categorys = () => {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white border-b border-b-text">
-              <th
-                scope="row"
-                className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                1
-              </th>
-              <td className="py-4 px-6">Programação</td>
-              <td className="py-4 px-6">programacao</td>
-              <td className="py-4 px-6">10</td>
-              <td className="py-4 px-6">10/10/22</td>
-              <td className="py-4 px-6">15/10/22</td>
-              <td className="flex items-center justify-center">
-                <button
-                  className="text-xl text-blue px-2 py-1"
-                  title="Editar"
-                  aria-label="Editar"
+            {categories?.map((category, index) => (
+              <tr key={category.id} className="bg-white border-b border-b-text">
+                <th
+                  scope="row"
+                  className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  <BiPencil />
-                </button>
+                  {(index += 1)}
+                </th>
+                <td className="py-4 px-6">{category.name}</td>
+                <td className="py-4 px-6">{category.slug}</td>
+                <td className="py-4 px-6">{category.articles.length}</td>
+                <td className="py-4 px-6">
+                  {moment(category.created_at).format('DD/MM/YYYY')}
+                </td>
+                <td className="py-4 px-6">
+                  {moment(category.updated_at).format('DD/MM/YYYY')}
+                </td>
+                <td className="flex items-center justify-center">
+                  <button
+                    className="text-xl text-blue px-2 py-1"
+                    title="Editar"
+                    aria-label="Editar"
+                  >
+                    <BiPencil />
+                  </button>
 
-                <button
-                  className="text-xl text-red px-2 py-1"
-                  title="Excluir"
-                  aria-label="Excluir"
-                >
-                  <BiTrash />
-                </button>
-              </td>
-            </tr>
+                  <button
+                    className="text-xl text-red px-2 py-1"
+                    title="Excluir"
+                    aria-label="Excluir"
+                  >
+                    <BiTrash />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -80,4 +108,4 @@ const Categorys = () => {
   );
 };
 
-export default Categorys;
+export default Categories;

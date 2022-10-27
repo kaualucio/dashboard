@@ -1,31 +1,25 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Title } from '../../src/components/Title';
 import { ReactSortable } from 'react-sortablejs';
+import { GetStaticProps } from 'next';
+import axios from 'axios';
 
-import { BiDetail, BiCheckDouble, BiTrash } from 'react-icons/bi';
-const arr = [0, 1, 2];
 const SortTestimonials = () => {
-  const [list, setList] = useState<any>([
-    {
-      id: 1,
-      company: 'Teste 1',
-      testimonial:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit aperiam magni soluta sapiente repudiandae...',
-    },
-    {
-      id: 2,
-      company: 'Teste 2',
-      testimonial:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit aperiam magni soluta sapiente repudiandae...',
-    },
-    {
-      id: 3,
-      company: 'Teste 3',
-      testimonial:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit aperiam magni soluta sapiente repudiandae...',
-    },
-  ]);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+
+  async function handleOrderTestimonial(id: string) {
+    axios.post('/api/testimonials/order', {
+      id,
+    });
+  }
+
+  useEffect(() => {
+    axios.get('/api/testimonials/getByOrderDate').then((res) => {
+      setTestimonials(res.data.data);
+    });
+  }, []);
+
   return (
     <section className="w-full p-5 h-full">
       <div className="flex items-center justify-between">
@@ -46,9 +40,14 @@ const SortTestimonials = () => {
               </th>
             </tr>
           </thead>
-          <ReactSortable tag="tbody" list={list} setList={setList}>
-            {list.map((item: any) => (
+          <ReactSortable
+            tag="tbody"
+            list={testimonials}
+            setList={setTestimonials}
+          >
+            {testimonials.map((item: any, index) => (
               <tr
+                onDragEnd={() => handleOrderTestimonial(item.id)}
                 key={item.id}
                 className="bg-white cursor-grab border-b dark:bg-gray-800 dark:border-gray-700"
               >
@@ -56,9 +55,9 @@ const SortTestimonials = () => {
                   scope="row"
                   className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                 >
-                  {item.id}
+                  {(index += 1)}
                 </th>
-                <td className="py-4 px-6">{item.company}</td>
+                <td className="py-4 px-6">{item.hirerCompany}</td>
                 <td className="py-4 px-6">{item.testimonial}</td>
               </tr>
             ))}

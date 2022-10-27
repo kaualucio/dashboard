@@ -3,12 +3,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineHome, AiOutlineApartment } from 'react-icons/ai';
 import { BiChevronDown } from 'react-icons/bi';
-import {
-  BsPencilFill,
-  BsPencil,
-  BsPeople,
-  BsCalendarEvent,
-} from 'react-icons/bs';
+import { BsPencil, BsPeople, BsCalendarEvent } from 'react-icons/bs';
 import { RiArticleLine } from 'react-icons/ri';
 
 import { VscSettingsGear } from 'react-icons/vsc';
@@ -72,7 +67,7 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
         </div>
         <div className={styles.profileDetails}>
           <h2>Nome da pessoa</h2>
-          <button>Sair</button>
+          <p>Product Manager</p>
         </div>
       </div>
       <nav>
@@ -266,11 +261,6 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
               <li>
                 <Link href="/configuracoes/adicionar-usuario">
                   <a>Adicionar usuário</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/configuracoes/perfil/me">
-                  <a>Meu perfil</a>
                 </Link>
               </li>
             </ul>

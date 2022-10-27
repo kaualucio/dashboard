@@ -1,102 +1,81 @@
+import axios from 'axios';
 import Link from 'next/link';
-import React from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import FormControl from '../../src/components/FormControl';
+import Message from '../../src/components/Message';
 import { Title } from '../../src/components/Title';
 
-const AddNewProject = () => {
+const AddNewCategory = () => {
+  const [newCategory, setNewCategory] = useState('');
+  const [response, setResponse] = useState({ type: 'none', response: '' });
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  async function handleCreateNewCategory(e: FormEvent) {
+    try {
+      e.preventDefault();
+      setIsDisabled(true);
+      if (!newCategory) {
+        return setResponse({
+          type: 'error',
+          response: 'Preencha os campos obrigatórios para continuar',
+        });
+      }
+
+      const res: any = await axios.post('/api/categories/create', {
+        category: newCategory,
+      });
+      setNewCategory('');
+      setResponse({
+        type: res.data.type,
+        response: res.data.response,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsDisabled(false);
+    }
+  }
+
+  useEffect(() => {
+    if (response.type !== 'none') {
+      setTimeout(() => {
+        setResponse({
+          type: 'none',
+          response: '',
+        });
+      }, 5000);
+    }
+  }, [response]);
+
   return (
     <section className="w-full p-5 h-full">
+      <Message type={response.type} text={response.response} />
       <div className="flex items-center justify-between">
-        <Title title="Adicionar Projeto" size="xl" />
-        <Link href="/projetos">
+        <Title title="Adicionar Categoria" size="xl" />
+        <Link href="/categorias">
           <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
             Voltar
           </a>
         </Link>
       </div>
       <div className="mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5">
-        <form className="max-w-[800px] mx-auto flex flex-col gap-5">
+        <form
+          onSubmit={handleCreateNewCategory}
+          className="max-w-[800px] mx-auto flex flex-col gap-5"
+        >
           <FormControl
-            label="Nome do contratante"
+            label="Nome da categoria"
             isRequired
             name="name"
             type="text"
+            onChange={(e) => setNewCategory(e.target.value)}
+            value={newCategory}
           />
-
-          <FormControl
-            label="Título do projeto"
-            isRequired
-            name="title"
-            type="text"
-          />
-
-          <FormControl
-            label="Nome do responsável "
-            isRequired
-            name="manager"
-            type="text"
-          />
-          <FormControl label="Email" isRequired name="email" type="email" />
-          <FormControl label="Telefone/Celular" name="phone" type="text" />
-          <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
-            <label
-              htmlFor="type_service"
-              className="text-md text-text font-medium mb-3 lg:mb-0"
-            >
-              Tipo de serviço <span className="text-red">*</span>
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 block w-full lg:w-[500px] p-2 gap-5">
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  value="website-personalizado"
-                  id="website-personalizado"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="website-personalizado">
-                  Website personalizado
-                </label>
-              </div>
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  value="website-pronto"
-                  id="website-pronto"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="website-pronto">Website pronto</label>
-              </div>
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  value="design-branding"
-                  id="design-branding"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="design-branding">Design Branding</label>
-              </div>
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  value="gestao-de-trafego"
-                  id="gestao-de-trafego"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="gestao-de-trafego">Gestão de Tráfego</label>
-              </div>
-              <div className="flex items-start gap-2">
-                <input
-                  type="checkbox"
-                  value="ads"
-                  id="ads"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="ads">Criação de campanhas de ADS</label>
-              </div>
-            </div>
-          </div>
-          <FormControl label="Orçamento" isRequired name="budget" type="text" />
-          <button className="mt-5 self-end w-full sm:w-40 text-[#fff] rounded-md py-3 text-center bg-blue">
+          <button
+            disabled={isDisabled}
+            type="submit"
+            className="mt-5 self-end w-full sm:w-40 text-[#fff] rounded-md py-3 text-center bg-blue"
+          >
             Adicionar
           </button>
         </form>
@@ -105,4 +84,4 @@ const AddNewProject = () => {
   );
 };
 
-export default AddNewProject;
+export default AddNewCategory;

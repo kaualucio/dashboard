@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model Articles {
+  id           String   @id @unique @default(uuid())
+  title        String   @unique
+  slug         String   @unique
+  description  String
+  key_words    String[]
+  reading_time Int
+  content      String
+  isPublished  Boolean
+  thumbnail    String
+  published_at DateTime
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+  category     Category @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  author       User     @relation(fields: [authorId], references: [id])
+  authorId     String
+
+  @@map("articles")
+}
+
+model User {
+  id              String     @id @unique @default(uuid())
+  name            String
+  articles        Articles[]
+  role            String
+  about           String?
+  sex             String?
+  age             Int?
+  email           String
+  login           String
+  password        String
+  phone           String?
+  profile_picture String?
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @default(now())
+  Project         Project[]
+
+  @@map("user")
+}
+
+model Category {
+  id         String     @id @unique @default(uuid())
+  name       String
+  slug       String
+  articles   Articles[]
+  created_at DateTime   @default(now())
+  updated_at DateTime   @default(now())
+
+  @@map("category")
+}
+
+model Testimonial {
+  id           String   @id @unique @default(uuid())
+  hirerName    String
+  hirerEmail   String
+  hirerCompany String
+  testimonial  String
+  ordered_at   DateTime @default(now())
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+
+  @@map("testimonial")
+}
+
+model Project {
+  id                String    @id @unique @default(uuid())
+  hirerName         String
+  title             String
+  responsible       User      @relation(fields: [responsible_id], references: [id])
+  responsible_id    String
+  responsible_email String
+  phone             String?
+  type_service      String[]
+  budget            Float
+  status            String
+  completed         Boolean
+  completed_at      DateTime?
+  canceled          Boolean
+  canceled_at       DateTime?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @default(now())
+
+  @@map("project")
+}

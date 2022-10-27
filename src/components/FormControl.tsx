@@ -1,13 +1,14 @@
 import React from 'react';
 
-interface FormControlProps {
-  label: string;
-  type?: string;
-  name: string;
-  placeholder?: string;
-  isRequired?: boolean;
-  isTextArea?: boolean;
-}
+type FormControlProps = React.HTMLProps<HTMLInputElement> &
+  React.HTMLProps<HTMLTextAreaElement> & {
+    label: string;
+    type?: string;
+    name: string;
+    placeholder?: string;
+    isRequired?: boolean;
+    isTextArea?: boolean;
+  };
 
 const FormControl = ({
   label,
@@ -16,6 +17,7 @@ const FormControl = ({
   name,
   isRequired = false,
   isTextArea = false,
+  ...rest
 }: FormControlProps) => {
   return (
     <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
@@ -27,6 +29,7 @@ const FormControl = ({
       </label>
       {!isTextArea ? (
         <input
+          {...rest}
           type={type}
           name={name}
           placeholder={placeholder}
@@ -34,6 +37,7 @@ const FormControl = ({
         />
       ) : (
         <textarea
+          {...rest}
           name={name}
           className="outline-none resize-y h-32 block w-full lg:w-[500px] p-2 border border-text text-sm text-black rounded-md"
         ></textarea>

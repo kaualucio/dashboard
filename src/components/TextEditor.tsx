@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
 import { TextEditorToolbar, formats, modules } from './TextEditorToolbar';
 
 interface TextEditorProps {
@@ -13,6 +13,7 @@ const TextEditor = ({ value, setValue }: TextEditorProps) => {
     <>
       <TextEditorToolbar />
       <ReactQuill
+        preserveWhitespace
         id="content"
         className="w-full h-full rounded-md"
         theme="snow"
