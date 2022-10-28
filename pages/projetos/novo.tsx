@@ -1,11 +1,22 @@
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState, FormEvent } from 'react';
+import useSWR, { useSWRConfig } from 'swr';
 import FormControl from '../../src/components/FormControl';
 import Message from '../../src/components/Message';
 import { Title } from '../../src/components/Title';
 
+const fetcher = async (url: string, method: string) => {
+  const { data } = await axios({
+    method,
+    url,
+  });
+
+  return data;
+};
+
 const AddNewProject = () => {
+  const { mutate } = useSWRConfig();
   const [newProject, setNewProject] = useState({
     hirerName: '',
     title: '',
@@ -38,7 +49,9 @@ const AddNewProject = () => {
     const result = await axios.post('/api/projects/create', {
       ...newProject,
     });
-
+    mutate('/api/projects/get', null, {
+      optimisticData: result.data.project,
+    });
     if (result.data.type === 'success') {
       setNewProject({
         hirerName: '',
@@ -75,7 +88,6 @@ const AddNewProject = () => {
       }, 5000);
     }
   }, [response]);
-  console.log(newProject);
   return (
     <section className="w-full p-5 h-full">
       <Message type={response.type} text={response.response} />
@@ -277,6 +289,7 @@ const AddNewProject = () => {
           />
           <button
             type="submit"
+            disabled={isDisabled}
             className="mt-5 self-end w-full sm:w-40 text-[#fff] rounded-md py-3 text-center bg-blue"
           >
             Adicionar

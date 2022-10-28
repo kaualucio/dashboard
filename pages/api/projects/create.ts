@@ -77,7 +77,7 @@ export default async function handler(
       !budget
     ) {
       res.status(406).json({
-        typpe: 'error',
+        type: 'error',
         response: 'Preencha os campos obrigatórios para prosseguir',
       });
     }
@@ -100,6 +100,7 @@ export default async function handler(
     return res.status(201).json({
       type: 'success',
       response: `O projeto foi cadastrado com sucesso.`,
+      project: response,
     });
   } catch (error) {
     console.log(error);

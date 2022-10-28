@@ -3,20 +3,20 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function get() {
+async function getById(id: string | any) {
   try {
-    const projects = await prisma.project.findMany({
+    const project = await prisma.project.findFirst({
+      where: {
+        id,
+      },
       include: {
         responsible: true,
       },
-      orderBy: {
-        created_at: 'desc',
-      },
     });
-    return projects;
+    return project;
   } catch (error) {
     // console.log(error)
-    return 'Ocorreu um erro durante a busca dos projetos';
+    return 'Ocorreu um erro';
   }
 }
 
@@ -25,11 +25,15 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const response = await get().finally(async () => {
-      await prisma.$disconnect();
-    });
+    const { id } = req.query;
 
-    return res.status(200).json(response);
+    if (id) {
+      const response = await getById(id).finally(async () => {
+        await prisma.$disconnect();
+      });
+
+      return res.status(200).json(response);
+    }
   } catch (error) {
     console.log(error);
     return res.status(400).json({ type: 'error', response: error });

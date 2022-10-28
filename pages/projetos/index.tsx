@@ -1,5 +1,11 @@
 import Link from 'next/link';
-import React, { useEffect, useState, FormEvent } from 'react';
+import React, {
+  useEffect,
+  useState,
+  FormEvent,
+  useMemo,
+  useCallback,
+} from 'react';
 import { Title } from '../../src/components/Title';
 
 import { BiDetail, BiCheckDouble, BiTrash } from 'react-icons/bi';
@@ -7,34 +13,78 @@ import { FaTimes } from 'react-icons/fa';
 
 import axios from 'axios';
 import Status from '../../src/components/Status';
+import useSWR, { useSWRConfig } from 'swr';
+import Loading from '../../src/components/Loading';
+
+const fetcher = async (url: string, method: string) => {
+  const { data } = await axios({
+    method,
+    url,
+  });
+
+  return data;
+};
+
+const updateProject = async (url: string, method: string) => {
+  const { data } = await axios({
+    method,
+    url,
+  });
+
+  return data;
+};
 
 const Projects = () => {
-  const [projects, setProjects] = useState<any[]>([]);
+  const { mutate: mutateGlobal } = useSWRConfig();
+  const { data, error, mutate } = useSWR('/api/projects/get', (url: string) =>
+    fetcher(url, 'GET')
+  );
+  const handleToCompleteProject = useCallback(
+    (id: string) => {
+      updateProject(`/api/projects/complete/${id}`, 'POST');
 
-  function handleToCompleteProject(e: FormEvent, id: string) {
-    axios.post('/api/projects/complete', {
-      id,
-    });
-  }
+      const updatedProjects = data?.map((project: any) => {
+        if (project.id === id) {
+          return { ...project, status: 'Completo', completed: true };
+        }
 
-  function handleToCancelProject(e: FormEvent, id: string) {
-    axios.post('/api/projects/cancel', {
-      id,
-    });
-  }
+        return project;
+      });
+      mutate(updatedProjects, false);
+      mutateGlobal(`/api/projects/getById/${id}`, null, { revalidate: true });
+    },
+    [data, mutate, mutateGlobal]
+  );
 
-  function handleToDeleteProject(e: FormEvent, id: string) {
-    axios.post('/api/projects/delete', {
-      id,
-    });
-  }
+  const handleToCancelProject = useCallback(
+    (id: string) => {
+      updateProject(`/api/projects/cancel/${id}`, 'POST');
 
-  useEffect(() => {
-    axios.get('/api/projects/get').then((res) => {
-      setProjects(res.data.data);
-    });
-  }, []);
+      const updatedProjects = data?.map((project: any) => {
+        if (project.id === id) {
+          return { ...project, status: 'Cancelado', canceled: true };
+        }
 
+        return project;
+      });
+      mutate(updatedProjects, false);
+      mutateGlobal(`/api/projects/getById/${id}`, null, { revalidate: true });
+    },
+    [data, mutate, mutateGlobal]
+  );
+
+  const handleToDeleteProject = useCallback(
+    (id: string) => {
+      updateProject(`/api/projects/delete/${id}`, 'POST');
+
+      const updatedProjects = data?.filter((project: any) => project.id !== id);
+      mutate(updatedProjects, false);
+      mutateGlobal(`/api/projects/getById/${id}`, null, { revalidate: true });
+    },
+    [data, mutate, mutateGlobal]
+  );
+
+  if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
       <div className="flex items-center justify-between">
@@ -70,7 +120,7 @@ const Projects = () => {
             </tr>
           </thead>
           <tbody>
-            {projects?.map((project, index) => (
+            {data.map((project: any, index: any) => (
               <tr
                 key={project.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
@@ -88,20 +138,22 @@ const Projects = () => {
                   <Status status={project.status} />
                 </td>
                 <td className="flex items-center justify-center">
-                  <button
-                    title="Detalhes"
-                    aria-label="Detalhes"
-                    className="text-xl text-blue px-2 py-1"
-                  >
-                    <BiDetail />
-                  </button>
+                  <Link href={`/projetos/projeto/${project.id}`}>
+                    <a
+                      title="Detalhes"
+                      aria-label="Detalhes"
+                      className="inline-block rounded-full text-xl text-blue p-1 transition durantion-300 hover:bg-[#EFEFEF]"
+                    >
+                      <BiDetail />
+                    </a>
+                  </Link>
 
                   {!project.completed && !project.canceled && (
                     <button
                       title="Completar projeto"
                       aria-label="Completar projeto"
-                      className="text-xl text-green px-2 py-1"
-                      onClick={(e) => handleToCompleteProject(e, project.id)}
+                      className="rounded-full text-xl text-green p-1 transition durantion-300 hover:bg-[#EFEFEF] "
+                      onClick={(e) => handleToCompleteProject(project.id)}
                     >
                       <BiCheckDouble />
                     </button>
@@ -111,8 +163,8 @@ const Projects = () => {
                     <button
                       title="Cancelar projeto"
                       aria-label="Cancelar projeto"
-                      className="text-xl text-red px-2 py-1"
-                      onClick={(e) => handleToCancelProject(e, project.id)}
+                      className="rounded-full text-xl text-red p-1 transition durantion-300 hover:bg-[#EFEFEF] "
+                      onClick={() => handleToCancelProject(project.id)}
                     >
                       <FaTimes />
                     </button>
@@ -121,8 +173,8 @@ const Projects = () => {
                   <button
                     title="Deletar"
                     aria-label="Deletar"
-                    className="text-xl text-red px-2 py-1"
-                    onClick={(e) => handleToDeleteProject(e, project.id)}
+                    className="rounded-full text-xl text-red p-1 transition durantion-300 hover:bg-[#EFEFEF] "
+                    onClick={() => handleToDeleteProject(project.id)}
                   >
                     <BiTrash />
                   </button>

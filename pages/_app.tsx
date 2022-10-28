@@ -8,11 +8,14 @@ import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.core.css';
 import type { AppProps } from 'next/app';
 import { Layout } from '../src/components/Layout';
+import { SWRConfig } from 'swr';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Layout>
-      <Component {...pageProps} />
+      <SWRConfig>
+        <Component {...pageProps} />
+      </SWRConfig>
     </Layout>
   );
 }
