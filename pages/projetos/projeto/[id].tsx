@@ -57,7 +57,7 @@ const Projeto = () => {
               Contratante:
             </h3>
             <p className="w-full text-md font-medium text-black">
-              {data?.hirerName}
+              {data?.client?.name}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -71,10 +71,7 @@ const Projeto = () => {
               Descrição:
             </h3>
             <p className="w-full text-md font-medium text-black">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Itaque,
-              tenetur! Facilis, et, ipsum labore earum pariatur dolores quas
-              placeat impedit distinctio, fugit culpa temporibus possimus
-              aspernatur id. Impedit, a aliquam?
+              {data?.description}
             </p>
           </div>
         </div>
@@ -88,7 +85,7 @@ const Projeto = () => {
           <div className="flex items-center gap-2">
             <h3 className="w-[170px] text-md font-medium text-text">Email:</h3>
             <p className="w-full text-md font-medium text-black">
-              contratante@email.com
+              {data?.client.email}
             </p>
           </div>
           <div className="flex items-center gap-2">

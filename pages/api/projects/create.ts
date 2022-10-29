@@ -5,10 +5,10 @@ import { v4 as uuid } from 'uuid';
 const prisma = new PrismaClient();
 
 interface Testimonial {
-  hirerName: string;
+  client_id: string;
   title: string;
-  responsible_id: string;
-  responsible_email: string;
+  objective: string;
+  description: string;
   phone?: string;
   type_service: string[];
   budget: number;
@@ -18,10 +18,10 @@ interface Testimonial {
 }
 
 async function create({
-  hirerName,
+  client_id,
   title,
-  responsible_id,
-  responsible_email,
+  objective,
+  description,
   phone,
   type_service,
   budget,
@@ -33,10 +33,10 @@ async function create({
     const newProject = await prisma.project.create({
       data: {
         id: uuid(),
-        hirerName,
+        client_id,
         title,
-        responsible_id,
-        responsible_email,
+        objective,
+        description,
         phone,
         type_service,
         budget,
@@ -59,20 +59,20 @@ export default async function handler(
 ) {
   try {
     const {
-      hirerName,
+      client_id,
       title,
-      responsible_id,
-      responsible_email,
+      objective,
+      description,
       phone,
       type_service,
       budget,
     } = req.body;
 
     if (
-      !hirerName ||
+      !client_id ||
       !title ||
-      !responsible_id ||
-      !responsible_email ||
+      !objective ||
+      !description ||
       !type_service ||
       !budget
     ) {
@@ -83,10 +83,10 @@ export default async function handler(
     }
 
     const response = await create({
-      hirerName,
+      client_id,
       title,
-      responsible_id,
-      responsible_email,
+      objective,
+      description,
       phone,
       type_service,
       budget,

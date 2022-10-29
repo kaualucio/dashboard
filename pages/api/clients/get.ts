@@ -5,11 +5,7 @@ const prisma = new PrismaClient();
 
 async function get() {
   try {
-    const projects = await prisma.project.findMany({
-      include: {
-        responsible: true,
-        client: true,
-      },
+    const projects = await prisma.client.findMany({
       orderBy: {
         created_at: 'desc',
       },
@@ -17,7 +13,7 @@ async function get() {
     return projects;
   } catch (error) {
     // console.log(error)
-    return 'Ocorreu um erro durante a busca dos projetos';
+    return 'Ocorreu um erro';
   }
 }
 

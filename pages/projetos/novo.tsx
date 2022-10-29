@@ -18,24 +18,28 @@ const fetcher = async (url: string, method: string) => {
 const AddNewProject = () => {
   const { mutate } = useSWRConfig();
   const [newProject, setNewProject] = useState({
-    hirerName: '',
+    client_id: '',
+    description: '',
+    objective: '',
     title: '',
-    responsible_email: '',
     phone: '',
     responsible_id: '',
     budget: 0,
     type_service: [] as string[],
   });
   const [users, setUsers] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [response, setResponse] = useState({ type: 'none', response: '' });
   const [isDisabled, setIsDisabled] = useState(false);
 
   async function handleCreateProject(e: FormEvent) {
     e.preventDefault();
     if (
-      !newProject.hirerName ||
+      !newProject.client_id ||
+      !newProject.responsible_id ||
       !newProject.title ||
-      !newProject.responsible_email ||
+      !newProject.description ||
+      !newProject.objective ||
       !newProject.budget ||
       !newProject.type_service
     ) {
@@ -54,9 +58,10 @@ const AddNewProject = () => {
     });
     if (result.data.type === 'success') {
       setNewProject({
-        hirerName: '',
+        client_id: '',
+        description: '',
+        objective: '',
         title: '',
-        responsible_email: '',
         phone: '',
         responsible_id: '',
         budget: 0,
@@ -75,6 +80,12 @@ const AddNewProject = () => {
   useEffect(() => {
     axios.get('/api/user/get').then((res) => {
       setUsers(res.data.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get('/api/clients/get').then((res) => {
+      setClients(res.data);
     });
   }, []);
 
@@ -104,19 +115,35 @@ const AddNewProject = () => {
           onSubmit={handleCreateProject}
           className="max-w-[800px] mx-auto flex flex-col gap-5"
         >
-          <FormControl
-            value={newProject.hirerName}
-            onChange={(e) =>
-              setNewProject((prevState) => ({
-                ...prevState,
-                hirerName: e.target.value,
-              }))
-            }
-            label="Nome do contratante"
-            isRequired
-            name="name"
-            type="text"
-          />
+          <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
+            <label
+              htmlFor="client"
+              className="text-md text-text font-medium mb-3 lg:mb-0"
+            >
+              Cliente <span className="text-red">*</span>
+            </label>
+            <select
+              value={newProject.client_id}
+              onChange={(e) =>
+                setNewProject((prevState) => ({
+                  ...prevState,
+                  client_id: e.target.value,
+                }))
+              }
+              name="client"
+              id="client"
+              className="outline-none block w-full lg:w-[500px] p-2 border border-text text-sm text-black rounded-md"
+            >
+              <option value="" selected disabled>
+                Selecione o cliente
+              </option>
+              {clients?.map((client) => (
+                <option key={client.id} value={client.id}>
+                  {client.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <FormControl
             value={newProject.title}
@@ -137,7 +164,7 @@ const AddNewProject = () => {
               htmlFor="responsible"
               className="text-md text-text font-medium mb-3 lg:mb-0"
             >
-              Responsável
+              Responsável <span className="text-red">*</span>
             </label>
             <select
               value={newProject.responsible_id}
@@ -152,7 +179,7 @@ const AddNewProject = () => {
               className="outline-none block w-full lg:w-[500px] p-2 border border-text text-sm text-black rounded-md"
             >
               <option value="" selected disabled>
-                Selecione o o responsável pelo projeto
+                Selecione o responsável pelo projeto
               </option>
               {users?.map((user) => (
                 <option key={user.id} value={user.id}>
@@ -162,19 +189,6 @@ const AddNewProject = () => {
             </select>
           </div>
 
-          <FormControl
-            value={newProject.responsible_email}
-            onChange={(e) =>
-              setNewProject((prevState) => ({
-                ...prevState,
-                responsible_email: e.target.value,
-              }))
-            }
-            label="Email do contratante"
-            isRequired
-            name="email"
-            type="email"
-          />
           <FormControl
             value={newProject.phone}
             onChange={(e) =>
@@ -285,6 +299,34 @@ const AddNewProject = () => {
             label="Orçamento"
             isRequired
             name="budget"
+            type="text"
+          />
+          <FormControl
+            value={newProject.objective}
+            onChange={(e) =>
+              setNewProject((prevState) => ({
+                ...prevState,
+                objective: e.target.value,
+              }))
+            }
+            label="Objetivo"
+            isRequired
+            name="objective"
+            type="text"
+            placeholder="Escreva em apenas uma frase"
+          />
+          <FormControl
+            value={newProject.description}
+            onChange={(e) =>
+              setNewProject((prevState) => ({
+                ...prevState,
+                description: e.target.value,
+              }))
+            }
+            label="Descrição"
+            isRequired
+            isTextArea
+            name="description"
             type="text"
           />
           <button
