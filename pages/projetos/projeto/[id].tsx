@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useSWR from 'swr';
-import Loading from '../../../src/components/Loading';
+import { Loading } from '../../../src/components/Loading';
 import { Title } from '../../../src/components/Title';
 import { phoneMask } from '../../../src/utils/phone-mask';
 import { roles } from '../../../src/utils/roles';

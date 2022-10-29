@@ -13,7 +13,7 @@ async function get() {
 
     return categories;
   } catch (error) {
-    // console.log(error)
+    console.log(error);
     return 'Ocorreu um erro durante a busca de dados sobre as categorias';
   }
 }

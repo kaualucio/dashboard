@@ -2,9 +2,13 @@ import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState, FormEvent } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
-import FormControl from '../../src/components/FormControl';
-import Message from '../../src/components/Message';
+import { Button } from '../../src/components/Button';
+import { CheckboxContainer } from '../../src/components/CheckboxContainer';
+import { FormControl } from '../../src/components/FormControl';
+import { Message } from '../../src/components/Message';
+import { Select } from '../../src/components/Select';
 import { Title } from '../../src/components/Title';
+import { services } from '../../src/utils/type-services';
 
 const fetcher = async (url: string, method: string) => {
   const { data } = await axios({
@@ -31,6 +35,21 @@ const AddNewProject = () => {
   const [clients, setClients] = useState<any[]>([]);
   const [response, setResponse] = useState({ type: 'none', response: '' });
   const [isDisabled, setIsDisabled] = useState(false);
+
+  function handleSelectClient(value: string) {
+    setNewProject((prevState) => ({ ...prevState, client_id: value }));
+  }
+
+  function handleSelectResponsible(value: string) {
+    setNewProject((prevState) => ({ ...prevState, responsible_id: value }));
+  }
+
+  function handleSelectService(value: string) {
+    setNewProject((prevState) => ({
+      ...prevState,
+      type_service: [...prevState.type_service, value],
+    }));
+  }
 
   async function handleCreateProject(e: FormEvent) {
     e.preventDefault();
@@ -115,35 +134,16 @@ const AddNewProject = () => {
           onSubmit={handleCreateProject}
           className="max-w-[800px] mx-auto flex flex-col gap-5"
         >
-          <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
-            <label
-              htmlFor="client"
-              className="text-md text-text font-medium mb-3 lg:mb-0"
-            >
-              Cliente <span className="text-red">*</span>
-            </label>
-            <select
-              value={newProject.client_id}
-              onChange={(e) =>
-                setNewProject((prevState) => ({
-                  ...prevState,
-                  client_id: e.target.value,
-                }))
-              }
-              name="client"
-              id="client"
-              className="outline-none block w-full lg:w-[500px] p-2 border border-text text-sm text-black rounded-md"
-            >
-              <option value="" selected disabled>
-                Selecione o cliente
-              </option>
-              {clients?.map((client) => (
-                <option key={client.id} value={client.id}>
-                  {client.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            placeHolder="Selecione o cliente"
+            isRequired
+            id="client"
+            name="client"
+            label="Cliente"
+            data={clients}
+            value={newProject.client_id}
+            handleChangeSelectValue={handleSelectClient}
+          />
 
           <FormControl
             value={newProject.title}
@@ -158,36 +158,16 @@ const AddNewProject = () => {
             name="title"
             type="text"
           />
-
-          <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
-            <label
-              htmlFor="responsible"
-              className="text-md text-text font-medium mb-3 lg:mb-0"
-            >
-              Responsável <span className="text-red">*</span>
-            </label>
-            <select
-              value={newProject.responsible_id}
-              onChange={(e) =>
-                setNewProject((prevState) => ({
-                  ...prevState,
-                  responsible_id: e.target.value,
-                }))
-              }
-              name="responsible"
-              id="responsible"
-              className="outline-none block w-full lg:w-[500px] p-2 border border-text text-sm text-black rounded-md"
-            >
-              <option value="" selected disabled>
-                Selecione o responsável pelo projeto
-              </option>
-              {users?.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            placeHolder="Selecione o responsável"
+            isRequired
+            id="responsible"
+            name="responsible"
+            label="Responsável"
+            data={users}
+            value={newProject.responsible_id}
+            handleChangeSelectValue={handleSelectResponsible}
+          />
 
           <FormControl
             value={newProject.phone}
@@ -201,93 +181,14 @@ const AddNewProject = () => {
             name="phone"
             type="text"
           />
-          <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
-            <label
-              htmlFor="type_service"
-              className="text-md text-text font-medium mb-3 lg:mb-0"
-            >
-              Tipo de serviço <span className="text-red">*</span>
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 block w-full lg:w-[500px] p-2 gap-5">
-              <div className="flex items-start gap-2">
-                <input
-                  onChange={(e) =>
-                    setNewProject((prevState) => ({
-                      ...prevState,
-                      type_service: [...prevState.type_service, e.target.value],
-                    }))
-                  }
-                  type="checkbox"
-                  value="website-personalizado"
-                  id="website-personalizado"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="website-personalizado">
-                  Website personalizado
-                </label>
-              </div>
-              <div className="flex items-start gap-2">
-                <input
-                  onChange={(e) =>
-                    setNewProject((prevState) => ({
-                      ...prevState,
-                      type_service: [...prevState.type_service, e.target.value],
-                    }))
-                  }
-                  type="checkbox"
-                  value="website-pronto"
-                  id="website-pronto"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="website-pronto">Website pronto</label>
-              </div>
-              <div className="flex items-start gap-2">
-                <input
-                  onChange={(e) =>
-                    setNewProject((prevState) => ({
-                      ...prevState,
-                      type_service: [...prevState.type_service, e.target.value],
-                    }))
-                  }
-                  type="checkbox"
-                  value="design-branding"
-                  id="design-branding"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="design-branding">Design Branding</label>
-              </div>
-              <div className="flex items-start gap-2">
-                <input
-                  onChange={(e) =>
-                    setNewProject((prevState) => ({
-                      ...prevState,
-                      type_service: [...prevState.type_service, e.target.value],
-                    }))
-                  }
-                  type="checkbox"
-                  value="gestao-de-trafego"
-                  id="gestao-de-trafego"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="gestao-de-trafego">Gestão de Tráfego</label>
-              </div>
-              <div className="flex items-start gap-2">
-                <input
-                  onChange={(e) =>
-                    setNewProject((prevState) => ({
-                      ...prevState,
-                      type_service: [...prevState.type_service, e.target.value],
-                    }))
-                  }
-                  type="checkbox"
-                  value="ads"
-                  id="ads"
-                  className="w-5 h-5 border border-text rounded-md"
-                />
-                <label htmlFor="ads">Criação de campanhas de ADS</label>
-              </div>
-            </div>
-          </div>
+
+          <CheckboxContainer
+            data={services}
+            handleChange={handleSelectService}
+            title="Tipo de serviço"
+            isRequired
+          />
+
           <FormControl
             value={newProject.budget}
             onChange={(e) =>
@@ -329,13 +230,7 @@ const AddNewProject = () => {
             name="description"
             type="text"
           />
-          <button
-            type="submit"
-            disabled={isDisabled}
-            className="mt-5 self-end w-full sm:w-40 text-[#fff] rounded-md py-3 text-center bg-blue"
-          >
-            Adicionar
-          </button>
+          <Button isDisabled={isDisabled} label="Adicionar" />
         </form>
       </div>
     </section>

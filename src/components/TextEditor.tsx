@@ -1,16 +1,23 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import ReactQuill, { Quill } from 'react-quill';
-
+import React, { useMemo, Dispatch, SetStateAction } from 'react';
+import dynamic from 'next/dynamic';
+// import ReactQuill, { Quill } from 'react-quill';
 import { TextEditorToolbar, formats, modules } from './TextEditorToolbar';
 
 interface TextEditorProps {
+  label: string;
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
 }
-
-const TextEditor = ({ value, setValue }: TextEditorProps) => {
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const TextEditor = ({ label, value, setValue }: TextEditorProps) => {
   return (
-    <>
+    <div className="flex items-start flex-col gap-5">
+      <label
+        htmlFor="content"
+        className="text-md text-text font-medium mb-3 lg:mb-0"
+      >
+        {label}
+      </label>
       <TextEditorToolbar />
       <ReactQuill
         preserveWhitespace
@@ -23,7 +30,7 @@ const TextEditor = ({ value, setValue }: TextEditorProps) => {
         modules={modules}
         formats={formats}
       />
-    </>
+    </div>
   );
 };
 

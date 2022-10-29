@@ -46,4 +46,4 @@ const FormControl = ({
   );
 };
 
-export default FormControl;
+export { FormControl };

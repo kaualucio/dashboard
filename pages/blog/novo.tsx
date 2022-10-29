@@ -1,8 +1,10 @@
 import axios from 'axios';
 import Link from 'next/link';
 import React, { FormEvent, useEffect, useState } from 'react';
-import FormControl from '../../src/components/FormControl';
-import Message from '../../src/components/Message';
+import { Button } from '../../src/components/Button';
+import { FormControl } from '../../src/components/FormControl';
+import { Message } from '../../src/components/Message';
+import { Select } from '../../src/components/Select';
 import TextEditor from '../../src/components/TextEditor';
 
 import { Title } from '../../src/components/Title';
@@ -86,6 +88,7 @@ const AddNewBlogPost = () => {
     }
   }, [response]);
 
+  console.log(authors, categories);
   return (
     <section className="w-full p-5 h-full">
       <Message type={response.type} text={response.response} />
@@ -124,65 +127,27 @@ const AddNewBlogPost = () => {
             name="description"
             type="text"
           />
-          <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
-            <label
-              htmlFor="author"
-              className="text-md text-text font-medium mb-3 lg:mb-0"
-            >
-              Autor
-            </label>
-            <select
-              value={newArticle.authorId}
-              onChange={(e) =>
-                setNewArticle((prevState) => ({
-                  ...prevState,
-                  authorId: e.target.value,
-                }))
-              }
-              name="author"
-              id="author"
-              className="outline-none block w-full lg:w-[500px] p-2 border border-text text-sm text-black rounded-md"
-            >
-              <option value="" selected disabled>
-                Selecione o autor do artigo
-              </option>
-              {authors?.map((author) => (
-                <option key={author.id} value={author.id}>
-                  {author.name}
-                </option>
-              ))}
-            </select>
-          </div>
 
-          <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
-            <label
-              htmlFor="category"
-              className="text-md text-text font-medium mb-3 lg:mb-0"
-            >
-              Categoria
-            </label>
-            <select
-              value={newArticle.categoryId}
-              onChange={(e) =>
-                setNewArticle((prevState) => ({
-                  ...prevState,
-                  categoryId: e.target.value,
-                }))
-              }
-              name="category"
-              id="category"
-              className="outline-none block w-full lg:w-[500px] p-2 border border-text text-sm text-black rounded-md"
-            >
-              <option value="" selected disabled>
-                Selecione a categoria
-              </option>
-              {categories?.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            data={authors}
+            id="author"
+            name="author"
+            label="Autor"
+            value={newArticle.authorId}
+            placeHolder="Selecione o autor"
+            handleChangeSelectValue={() => {}}
+          />
+
+          <Select
+            data={categories}
+            id="category"
+            name="category"
+            label="Categoria"
+            value={newArticle.categoryId}
+            placeHolder="Selecione a categoria"
+            handleChangeSelectValue={() => {}}
+          />
+
           <FormControl
             value={newArticle.key_words}
             onChange={(e) =>
@@ -207,45 +172,29 @@ const AddNewBlogPost = () => {
             name="time_lecture"
             type="number"
           />
-          <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
-            <label
-              htmlFor="thumbnail"
-              className="text-md text-text font-medium mb-3 lg:mb-0"
-            >
-              Capa
-            </label>
-            <input
-              type="file"
-              name="thumbnail"
-              id="thumbnail"
-              placeholder="Use ponto e virgula (;) para separar as palavras-chave"
-              className="outline-none block w-full lg:w-[500px] p-2 border border-text text-sm text-black rounded-md"
-            />
-          </div>
-          <div className="flex items-start flex-col gap-5">
-            <label
-              htmlFor="content"
-              className="text-md text-text font-medium mb-3 lg:mb-0"
-            >
-              Conteúdo
-            </label>
-            <TextEditor value={content} setValue={setContent} />
-          </div>
+          <FormControl
+            value={''}
+            onChange={() => {}}
+            label="Capa"
+            name="thumbnail"
+            type="file"
+          />
+
+          <TextEditor label="Conteúdo" value={content} setValue={setContent} />
+
           <div className="mt-20 sm:mt-10 w-full flex items-center justify-end self-start gap-3 sm:flex-row flex-col">
-            <button
+            <Button
+              label="Publicar"
+              type="submit"
               disabled={isDisabled}
               onClick={(e) => handleCreateAArticle(e, true)}
-              className="w-full sm:w-fit text-[#fff] rounded-md px-5 py-2 text-center bg-blue"
-            >
-              Publicar
-            </button>
-            <button
+            />
+            <Button
+              label="Salvar como rascunho"
+              type="submit"
               disabled={isDisabled}
               onClick={(e) => handleCreateAArticle(e, false)}
-              className="w-full sm:w-fit text-[#fff] rounded-md px-5 py-2 text-center bg-blue"
-            >
-              Salvar como rascunho
-            </button>
+            />
           </div>
         </form>
       </div>

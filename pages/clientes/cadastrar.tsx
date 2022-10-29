@@ -1,8 +1,9 @@
 import axios from 'axios';
 import Link from 'next/link';
 import React, { FormEvent, useEffect, useState } from 'react';
-import FormControl from '../../src/components/FormControl';
-import Message from '../../src/components/Message';
+import { Button } from '../../src/components/Button';
+import { FormControl } from '../../src/components/FormControl';
+import { Message } from '../../src/components/Message';
 import { Title } from '../../src/components/Title';
 
 const AddNewClient = () => {
@@ -114,12 +115,7 @@ const AddNewClient = () => {
           />
           <FormControl label="Imagem" isRequired name="image" type="file" />
 
-          <button
-            disabled={isDisabled}
-            className="mt-5 self-end w-full sm:w-40 text-[#fff] rounded-md py-3 text-center bg-blue"
-          >
-            Adicionar
-          </button>
+          <Button disabled={isDisabled} label="Adicionar" />
         </form>
       </div>
     </section>

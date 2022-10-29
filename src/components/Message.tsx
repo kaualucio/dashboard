@@ -21,4 +21,4 @@ const Message = ({ text, type }: MessageProps) => {
   );
 };
 
-export default Message;
+export { Message };

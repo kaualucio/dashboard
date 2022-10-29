@@ -1,9 +1,12 @@
 import axios from 'axios';
 import React, { useState, useEffect, FormEvent } from 'react';
-import FormControl from '../../src/components/FormControl';
-import Message from '../../src/components/Message';
+import { Button } from '../../src/components/Button';
+import { FormControl } from '../../src/components/FormControl';
+import { Message } from '../../src/components/Message';
+import { Select } from '../../src/components/Select';
 import { Title } from '../../src/components/Title';
 import { emailValidation } from '../../src/utils/email-validation';
+import { rolesOptions } from '../../src/utils/roles';
 
 const AddUser = () => {
   const [newUser, setNewUser] = useState({
@@ -14,6 +17,10 @@ const AddUser = () => {
   });
   const [response, setResponse] = useState({ type: 'none', response: '' });
   const [isDisabled, setIsDisabled] = useState(false);
+
+  function handleSelectUserRole(value: string) {
+    setNewUser((prevState) => ({ ...prevState, role: value }));
+  }
 
   async function handleCreateNewUser(e: FormEvent) {
     e.preventDefault();
@@ -93,45 +100,20 @@ const AddUser = () => {
             name="email"
             type="email"
           />
-          <div className="flex items-start lg:items-center justify-between flex-col lg:flex-row">
-            <label
-              htmlFor="role"
-              className="text-md text-text font-medium mb-3 lg:mb-0"
-            >
-              Cargo
-            </label>
-            <select
-              onChange={(e) =>
-                setNewUser((prevState) => ({
-                  ...prevState,
-                  role: e.target.value,
-                }))
-              }
-              value={newUser.role}
-              name="role"
-              id="role"
-              className="outline-none block w-full lg:w-[500px] p-2 border border-text text-sm text-black rounded-md"
-            >
-              <option value="" disabled selected>
-                Selecione o cargo a ser ocupado
-              </option>
-              <option value="product-manager">Product Manager</option>
-              <option value="programador">Programador</option>
-              <option value="analista-de-marketing">
-                Analista de Marketing
-              </option>
-              <option value="designer">Designer</option>
-            </select>
-          </div>
+          <Select
+            label="Cargo"
+            isRequired
+            data={rolesOptions}
+            id="role"
+            name="role"
+            placeHolder="Selecione o cargo a ser ocupado"
+            value={newUser.role}
+            handleChangeSelectValue={handleSelectUserRole}
+          />
+
           <FormControl label="Imagem" name="profile_picture" type="file" />
 
-          <button
-            type="submit"
-            className="disabled:cursor-not-allowed mt-5 self-end w-full sm:w-40 text-[#fff] rounded-md py-3 text-center bg-blue"
-            disabled={isDisabled}
-          >
-            Adicionar
-          </button>
+          <Button disabled={isDisabled} label="Adicionar" />
         </form>
       </div>
     </section>
