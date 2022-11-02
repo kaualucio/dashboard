@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { v4 as uuid } from 'uuid';
-import { slugify } from '../../../src/utils/slugfy';
+import { slugify } from '../../../../src/utils/slugfy';
 
 const prisma = new PrismaClient();
 
@@ -12,37 +11,38 @@ interface ArticleData {
   key_words: string[];
   reading_time: number;
   content: string;
-  isPublished: boolean;
   thumbnail: string;
   categoryId: string;
   authorId: string;
 }
 
-async function create({
-  title,
-  slug,
-  description,
-  key_words,
-  reading_time,
-  content,
-  isPublished,
-  thumbnail,
-  categoryId,
-  authorId,
-}: ArticleData) {
+async function create(
+  {
+    title,
+    slug,
+    description,
+    key_words,
+    reading_time,
+    content,
+    thumbnail,
+    categoryId,
+    authorId,
+  }: ArticleData,
+  id: string | any
+) {
   try {
-    const article = await prisma.articles.create({
+    const article = await prisma.articles.update({
+      where: {
+        id,
+      },
       data: {
-        id: uuid(),
         title,
         slug,
         description,
         key_words,
         reading_time,
         content,
-        isPublished,
         thumbnail,
-        published_at: isPublished ? new Date() : null,
         categoryId,
         authorId,
       },
@@ -55,15 +55,15 @@ async function create({
   }
 }
 
-async function articleAlreadyExistsByTitle(title: string) {
+async function articleAlreadyExistsById(id: string | any) {
   try {
     const articleAlreadyExists = await prisma.articles.findFirst({
       where: {
-        title,
+        id,
       },
     });
 
-    return articleAlreadyExists ? true : false;
+    return articleAlreadyExists;
   } catch (error) {
     console.log(error);
     return 'Ocorreu um erro durante a criação/salvamento do article, tente novamente';
@@ -85,6 +85,7 @@ export default async function handler(
     categoryId,
     authorId,
   } = req.body;
+  const { id } = req.query;
   try {
     if (
       !title ||
@@ -102,49 +103,51 @@ export default async function handler(
       });
     }
 
-    const articleExists = await articleAlreadyExistsByTitle(title).finally(
+    const articleExists = await articleAlreadyExistsById(id).finally(
       async () => {
         await prisma.$disconnect();
       }
     );
 
-    if (articleExists) {
+    if (!articleExists) {
       return res.status(403).json({
         type: 'error',
-        response: 'Já existe um artigo cadastrado com esse título',
+        response: 'Não existe nenhum artigo com esse título',
       });
     }
 
     const key_wordsArr = key_words.split(',');
     const slug = slugify(title);
 
-    const result = await create({
-      title,
-      slug,
-      description,
-      key_words: key_wordsArr,
-      reading_time,
-      content,
-      isPublished,
-      thumbnail,
-      categoryId,
-      authorId,
-    }).finally(async () => {
+    const result = await create(
+      {
+        title,
+        slug,
+        description,
+        key_words: key_wordsArr,
+        reading_time,
+        content,
+        thumbnail,
+        categoryId,
+        authorId,
+      },
+      id
+    ).finally(async () => {
       await prisma.$disconnect();
     });
     return res.status(201).json({
       type: 'success',
       article: result,
       response: isPublished
-        ? 'O artigo foi criado e lançado com sucesso!'
-        : 'O rascunho do artigo foi salvo com sucesso!',
+        ? 'O artigo foi editado com sucesso!'
+        : 'A continuação do rascunho foi salvo com sucesso!',
     });
   } catch (error) {
     return res.status(400).json({
       type: 'error',
       response: isPublished
-        ? 'Ocorreu um erro ao criar e lançar o artigo, tente novamente!'
-        : 'Ocorreu um erro ao salvar o rascunho do artigo, tente novamente !',
+        ? 'Ocorreu um erro ao editar o artigo, tente novamente!'
+        : 'Ocorreu um erro ao salvar a continuação do rascunho, tente novamente !',
     });
   }
 }

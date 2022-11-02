@@ -20,7 +20,7 @@ model Articles {
   content      String
   isPublished  Boolean
   thumbnail    String
-  published_at DateTime
+  published_at DateTime?
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
   category     Category @relation(fields: [categoryId], references: [id])

@@ -5,6 +5,7 @@ import { Title } from '../../src/components/Title';
 import { BiPencil, BiTrash } from 'react-icons/bi';
 import axios from 'axios';
 import moment from 'moment';
+import { Header } from '../../src/components/Header';
 
 interface Categories {
   id: string;
@@ -29,14 +30,11 @@ const Categories = () => {
 
   return (
     <section className="w-full p-5 h-full">
-      <div className="flex items-center justify-between">
-        <Title title="Categorias" size="xl" />
-        <Link href="/categorias/novo">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Adicionar nova
-          </a>
-        </Link>
-      </div>
+      <Header
+        titlePage="Categorias"
+        link="/categorias/novo"
+        label="Adicionar nova"
+      />
       <div className="mt-8 bg-[#fff] rounded-md shadow-md p-5 overflow-x-auto relative">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

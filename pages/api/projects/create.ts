@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 
 interface Testimonial {
   client_id: string;
+  responsible_id: string;
   title: string;
   objective: string;
   description: string;
@@ -19,6 +20,7 @@ interface Testimonial {
 
 async function create({
   client_id,
+  responsible_id,
   title,
   objective,
   description,
@@ -38,6 +40,7 @@ async function create({
         objective,
         description,
         phone,
+        responsible_id,
         type_service,
         budget,
         status,
@@ -60,6 +63,7 @@ export default async function handler(
   try {
     const {
       client_id,
+      responsible_id,
       title,
       objective,
       description,
@@ -70,6 +74,7 @@ export default async function handler(
 
     if (
       !client_id ||
+      !responsible_id ||
       !title ||
       !objective ||
       !description ||
@@ -84,6 +89,7 @@ export default async function handler(
 
     const response = await create({
       client_id,
+      responsible_id,
       title,
       objective,
       description,

@@ -1,10 +1,12 @@
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState, FormEvent } from 'react';
+import toast from 'react-hot-toast';
 import useSWR, { useSWRConfig } from 'swr';
 import { Button } from '../../src/components/Button';
 import { CheckboxContainer } from '../../src/components/CheckboxContainer';
 import { FormControl } from '../../src/components/FormControl';
+import { Header } from '../../src/components/Header';
 import { Message } from '../../src/components/Message';
 import { Select } from '../../src/components/Select';
 import { Title } from '../../src/components/Title';
@@ -45,10 +47,22 @@ const AddNewProject = () => {
   }
 
   function handleSelectService(value: string) {
-    setNewProject((prevState) => ({
-      ...prevState,
-      type_service: [...prevState.type_service, value],
-    }));
+    const serviceIsAlreadySelected = newProject.type_service.find(
+      (item) => item === value
+    );
+    if (serviceIsAlreadySelected) {
+      setNewProject((prevState) => ({
+        ...prevState,
+        type_service: [
+          ...prevState.type_service.filter((item) => item !== value),
+        ],
+      }));
+    } else {
+      setNewProject((prevState) => ({
+        ...prevState,
+        type_service: [...prevState.type_service, value],
+      }));
+    }
   }
 
   async function handleCreateProject(e: FormEvent) {
@@ -62,11 +76,9 @@ const AddNewProject = () => {
       !newProject.budget ||
       !newProject.type_service
     ) {
-      return setResponse({
-        type: 'error',
-        response:
-          'Preencha os campos obrigatórios para prosseguir com o cadastro do projeto',
-      });
+      return toast.error(
+        'Preencha os campos obrigatórios para prosseguir com o cadastro do projeto'
+      );
     }
 
     const result = await axios.post('/api/projects/create', {
@@ -88,10 +100,11 @@ const AddNewProject = () => {
       });
     }
 
-    setResponse({
-      type: result.data.type,
-      response: result.data.response,
-    });
+    if (result.data.type === 'success') {
+      toast.success(result.data.response);
+    } else {
+      toast.error(result.data.response);
+    }
 
     setIsDisabled(false);
   }
@@ -108,27 +121,9 @@ const AddNewProject = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (response.type !== 'none') {
-      setTimeout(() => {
-        setResponse({
-          type: 'none',
-          response: '',
-        });
-      }, 5000);
-    }
-  }, [response]);
   return (
     <section className="w-full p-5 h-full">
-      <Message type={response.type} text={response.response} />
-      <div className="flex items-center justify-between">
-        <Title title="Adicionar Projeto" size="xl" />
-        <Link href="/projetos">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Voltar
-          </a>
-        </Link>
-      </div>
+      <Header titlePage="Adicionar Projeto" link="/projetos" label="Voltar" />
       <div className="mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5">
         <form
           onSubmit={handleCreateProject}
@@ -230,7 +225,7 @@ const AddNewProject = () => {
             name="description"
             type="text"
           />
-          <Button isDisabled={isDisabled} label="Adicionar" />
+          <Button type="submit" disabled={isDisabled} label="Adicionar" />
         </form>
       </div>
     </section>

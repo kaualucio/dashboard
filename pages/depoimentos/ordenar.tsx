@@ -1,13 +1,13 @@
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { Title } from '../../src/components/Title';
 import { ReactSortable } from 'react-sortablejs';
-import { GetStaticProps } from 'next';
 import axios from 'axios';
+import { Header } from '../../src/components/Header';
+import { useFetch } from '../../src/hooks/useFetch';
+import { Loading } from '../../src/components/Loading';
 
 const SortTestimonials = () => {
   const [testimonials, setTestimonials] = useState<any[]>([]);
-
+  const { data, mutate } = useFetch('/api/testimonials/getByOrderDate');
   async function handleOrderTestimonial(id: string) {
     axios.post('/api/testimonials/order', {
       id,
@@ -15,16 +15,20 @@ const SortTestimonials = () => {
   }
 
   useEffect(() => {
-    axios.get('/api/testimonials/getByOrderDate').then((res) => {
-      setTestimonials(res.data.data);
-    });
-  }, []);
+    if (data) {
+      setTestimonials(data);
+    }
+  }, [data]);
+
+  if (!data) return <Loading />;
 
   return (
     <section className="w-full p-5 h-full">
-      <div className="flex items-center justify-between">
-        <Title title="Ordenar Depoimentos" size="xl" />
-      </div>
+      <Header
+        titlePage="Ordenar Depoimentos"
+        link="/depoimentos"
+        label="Voltar"
+      />
       <div className="mt-8 bg-[#fff] rounded-md shadow-md p-5 overflow-x-auto relative">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

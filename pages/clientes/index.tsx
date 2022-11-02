@@ -1,20 +1,58 @@
 import Link from 'next/link';
-import React from 'react';
-import { Title } from '../../src/components/Title';
+import axios from 'axios';
+import React, { useCallback, useState } from 'react';
 
-import { BiDetail, BiCheckDouble, BiTrash } from 'react-icons/bi';
+import { BiDetail, BiTrash } from 'react-icons/bi';
+import { Header } from '../../src/components/Header';
+import { useFetch } from '../../src/hooks/useFetch';
+import { Loading } from '../../src/components/Loading';
+import { Dialog } from '../../src/components/Dialog';
 
 const Clients = () => {
+  const { data, mutate } = useFetch('/api/clients/get');
+  const [deleteClientId, setDeleteClientId] = useState<null | string>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleDeleteClient = useCallback(() => {
+    if (deleteClientId) {
+      axios.post(`/api/clients/delete/${deleteClientId}`);
+
+      const updatedClients = data?.filter(
+        (project: any) => project.id !== deleteClientId
+      );
+      mutate(updatedClients, false);
+    }
+  }, [data, mutate, deleteClientId]);
+
+  function handleOpenDialog() {
+    setOpenDialog((prevState) => !prevState);
+  }
+
+  function handleOpenDialogAndSetIdToDelete(id: string) {
+    handleOpenDialog();
+    setDeleteClientId(id);
+  }
+
+  function handleConfirmDelete() {
+    handleDeleteClient();
+    handleOpenDialog();
+  }
+
+  if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
-      <div className="flex items-center justify-between">
-        <Title title="Nossos Clientes" size="xl" />
-        <Link href="/clientes/cadastrar">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Adicionar novo
-          </a>
-        </Link>
-      </div>
+      {openDialog && (
+        <Dialog
+          handleConfirmDelete={handleConfirmDelete}
+          handleOpenDialog={handleOpenDialog}
+          description="Todos os dados relacionados a esse cliente serão deletados, mesmo assim gostaria de continuar?"
+        />
+      )}
+      <Header
+        titlePage="Nossos Clientes"
+        link="/clientes/cadastrar"
+        label="Adicionar novo"
+      />
       <div className="mt-8 bg-[#fff] rounded-md shadow-md p-5 overflow-x-auto relative">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -40,69 +78,46 @@ const Clients = () => {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th
-                scope="row"
-                className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            {data.map((client: any, index: number) => (
+              <tr
+                key={client.id}
+                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
               >
-                1
-              </th>
-              <td className="py-4 px-6">Barbearia</td>
-              <td className="py-4 px-6">exemplo@teste.com</td>
-              <td className="py-4 px-6">10</td>
-              <td className="py-4 px-6">3</td>
-              <td className="flex items-center justify-center">
-                <button className="text-xl text-blue px-2 py-1">
-                  <BiDetail />
-                </button>
-
-                <button className="text-xl text-red px-2 py-1">
-                  <BiTrash />
-                </button>
-              </td>
-            </tr>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th
-                scope="row"
-                className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                2
-              </th>
-              <td className="py-4 px-6">Hospital</td>
-              <td className="py-4 px-6">exemplo2@teste.com</td>
-              <td className="py-4 px-6">25</td>
-              <td className="py-4 px-6">0</td>
-              <td className="flex items-center justify-center">
-                <button className="text-xl text-blue px-2 py-1">
-                  <BiDetail />
-                </button>
-
-                <button className="text-xl text-red px-2 py-1">
-                  <BiTrash />
-                </button>
-              </td>
-            </tr>
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <th
-                scope="row"
-                className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-              >
-                3
-              </th>
-              <td className="py-4 px-6">Restaurante </td>
-              <td className="py-4 px-6">exemplo3@teste.com</td>
-              <td className="py-4 px-6">50</td>
-              <td className="py-4 px-6">10</td>
-              <td className="flex items-center justify-center">
-                <button className="text-xl text-blue px-2 py-1">
-                  <BiDetail />
-                </button>
-
-                <button className="text-xl text-red px-2 py-1">
-                  <BiTrash />
-                </button>
-              </td>
-            </tr>
+                <th
+                  scope="row"
+                  className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                >
+                  {(index += 1)}
+                </th>
+                <td className="py-4 px-6">{client.name}</td>
+                <td className="py-4 px-6">{client.email}</td>
+                <td className="py-4 px-6">{client.Project.length}</td>
+                <td className="py-4 px-6">
+                  {
+                    client.Project?.filter(
+                      (item: any) => item.status === 'Em andamento'
+                    ).length
+                  }
+                </td>
+                <td className="py-4 px-6">
+                  <div className="w-full h-full flex justify-center">
+                    <Link href={`/clientes/cliente/${client.id}`}>
+                      <a className="	 text-xl text-blue px-1">
+                        <BiDetail />
+                      </a>
+                    </Link>
+                    <button
+                      onClick={() =>
+                        handleOpenDialogAndSetIdToDelete(client.id)
+                      }
+                      className="text-xl text-red px-1"
+                    >
+                      <BiTrash />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

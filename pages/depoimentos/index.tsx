@@ -1,85 +1,76 @@
 import axios from 'axios';
-import Image from 'next/image';
-import Link from 'next/link';
-import React, { useEffect, useState, useMemo } from 'react';
-
-import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
+import React, { useCallback, useState } from 'react';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useSWRConfig } from 'swr';
+import { Header } from '../../src/components/Header';
+import { Loading } from '../../src/components/Loading';
 import { Testimonial } from '../../src/components/Testimonial';
-
-import { Title } from '../../src/components/Title';
+import { useFetch } from '../../src/hooks/useFetch';
 
 const Testimonials = () => {
-  const [testimonials, setTestimonials] = useState<any[]>([]);
-  const [status, setStatus] = useState('idle');
+  const { mutate: mutateGlobal } = useSWRConfig();
+  const { data, error, mutate } = useFetch('/api/testimonials/get');
   const [isDisabled, setIsDisabled] = useState(false);
 
-  function handleDeleteTestimonial(id: string | undefined) {
-    if (id) {
-      setIsDisabled(true);
-      setStatus('loading');
-      axios
-        .post(`/api/testimonials/delete`, {
-          id,
-        })
-        .finally(() => {
-          setStatus('idle');
-          setIsDisabled(false);
+  const handleDeleteTestimonial = useCallback(
+    (id: string | undefined) => {
+      if (id) {
+        axios.post(`/api/testimonials/delete/${id}`);
+
+        const updatedTestimonials = data?.filter(
+          (testimonial: any) => testimonial.id !== id
+        );
+        mutate(updatedTestimonials, false);
+        mutateGlobal(`/api/testimonials/getByOrderDate`, null, {
+          revalidate: true,
         });
-    } else {
-      return;
-    }
-  }
+      }
+    },
+    [data, mutate, mutateGlobal]
+  );
 
-  useEffect(() => {
-    if (status === 'idle') {
-      axios.get('/api/testimonials/get').then((res) => {
-        setTestimonials(res.data.data);
-      });
-    }
-  }, [status]);
-
+  if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
-      <div className="flex items-center justify-between">
-        <Title title="Depoimentos" size="xl" />
-        <Link href="/depoimentos/novo">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Adicionar novo
-          </a>
-        </Link>
-      </div>
-      <div className="mt-8 flex flex-col items-center gap-10">
-        {testimonials.length > 0 ? (
-          <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-3 gap-y-5">
-            {testimonials?.map((testimonial) => (
-              <Testimonial
-                key={testimonial.id}
-                data={testimonial}
-                handleDeleteTestimonial={handleDeleteTestimonial}
-                isDisabled={isDisabled}
-              />
-            ))}
-          </div>
+      <Header
+        titlePage="Depoimentos"
+        link="/depoimentos/novo"
+        label="Adicionar novo"
+      />
+      <div className="mt-8">
+        {data.length > 0 ? (
+          <>
+            <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-3 gap-y-5">
+              {data?.map((testimonial: any) => (
+                <Testimonial
+                  key={testimonial.id}
+                  data={testimonial}
+                  handleDeleteTestimonial={handleDeleteTestimonial}
+                  isDisabled={isDisabled}
+                />
+              ))}
+            </div>
+            <div className="max-w-[250px] mt-10 mx-auto flex gap-5 justify-center items-center">
+              <button>
+                <FaChevronLeft />
+              </button>
+              <div className="flex items-center gap-3">
+                <button>1</button>
+                <button>2</button>
+                <button className="text-xl font-bold underline">3</button>
+                <button>4</button>
+                <button>5</button>
+              </div>
+              <button>
+                <FaChevronRight />
+              </button>
+            </div>
+          </>
         ) : (
           <h2 className="mt-10 text-lg font-medium text-text">
             Nenhum depoimento cadastrado ainda!
           </h2>
         )}
-        {/* <div className="flex gap-5 items-center">
-          <button>
-            <FaChevronLeft />
-          </button>
-          <div className="flex items-center gap-3">
-            <button>1</button>
-            <button>2</button>
-            <button className="text-xl font-bold underline">3</button>
-            <button>4</button>
-            <button>5</button>
-          </div>
-          <button>
-            <FaChevronRight />
-          </button>
-        </div> */}
       </div>
     </section>
   );

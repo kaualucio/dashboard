@@ -14,18 +14,16 @@ import {
 import { Title } from '../../../../src/components/Title';
 import { IconButton } from '../../../../src/components/IconButton';
 import Link from 'next/link';
+import { Header } from '../../../../src/components/Header';
 
 const Perfil = () => {
   return (
     <section className="w-full p-5 h-full">
-      <div className="flex items-center justify-between">
-        <Title title="Meu perfil" size="xl" />
-        <Link href="/configuracoes/perfil/me/editar">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:bg-darkBlue font-medium text-sm rounded-md">
-            Me editar
-          </a>
-        </Link>
-      </div>
+      <Header
+        titlePage="Meu perfil"
+        link="/configuracoes/perfil/me/editar"
+        label="Me editar"
+      />
       <div className="mt-10 p-5">
         <div className="flex md:flex-row flex-col gap-10">
           <div className="w-full md:w-96 md:max-w-sm bg-[#fff] px-5 py-7 rounded-lg text-center">

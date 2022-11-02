@@ -1,8 +1,10 @@
 import axios from 'axios';
 import Link from 'next/link';
 import React, { FormEvent, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
+import { Header } from '../../src/components/Header';
 import { Message } from '../../src/components/Message';
 import { Title } from '../../src/components/Title';
 
@@ -19,11 +21,9 @@ const AddNewClient = () => {
   async function handleAddANewUser(e: FormEvent) {
     e.preventDefault();
     if (!newClient.name || !newClient.email || !newClient.phone) {
-      return setResponse({
-        type: 'error',
-        response:
-          'Preencha os campos obrigatórios para prosseguir com o cadastro do projeto',
-      });
+      return toast.error(
+        'Preencha os campos obrigatórios para prosseguir com o cadastro do projeto'
+      );
     }
 
     const result = await axios.post('/api/clients/create', newClient);
@@ -37,38 +37,17 @@ const AddNewClient = () => {
         phone: '',
         image: '',
       });
+      toast.success(result.data.response);
+    } else {
+      toast.error(result.data.response);
     }
-
-    setResponse({
-      type: result.data.type,
-      response: result.data.response,
-    });
 
     setIsDisabled(false);
   }
 
-  useEffect(() => {
-    if (response.type !== 'none') {
-      setTimeout(() => {
-        setResponse({
-          type: 'none',
-          response: '',
-        });
-      }, 5000);
-    }
-  }, [response]);
-
   return (
     <section className="w-full p-5 h-full">
-      <Message type={response.type} text={response.response} />
-      <div className="flex items-center justify-between">
-        <Title title="Adicionar Cliente" size="xl" />
-        <Link href="/clientes">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Voltar
-          </a>
-        </Link>
-      </div>
+      <Header titlePage="Adicionar Cliente" link="/clientes" label="Voltar" />
       <div className="mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5">
         <form
           onSubmit={handleAddANewUser}
@@ -115,7 +94,7 @@ const AddNewClient = () => {
           />
           <FormControl label="Imagem" isRequired name="image" type="file" />
 
-          <Button disabled={isDisabled} label="Adicionar" />
+          <Button type="submit" disabled={isDisabled} label="Adicionar" />
         </form>
       </div>
     </section>

@@ -13,35 +13,18 @@ import { FaTimes } from 'react-icons/fa';
 
 import axios from 'axios';
 import Status from '../../src/components/Status';
-import useSWR, { useSWRConfig } from 'swr';
-import Loading from '../../src/components/Loading';
-
-const fetcher = async (url: string, method: string) => {
-  const { data } = await axios({
-    method,
-    url,
-  });
-
-  return data;
-};
-
-const updateProject = async (url: string, method: string) => {
-  const { data } = await axios({
-    method,
-    url,
-  });
-
-  return data;
-};
+import { useSWRConfig } from 'swr';
+import { Loading } from '../../src/components/Loading';
+import { Header } from '../../src/components/Header';
+import { useFetch } from '../../src/hooks/useFetch';
 
 const Projects = () => {
   const { mutate: mutateGlobal } = useSWRConfig();
-  const { data, error, mutate } = useSWR('/api/projects/get', (url: string) =>
-    fetcher(url, 'GET')
-  );
+  const { data, error, mutate } = useFetch('/api/projects/get');
+
   const handleToCompleteProject = useCallback(
     (id: string) => {
-      updateProject(`/api/projects/complete/${id}`, 'POST');
+      axios.post(`/api/projects/complete/${id}`);
 
       const updatedProjects = data?.map((project: any) => {
         if (project.id === id) {
@@ -52,13 +35,14 @@ const Projects = () => {
       });
       mutate(updatedProjects, false);
       mutateGlobal(`/api/projects/getById/${id}`, null, { revalidate: true });
+      mutateGlobal(`/api/clients/get`, null, { revalidate: true });
     },
     [data, mutate, mutateGlobal]
   );
 
   const handleToCancelProject = useCallback(
     (id: string) => {
-      updateProject(`/api/projects/cancel/${id}`, 'POST');
+      axios.post(`/api/projects/cancel/${id}`);
 
       const updatedProjects = data?.map((project: any) => {
         if (project.id === id) {
@@ -69,32 +53,32 @@ const Projects = () => {
       });
       mutate(updatedProjects, false);
       mutateGlobal(`/api/projects/getById/${id}`, null, { revalidate: true });
+      mutateGlobal(`/api/clients/get`, null, { revalidate: true });
     },
     [data, mutate, mutateGlobal]
   );
 
   const handleToDeleteProject = useCallback(
     (id: string) => {
-      updateProject(`/api/projects/delete/${id}`, 'POST');
+      axios.post(`/api/projects/delete/${id}`);
 
       const updatedProjects = data?.filter((project: any) => project.id !== id);
       mutate(updatedProjects, false);
       mutateGlobal(`/api/projects/getById/${id}`, null, { revalidate: true });
+      mutateGlobal(`/api/clients/get`, null, { revalidate: true });
     },
     [data, mutate, mutateGlobal]
   );
 
   if (!data) return <Loading />;
+
   return (
     <section className="w-full p-5 h-full">
-      <div className="flex items-center justify-between">
-        <Title title="Projetos" size="xl" />
-        <Link href="/projetos/novo">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Adicionar novo
-          </a>
-        </Link>
-      </div>
+      <Header
+        titlePage="Projetos"
+        link="/projetos/novo"
+        label="Adicionar novo"
+      />
       <div className="mt-8 bg-[#fff] rounded-md shadow-md p-5 overflow-x-auto relative">
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

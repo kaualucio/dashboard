@@ -9,6 +9,9 @@ async function get() {
       orderBy: {
         created_at: 'desc',
       },
+      include: {
+        Project: true,
+      },
     });
     return projects;
   } catch (error) {

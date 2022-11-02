@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { Title } from '../src/components/Title';
-
+import toast from 'react-hot-toast';
 import styles from '../styles/home.module.scss';
 
 const Home: NextPage = () => {

@@ -3,21 +3,24 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function getById(id: string | any) {
+async function deleteById(id: string | any) {
   try {
-    const project = await prisma.project.findFirst({
+    await prisma.testimonial.delete({
       where: {
         id,
       },
-      include: {
-        responsible: true,
-        client: true,
-      },
     });
-    return project;
+
+    return {
+      type: 'success',
+      response: 'Depoimento deletado com sucesso!',
+    };
   } catch (error) {
     // console.log(error)
-    return 'Ocorreu um erro';
+    return {
+      type: 'error',
+      response: 'Houve um erro ao deletar o depoimento, tente novamente!',
+    };
   }
 }
 
@@ -27,9 +30,8 @@ export default async function handler(
 ) {
   try {
     const { id } = req.query;
-
     if (id) {
-      const response = await getById(id).finally(async () => {
+      const response = await deleteById(id).finally(async () => {
         await prisma.$disconnect();
       });
 
@@ -37,6 +39,6 @@ export default async function handler(
     }
   } catch (error) {
     console.log(error);
-    return res.status(400).json({ type: 'error', response: error });
+    return res.status(400).json({ data: error });
   }
 }

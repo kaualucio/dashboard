@@ -1,10 +1,9 @@
 import axios from 'axios';
-import Link from 'next/link';
 import React, { FormEvent, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
-import { Message } from '../../src/components/Message';
-import { Title } from '../../src/components/Title';
+import { Header } from '../../src/components/Header';
 
 const AddNewCategory = () => {
   const [newCategory, setNewCategory] = useState('');
@@ -16,20 +15,18 @@ const AddNewCategory = () => {
       e.preventDefault();
       setIsDisabled(true);
       if (!newCategory) {
-        return setResponse({
-          type: 'error',
-          response: 'Preencha os campos obrigatórios para continuar',
-        });
+        return toast.error('Preencha os campos obrigatórios para continuar');
       }
 
-      const res: any = await axios.post('/api/categories/create', {
+      const result: any = await axios.post('/api/categories/create', {
         category: newCategory,
       });
       setNewCategory('');
-      setResponse({
-        type: res.data.type,
-        response: res.data.response,
-      });
+      if (result.data.type === 'success') {
+        toast.success(result.data.response);
+      } else {
+        toast.error(result.data.response);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -37,28 +34,13 @@ const AddNewCategory = () => {
     }
   }
 
-  useEffect(() => {
-    if (response.type !== 'none') {
-      setTimeout(() => {
-        setResponse({
-          type: 'none',
-          response: '',
-        });
-      }, 5000);
-    }
-  }, [response]);
-
   return (
     <section className="w-full p-5 h-full">
-      <Message type={response.type} text={response.response} />
-      <div className="flex items-center justify-between">
-        <Title title="Adicionar Categoria" size="xl" />
-        <Link href="/categorias">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Voltar
-          </a>
-        </Link>
-      </div>
+      <Header
+        titlePage="Adicionar Categoria"
+        link="/categorias"
+        label="Voltar"
+      />
       <div className="mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5">
         <form
           onSubmit={handleCreateNewCategory}

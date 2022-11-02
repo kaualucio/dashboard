@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import Link from 'next/link';
 import React, { FormEvent, useState, useEffect } from 'react';
-import FormControl from '../../../src/components/FormControl';
-import Message from '../../../src/components/Message';
-import { Title } from '../../../src/components/Title';
+import { FormControl } from '../../../src/components/FormControl';
+import { Header } from '../../../src/components/Header';
+import { Message } from '../../../src/components/Message';
 
 const EditTestimonial = ({ testimonial }: any) => {
   const [editedTestimonial, setEditedTestimonial] = useState({
@@ -55,14 +54,12 @@ const EditTestimonial = ({ testimonial }: any) => {
   return (
     <section className="w-full p-5 h-full">
       <Message type={response.type} text={response.response} />
-      <div className="flex items-center justify-between">
-        <Title title="Editar Depoimento" size="xl" />
-        <Link href="/depoimentos">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Voltar
-          </a>
-        </Link>
-      </div>
+      <Header
+        titlePage="Editar Depoimento"
+        link="/depoimentos"
+        label="Voltar"
+      />
+
       <div className="mt-8 bg-[#fff] rounded-md shadow-md py-10 px-5">
         <form
           onSubmit={(e) => handleEditTestimonial(e, testimonial.id)}

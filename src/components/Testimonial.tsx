@@ -25,7 +25,7 @@ const Testimonial = ({
   isDisabled,
 }: TesmonialProps) => {
   return (
-    <div className="min-h-[300px] flex flex-col justify-between bg-[#fff] rounded-md shadow-md p-5">
+    <div className="min-h-[300px] max-w-[300px] flex flex-col justify-between bg-[#fff] rounded-md shadow-md p-5">
       <div>
         <div className="flex items-center justify-center flex-col gap-1 ">
           <div className="w-20 h-20 mx-auto rounded-full border-4 border-black shadow-lg">

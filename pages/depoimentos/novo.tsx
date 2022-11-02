@@ -1,10 +1,10 @@
 import axios from 'axios';
-import Link from 'next/link';
 import React, { FormEvent, useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
+import { Header } from '../../src/components/Header';
 import { Message } from '../../src/components/Message';
-import { Title } from '../../src/components/Title';
 
 const AddTestimonial = () => {
   const [newTestimonial, setNewTestimonial] = useState({
@@ -24,13 +24,10 @@ const AddTestimonial = () => {
       !newTestimonial.hirerCompany ||
       !newTestimonial.testimonial
     ) {
-      return setResponse({
-        type: 'error',
-        response: 'Preencha os campos obrigatório para prosseguir',
-      });
+      return toast.error('Preencha os campos obrigatório para prosseguir');
     }
 
-    const res: any = await axios.post('/api/testimonials/create', {
+    const result: any = await axios.post('/api/testimonials/create', {
       ...newTestimonial,
     });
 
@@ -40,35 +37,22 @@ const AddTestimonial = () => {
       hirerCompany: '',
       testimonial: '',
     });
-    setResponse({
-      type: res.data.type,
-      response: res.data.response,
-    });
+    if (result.data.type === 'success') {
+      toast.success(result.data.response);
+    } else {
+      toast.error(result.data.response);
+    }
     setIsDisabled(false);
   }
 
-  useEffect(() => {
-    if (response.type !== 'none') {
-      setTimeout(() => {
-        setResponse({
-          type: 'none',
-          response: '',
-        });
-      }, 5000);
-    }
-  }, [response]);
-
   return (
     <section className="w-full p-5 h-full">
-      <Message type={response.type} text={response.response} />
-      <div className="flex items-center justify-between">
-        <Title title="Adicionar Depoimento" size="xl" />
-        <Link href="/depoimentos">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Voltar
-          </a>
-        </Link>
-      </div>
+      <Header
+        titlePage="Adicionar Depoimento"
+        link="/depoimentos"
+        label="Voltar"
+      />
+
       <div className="mt-8 bg-[#fff] rounded-md shadow-md py-10 px-5">
         <form
           onSubmit={handleAddNewTestimonial}

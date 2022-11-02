@@ -1,19 +1,16 @@
-import Link from 'next/link';
 import React from 'react';
-import FormControl from '../../../../src/components/FormControl';
-import { Title } from '../../../../src/components/Title';
+import { FormControl } from '../../../../src/components/FormControl';
+import { Header } from '../../../../src/components/Header';
 
 const Editar = () => {
   return (
     <section className="w-full p-5 h-full">
-      <div className="flex items-center justify-between">
-        <Title title="Adicionar Usuário" size="xl" />
-        <Link href="/configuracoes/perfil/me">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Voltar
-          </a>
-        </Link>
-      </div>
+      <Header
+        titlePage="Adicionar Usuário"
+        link="/configuracoes/perfil/me"
+        label="Voltar"
+      />
+
       <div className="mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5">
         <form className="max-w-[800px] mx-auto flex flex-col gap-5">
           <FormControl

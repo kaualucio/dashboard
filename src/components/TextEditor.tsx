@@ -34,4 +34,4 @@ const TextEditor = ({ label, value, setValue }: TextEditorProps) => {
   );
 };
 
-export default TextEditor;
+export { TextEditor };

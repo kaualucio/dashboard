@@ -1,39 +1,53 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { AiFillCalendar, AiFillClockCircle } from 'react-icons/ai';
 import { GoPencil } from 'react-icons/go';
 
-import { Title } from '../../src/components/Title';
 import FilterBlog from '../../src/components/FilterBlog';
-import axios from 'axios';
 import moment from 'moment';
+import { Header } from '../../src/components/Header';
+import { useFetch } from '../../src/hooks/useFetch';
+import { Loading } from '../../src/components/Loading';
+import axios from 'axios';
 
 const Blog = () => {
-  const [articles, setArticles] = useState<any[]>([]);
+  const { data, mutate } = useFetch('/api/blog/get');
 
-  useEffect(() => {
-    axios.get('/api/blog/get').then((res) => {
-      setArticles(res.data.data);
+  if (!data) return <Loading />;
+
+  function handleDeleteArticle(id: string) {
+    axios.post(`/api/blog/delete/${id}`);
+
+    const updatedArticles = data?.filter((article: any) => article.id !== id);
+    mutate(updatedArticles, false);
+  }
+
+  function handlePublishArticleArticle(id: string) {
+    axios.post(`/api/blog/publish/${id}`);
+    const updatedArticles = data?.map((article: any) => {
+      if (article.id === id) {
+        return { ...article, isPublished: true, published_at: new Date() };
+      }
+
+      return article;
     });
-  }, []);
+    mutate(updatedArticles, false);
+  }
 
   return (
     <section className="w-full p-5 h-full">
-      <div className="flex items-center justify-between">
-        <Title title="Blog - Artigos (0)" size="xl" />
-        <Link href="/blog/novo">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Adicionar novo
-          </a>
-        </Link>
-      </div>
+      <Header
+        titlePage={`Blog - Artigos (${data.length})`}
+        link="/blog/novo"
+        label="Adicionar novo"
+      />
       <FilterBlog />
       <div className="grid grid-cols-3 items-center gap-7">
-        {articles?.map((article) => (
+        {data?.map((article: any) => (
           <div
             key={article.id}
-            className="relative z-40 xl:col-span-3 md:col-span-1 col-span-3 flex xl:flex-row flex-col min-h-[270px]"
+            className="relative z-40 xl:col-span-3 md:col-span-1 col-span-3 flex xl:flex-row flex-col xl:min-h-[270px] min-h-[830px]"
           >
             {!article.isPublished && (
               <span className="absolute top-5 left-5 z-50 inline-block p-1 rounded-full bg-blue text-xs text-bold text-[#fff]">
@@ -64,7 +78,7 @@ const Blog = () => {
                 <div className="flex items-center text-text gap-2">
                   <div className="flex items-center gap-1 text-sm ">
                     <AiFillCalendar size={18} />
-                    {moment(article.created_at).format('DD/MM/YYYY')}
+                    {moment(article.published_at).format('DD/MM/YYYY')}
                   </div>
                   |
                   <div className="flex items-center gap-1 text-sm">
@@ -83,17 +97,26 @@ const Blog = () => {
                   }}
                 ></p>
               </div>
-              <div className="xl:self-end xl:mt-0 mt-5 flex md:items-center lg:flex-row flex-col gap-3">
-                <Link href={`/blog/editar/${article.id}`}>
-                  <a className="block lg:w-40 w-full md:py-3 py-5 md:text-sm text-md text-center bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium  rounded-md">
-                    Editar
+              <div className="xl:self-end xl:mt-0 mt-5 flex md:items-center xl:flex-row flex-col gap-3">
+                {!article.isPublished ? (
+                  <button
+                    onClick={() => handlePublishArticleArticle(article.id)}
+                    className="block xl:w-40 w-full md:py-3 py-5 md:text-sm text-md text-center bg-green text-[#fff] transition duration-300 hover:brightness-90 font-medium  rounded-md"
+                  >
+                    Publicar
+                  </button>
+                ) : null}
+                <Link href={`/blog/editar/${article.slug}`}>
+                  <a className="block xl:w-40 w-full md:py-3 py-5 md:text-sm text-md text-center bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium  rounded-md">
+                    {article.isPublished ? 'Editar' : 'Continuar o artigo'}
                   </a>
                 </Link>
-                <Link href={`/blog/deletar/${article.id}`}>
-                  <a className="block lg:w-40 w-full md:py-3 py-5 md:text-sm text-md text-center bg-red text-[#fff] transition duration-300 hover:brightness-90 font-medium rounded-md">
-                    Excluir
-                  </a>
-                </Link>
+                <button
+                  onClick={() => handleDeleteArticle(article.id)}
+                  className="block xl:w-40 w-full md:py-3 py-5 md:text-sm text-md text-center bg-red text-[#fff] transition duration-300 hover:brightness-90 font-medium rounded-md"
+                >
+                  Excluir
+                </button>
               </div>
             </div>
           </div>

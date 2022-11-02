@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import useSWR from 'swr';
+import { Header } from '../../../src/components/Header';
 import { Loading } from '../../../src/components/Loading';
 import { Title } from '../../../src/components/Title';
 import { phoneMask } from '../../../src/utils/phone-mask';
@@ -27,17 +28,9 @@ const Projeto = () => {
   );
 
   if (!data) return <Loading />;
-
   return (
     <section className="w-full p-5 h-full">
-      <div className="flex items-center justify-between">
-        <Title title="Projeto" size="xl" />
-        <Link href="/projetos">
-          <a className="px-5 py-2 bg-blue text-[#fff] transition duration-300 hover:brightness-90 font-medium text-sm rounded-md">
-            Voltar
-          </a>
-        </Link>
-      </div>
+      <Header titlePage="Projeto" link="/projetos" label="Voltar" />
       <div className="max-w-[800px] mx-auto mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5 flex flex-col gap-10">
         <div className="flex flex-col gap-5">
           <div className="flex items-center gap-1">
@@ -64,7 +57,9 @@ const Projeto = () => {
             <h3 className="w-[170px] text-md font-medium text-text">
               Objetivo:
             </h3>
-            <p className="w-full text-md font-medium text-black">Nenhum</p>
+            <p className="w-full text-md font-medium text-black">
+              {data?.objective}
+            </p>
           </div>
           <div className="flex items-start gap-2">
             <h3 className="w-[170px] text-md font-medium text-text">
@@ -85,7 +80,7 @@ const Projeto = () => {
           <div className="flex items-center gap-2">
             <h3 className="w-[170px] text-md font-medium text-text">Email:</h3>
             <p className="w-full text-md font-medium text-black">
-              {data?.client.email}
+              {data?.client?.email}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -113,7 +108,7 @@ const Projeto = () => {
           <div className="flex items-center gap-2">
             <h3 className="w-[170px] text-md font-medium text-text">Cargo:</h3>
             <p className="w-full text-md font-medium text-black">
-              {roles[data?.responsible?.role]}
+              {data?.responsible?.role}
             </p>
           </div>
           <div className="flex items-center gap-2">

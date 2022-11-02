@@ -18,6 +18,7 @@ module.exports = {
       black: '#3D3F55',
       title: '#5A5990',
       text: '#AAA3BD',
+      gray: '#A9ACCC',
     },
     extend: {},
   },
