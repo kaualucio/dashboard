@@ -1,20 +1,20 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
 
-async function get() {
+async function getCategoryBySlug(slug: string | any) {
   try {
-    const categories = await prisma.category.findMany({
-      include: {
-        articles: true,
+    const category = await prisma.category.findFirst({
+      where: {
+        slug,
       },
     });
 
-    return categories;
+    return category;
   } catch (error) {
     console.log(error);
-    return 'Ocorreu um erro durante a busca de dados sobre as categorias';
+    return 'Ocorreu um erro ao buscar a categoria';
   }
 }
 
@@ -23,11 +23,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    const response = await get().finally(async () => {
+    const { slug } = req.query;
+    const result = await getCategoryBySlug(slug).finally(async () => {
       await prisma.$disconnect();
     });
-
-    return res.status(200).json(response);
+    return res.status(200).json(result);
   } catch (error) {
     console.log(error);
     return res.status(400).json({ type: 'error', response: error });

@@ -6,30 +6,50 @@ import { BiPencil, BiTrash } from 'react-icons/bi';
 import axios from 'axios';
 import moment from 'moment';
 import { Header } from '../../src/components/Header';
-
-interface Categories {
-  id: string;
-  name: string;
-  slug: string;
-  articles: any[];
-  created_at: any;
-  updated_at: any;
-}
+import { useFetch } from '../../src/hooks/useFetch';
+import { Loading } from '../../src/components/Loading';
+import { Dialog } from '../../src/components/Dialog';
 
 const Categories = () => {
-  const [categories, setCategories] = useState<Categories[]>([]);
+  const { data, mutate } = useFetch('/api/categories/get');
+  const [deleteCategoryId, setDeleteCategoryId] = useState<null | string>(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
-  useEffect(() => {
-    axios
-      .get('/api/categories/get')
-      .then((res) => {
-        setCategories(res.data.data);
-      })
-      .catch((error) => console.log(error));
-  }, []);
+  function handleDeleteCategory() {
+    if (deleteCategoryId) {
+      axios.post(`/api/categories/delete/${deleteCategoryId}`);
 
+      const updatedCategories = data?.filter(
+        (category: any) => category.id !== deleteCategoryId
+      );
+      mutate(updatedCategories, false);
+    }
+  }
+
+  function handleOpenDialog() {
+    setOpenDialog((prevState) => !prevState);
+  }
+
+  function handleOpenDialogAndSetIdToDelete(id: string) {
+    handleOpenDialog();
+    setDeleteCategoryId(id);
+  }
+
+  function handleConfirmDelete() {
+    handleDeleteCategory();
+    handleOpenDialog();
+  }
+
+  if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
+      {openDialog ? (
+        <Dialog
+          handleConfirmDelete={handleConfirmDelete}
+          handleOpenDialog={handleOpenDialog}
+          description="Todos os artigos relacionados a essa categoria serão deletados, mesmo assim gostaria de continuar?"
+        />
+      ) : null}
       <Header
         titlePage="Categorias"
         link="/categorias/novo"
@@ -63,7 +83,7 @@ const Categories = () => {
             </tr>
           </thead>
           <tbody>
-            {categories?.map((category, index) => (
+            {data?.map((category: any, index: number) => (
               <tr key={category.id} className="bg-white border-b border-b-text">
                 <th
                   scope="row"
@@ -81,16 +101,21 @@ const Categories = () => {
                   {moment(category.updated_at).format('DD/MM/YYYY')}
                 </td>
                 <td className="flex items-center justify-center">
-                  <button
-                    className="text-xl text-blue px-2 py-1"
-                    title="Editar"
-                    aria-label="Editar"
-                  >
-                    <BiPencil />
-                  </button>
+                  <Link href={`/categorias/editar/${category.slug}`}>
+                    <a
+                      className="rounded-full block text-xl text-blue p-1 relative top-2  transition duration-300 hover:bg-[#EFEFEF]"
+                      title="Editar"
+                      aria-label="Editar"
+                    >
+                      <BiPencil />
+                    </a>
+                  </Link>
 
                   <button
-                    className="text-xl text-red px-2 py-1"
+                    onClick={() =>
+                      handleOpenDialogAndSetIdToDelete(category.id)
+                    }
+                    className="rounded-full block text-xl text-red p-1 relative top-2  transition duration-300 hover:bg-[#EFEFEF]"
                     title="Excluir"
                     aria-label="Excluir"
                   >

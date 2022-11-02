@@ -41,13 +41,13 @@ const Clients = () => {
   if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
-      {openDialog && (
+      {openDialog ? (
         <Dialog
           handleConfirmDelete={handleConfirmDelete}
           handleOpenDialog={handleOpenDialog}
           description="Todos os dados relacionados a esse cliente serão deletados, mesmo assim gostaria de continuar?"
         />
-      )}
+      ) : null}
       <Header
         titlePage="Nossos Clientes"
         link="/clientes/cadastrar"

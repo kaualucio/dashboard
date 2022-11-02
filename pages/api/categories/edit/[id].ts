@@ -1,17 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 import { v4 as uuid } from 'uuid';
-import { slugify } from '../../../src/utils/slugfy';
+import { slugify } from '../../../../src/utils/slugfy';
 
 const prisma = new PrismaClient();
 
-async function create(category: string) {
+async function editCategory(category: string, id: string | any) {
   try {
-    const newCategory = await prisma.category.create({
+    const newCategory = await prisma.category.update({
+      where: {
+        id,
+      },
       data: {
-        id: uuid(),
         name: category,
         slug: slugify(category),
+        updated_at: new Date(),
       },
     });
 
@@ -22,11 +25,11 @@ async function create(category: string) {
   }
 }
 
-async function categoryAlreadyExists(category: string) {
+async function categoryAlreadyExists(id: string | any) {
   try {
     const categoryAlreadyExists = await prisma.category.findFirst({
       where: {
-        name: category,
+        id,
       },
     });
 
@@ -43,6 +46,7 @@ export default async function handler(
 ) {
   try {
     const { category } = req.body;
+    const { id } = req.query;
 
     if (!category) {
       res.status(406).json({
@@ -51,26 +55,24 @@ export default async function handler(
       });
     }
 
-    const categoryExists = await categoryAlreadyExists(category).finally(
-      async () => {
-        await prisma.$disconnect();
-      }
-    );
+    const categoryExists = await categoryAlreadyExists(id).finally(async () => {
+      await prisma.$disconnect();
+    });
 
-    if (categoryExists) {
+    if (!categoryExists) {
       return res.status(403).json({
         type: 'error',
-        response: 'Já existe uma categoria com esse nome',
+        response: 'Não existe essa categoria',
       });
     }
 
-    const response = await create(category).finally(async () => {
+    const response = await editCategory(category, id).finally(async () => {
       await prisma.$disconnect();
     });
 
     return res.status(201).json({
       type: 'success',
-      response: `A categoria ${category} foi criada com sucesso.`,
+      response: `A categoria foi atualizada com sucesso.`,
     });
   } catch (error) {
     console.log(error);

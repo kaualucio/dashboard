@@ -126,7 +126,7 @@ const Projects = () => {
                     <a
                       title="Detalhes"
                       aria-label="Detalhes"
-                      className="inline-block rounded-full text-xl text-blue p-1 transition durantion-300 hover:bg-[#EFEFEF]"
+                      className="inline-block rounded-full text-xl text-blue p-1 transition duration-300 hover:bg-[#EFEFEF]"
                     >
                       <BiDetail />
                     </a>
@@ -136,7 +136,7 @@ const Projects = () => {
                     <button
                       title="Completar projeto"
                       aria-label="Completar projeto"
-                      className="rounded-full text-xl text-green p-1 transition durantion-300 hover:bg-[#EFEFEF] "
+                      className="rounded-full text-xl text-green p-1 transition duration-300 hover:bg-[#EFEFEF] "
                       onClick={(e) => handleToCompleteProject(project.id)}
                     >
                       <BiCheckDouble />
@@ -147,7 +147,7 @@ const Projects = () => {
                     <button
                       title="Cancelar projeto"
                       aria-label="Cancelar projeto"
-                      className="rounded-full text-xl text-red p-1 transition durantion-300 hover:bg-[#EFEFEF] "
+                      className="rounded-full text-xl text-red p-1 transition duration-300 hover:bg-[#EFEFEF] "
                       onClick={() => handleToCancelProject(project.id)}
                     >
                       <FaTimes />

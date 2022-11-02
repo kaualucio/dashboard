@@ -16,7 +16,7 @@ interface ArticleData {
   authorId: string;
 }
 
-async function create(
+async function editArticle(
   {
     title,
     slug,
@@ -45,6 +45,7 @@ async function create(
         thumbnail,
         categoryId,
         authorId,
+        updated_at: new Date(),
       },
     });
 
@@ -119,7 +120,7 @@ export default async function handler(
     const key_wordsArr = key_words.split(',');
     const slug = slugify(title);
 
-    const result = await create(
+    const result = await editArticle(
       {
         title,
         slug,
