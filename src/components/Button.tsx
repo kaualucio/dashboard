@@ -2,12 +2,15 @@ import React from 'react';
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string;
+  fullW?: boolean;
 };
 
-const Button = ({ label, ...rest }: ButtonProps) => {
+const Button = ({ label, fullW = false, ...rest }: ButtonProps) => {
   return (
     <button
-      className="mt-5 self-end w-full sm:w-52 text-[#fff] rounded-md py-3 text-center bg-blue"
+      className={`mt-5 self-end w-full ${
+        !fullW ? 'sm:w-52' : ''
+      } text-[#fff] rounded-md py-3 text-center bg-blue transition duration-300 hover:bg-darkBlue`}
       {...rest}
     >
       {label}

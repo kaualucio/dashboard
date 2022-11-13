@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { FaFilter } from 'react-icons/fa';
 
-const FilterBlog = () => {
+interface FilterBlogProps {
+  handleSearchTerm: (value: string) => void;
+  searchTerm: string;
+}
+
+const FilterBlog = ({ handleSearchTerm, searchTerm }: FilterBlogProps) => {
   const [filterOpen, setFilterOpen] = useState(false);
 
   function handleOpenFilter() {
@@ -11,8 +16,10 @@ const FilterBlog = () => {
   return (
     <div className="my-10">
       <div className=" flex items-center gap-3 sm:gap-5 md:gap-10 mb-5">
-        <form className="w-full">
+        <form className="w-full" onSubmit={(e) => e.preventDefault()}>
           <input
+            value={searchTerm}
+            onChange={(e) => handleSearchTerm(e.target.value)}
             type="text"
             name="search_term"
             placeholder="Pesquise pelo título"
@@ -199,4 +206,4 @@ const FilterBlog = () => {
   );
 };
 
-export default FilterBlog;
+export { FilterBlog };

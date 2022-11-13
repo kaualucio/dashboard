@@ -1,10 +1,10 @@
 import axios from 'axios';
-import React, { FormEvent, useState, useEffect } from 'react';
+import React, { FormEvent, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
-import { Message } from '../../src/components/Message';
+import { Layout } from '../../src/components/Layout';
 
 const AddTestimonial = () => {
   const [newTestimonial, setNewTestimonial] = useState({
@@ -118,6 +118,10 @@ const AddTestimonial = () => {
       </div>
     </section>
   );
+};
+
+AddTestimonial.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default AddTestimonial;

@@ -1,8 +1,9 @@
 import axios from 'axios';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, ReactElement } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useSWRConfig } from 'swr';
 import { Header } from '../../src/components/Header';
+import { Layout } from '../../src/components/Layout';
 import { Loading } from '../../src/components/Loading';
 import { Testimonial } from '../../src/components/Testimonial';
 import { useFetch } from '../../src/hooks/useFetch';
@@ -74,6 +75,10 @@ const Testimonials = () => {
       </div>
     </section>
   );
+};
+
+Testimonials.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default Testimonials;

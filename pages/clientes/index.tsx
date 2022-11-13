@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import axios from 'axios';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, ReactElement } from 'react';
 
 import { BiDetail, BiTrash } from 'react-icons/bi';
 import { Header } from '../../src/components/Header';
 import { useFetch } from '../../src/hooks/useFetch';
 import { Loading } from '../../src/components/Loading';
 import { Dialog } from '../../src/components/Dialog';
+import { Layout } from '../../src/components/Layout';
 
 const Clients = () => {
   const { data, mutate } = useFetch('/api/clients/get');
@@ -123,6 +124,10 @@ const Clients = () => {
       </div>
     </section>
   );
+};
+
+Clients.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default Clients;

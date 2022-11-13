@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, ReactElement, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
+import { Layout } from '../../src/components/Layout';
 
 const AddNewCategory = () => {
   const [newCategory, setNewCategory] = useState('');
@@ -59,6 +60,10 @@ const AddNewCategory = () => {
       </div>
     </section>
   );
+};
+
+AddNewCategory.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default AddNewCategory;

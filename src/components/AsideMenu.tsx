@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -5,11 +6,13 @@ import { AiOutlineHome, AiOutlineApartment } from 'react-icons/ai';
 import { BiChevronDown } from 'react-icons/bi';
 import { BsPencil, BsPeople, BsCalendarEvent } from 'react-icons/bs';
 import { RiArticleLine } from 'react-icons/ri';
-
 import { VscSettingsGear } from 'react-icons/vsc';
+
+import placeholderProfilePicture from '../../public/images/placeholder_profile_picture.jpg';
 
 import styles from '../../styles/asideMenu.module.scss';
 import useWidth from '../hooks/useWidth';
+import { roles } from '../utils/roles';
 
 interface AsideMenuProps {
   menuIsOpen: boolean;
@@ -19,7 +22,7 @@ interface AsideMenuProps {
 const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
   const [submenuIsOpen, setSubmenuIsOpen] = useState(false);
   const screenWidth = useWidth();
-
+  const { data: session, status } = useSession();
   function handleOpenSubmenu(e: React.MouseEvent) {
     setSubmenuIsOpen((prevState) => !prevState);
     const numberOfElementInNavTree =
@@ -57,7 +60,11 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
       <div className={styles.profile}>
         <div className={styles.profileImage}>
           <Image
-            src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGVyc29ufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
+            src={
+              session && session.user?.image.length > 0
+                ? session.user?.image
+                : placeholderProfilePicture
+            }
             alt=""
             height={50}
             width={50}
@@ -66,8 +73,8 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
           />
         </div>
         <div className={styles.profileDetails}>
-          <h2>Nome da pessoa</h2>
-          <p>Product Manager</p>
+          <h2>{session?.user?.name}</h2>
+          <p>{roles[session?.user?.role]}</p>
         </div>
       </div>
       <nav>

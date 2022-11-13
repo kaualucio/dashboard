@@ -14,7 +14,7 @@ async function get() {
 
     return allArticles;
   } catch (error) {
-    // console.log(error)
+    console.log(error);
     return 'Ocorreu um erro durante a busca dos artigos';
   }
 }

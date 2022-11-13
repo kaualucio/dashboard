@@ -1,3 +1,4 @@
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -27,16 +28,15 @@ const DropDownMenuProfile = ({ isOpen }: DropDownMenuProfileProps) => {
           <p>Meu perfil</p>
         </a>
       </Link>
-      <Link href="/">
-        <a
-          className={`text-text font-medium text-sm flex items-center gap-2 py-2 ${
-            isOpen ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <MdOutlineLogout size={20} />
-          <p>Sair</p>
-        </a>
-      </Link>
+      <button
+        onClick={() => signOut({ callbackUrl: '/login' })}
+        className={`text-text font-medium text-sm flex items-center gap-2 py-2 ${
+          isOpen ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <MdOutlineLogout size={20} />
+        <p>Sair</p>
+      </button>
     </div>
   );
 };

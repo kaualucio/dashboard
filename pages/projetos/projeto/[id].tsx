@@ -1,14 +1,12 @@
 import axios from 'axios';
 import moment from 'moment';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import useSWR from 'swr';
 import { Header } from '../../../src/components/Header';
+import { Layout } from '../../../src/components/Layout';
 import { Loading } from '../../../src/components/Loading';
-import { Title } from '../../../src/components/Title';
 import { phoneMask } from '../../../src/utils/phone-mask';
-import { roles } from '../../../src/utils/roles';
 import { typeServices } from '../../../src/utils/type-services';
 
 const fetcher = async (url: string, method: string) => {
@@ -20,7 +18,7 @@ const fetcher = async (url: string, method: string) => {
   return data;
 };
 
-const Projeto = () => {
+const Project = () => {
   const router = useRouter();
   const { data, error } = useSWR(
     `/api/projects/getById/${router.query.id}`,
@@ -178,4 +176,8 @@ const Projeto = () => {
   );
 };
 
-export default Projeto;
+Project.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default Project;

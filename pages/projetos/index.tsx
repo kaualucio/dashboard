@@ -1,12 +1,5 @@
 import Link from 'next/link';
-import React, {
-  useEffect,
-  useState,
-  FormEvent,
-  useMemo,
-  useCallback,
-} from 'react';
-import { Title } from '../../src/components/Title';
+import React, { ReactElement, FormEvent, useMemo, useCallback } from 'react';
 
 import { BiDetail, BiCheckDouble, BiTrash } from 'react-icons/bi';
 import { FaTimes } from 'react-icons/fa';
@@ -17,6 +10,7 @@ import { useSWRConfig } from 'swr';
 import { Loading } from '../../src/components/Loading';
 import { Header } from '../../src/components/Header';
 import { useFetch } from '../../src/hooks/useFetch';
+import { Layout } from '../../src/components/Layout';
 
 const Projects = () => {
   const { mutate: mutateGlobal } = useSWRConfig();
@@ -170,6 +164,10 @@ const Projects = () => {
       </div>
     </section>
   );
+};
+
+Projects.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default Projects;

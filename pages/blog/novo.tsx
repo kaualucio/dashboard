@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
+import { Layout } from '../../src/components/Layout';
 import { Select } from '../../src/components/Select';
 import { TextEditor } from '../../src/components/TextEditor';
 
@@ -77,7 +78,7 @@ const AddNewBlogPost = () => {
     });
 
     axios.get('/api/categories/get').then((res) => {
-      setCategories(res.data.data);
+      setCategories(res.data);
     });
   }, []);
   return (
@@ -183,6 +184,10 @@ const AddNewBlogPost = () => {
       </div>
     </section>
   );
+};
+
+AddNewBlogPost.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default AddNewBlogPost;

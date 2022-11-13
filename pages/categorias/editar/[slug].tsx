@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import { useSWRConfig } from 'swr';
 import { Button } from '../../../src/components/Button';
 import { FormControl } from '../../../src/components/FormControl';
 import { Header } from '../../../src/components/Header';
+import { Layout } from '../../../src/components/Layout';
 import { Loading } from '../../../src/components/Loading';
 import { useFetch } from '../../../src/hooks/useFetch';
 
@@ -72,6 +73,10 @@ const EditCategory = () => {
       </div>
     </section>
   );
+};
+
+EditCategory.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default EditCategory;

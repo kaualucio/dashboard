@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { FormControl } from '../../../../src/components/FormControl';
 import { Header } from '../../../../src/components/Header';
+import { Layout } from '../../../../src/components/Layout';
 
-const Editar = () => {
+const EditProfile = () => {
   return (
     <section className="w-full p-5 h-full">
       <Header
@@ -59,4 +60,8 @@ const Editar = () => {
   );
 };
 
-export default Editar;
+EditProfile.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default EditProfile;

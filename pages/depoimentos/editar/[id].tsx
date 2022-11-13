@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import React, { FormEvent, useState, useEffect } from 'react';
+import React, { FormEvent, useState, useEffect, ReactElement } from 'react';
 import { FormControl } from '../../../src/components/FormControl';
 import { Header } from '../../../src/components/Header';
+import { Layout } from '../../../src/components/Layout';
 import { Message } from '../../../src/components/Message';
 
 const EditTestimonial = ({ testimonial }: any) => {
@@ -159,6 +160,10 @@ export const getStaticProps: GetStaticProps = async (context) => {
       testimonial: res.data,
     },
   };
+};
+
+EditTestimonial.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default EditTestimonial;

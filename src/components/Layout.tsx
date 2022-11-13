@@ -10,7 +10,6 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const [menuIsOpen, setMenuIsOpen] = useState(true);
-
   function handleOpenSideBarMenu(value: boolean) {
     setMenuIsOpen(value);
   }

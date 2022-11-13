@@ -87,13 +87,14 @@ export default async function handler(
   } = req.body;
   try {
     if (
-      !title ||
-      !description ||
-      !key_words ||
-      !reading_time ||
-      !content ||
-      !categoryId ||
-      !authorId
+      isPublished &&
+      (!title ||
+        !description ||
+        !key_words ||
+        !reading_time ||
+        !content ||
+        !categoryId ||
+        !authorId)
     ) {
       return res.status(406).json({
         type: 'error',

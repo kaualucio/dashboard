@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { Title } from '../../src/components/Title';
+import React, { ReactElement, useState } from 'react';
 
 import { BiPencil, BiTrash } from 'react-icons/bi';
 import axios from 'axios';
@@ -9,6 +8,7 @@ import { Header } from '../../src/components/Header';
 import { useFetch } from '../../src/hooks/useFetch';
 import { Loading } from '../../src/components/Loading';
 import { Dialog } from '../../src/components/Dialog';
+import { Layout } from '../../src/components/Layout';
 
 const Categories = () => {
   const { data, mutate } = useFetch('/api/categories/get');
@@ -129,6 +129,10 @@ const Categories = () => {
       </div>
     </section>
   );
+};
+
+Categories.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default Categories;

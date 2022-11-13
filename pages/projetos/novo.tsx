@@ -1,12 +1,12 @@
 import axios from 'axios';
-import Link from 'next/link';
-import React, { useEffect, useState, FormEvent } from 'react';
+import React, { useEffect, useState, FormEvent, ReactElement } from 'react';
 import toast from 'react-hot-toast';
-import useSWR, { useSWRConfig } from 'swr';
+import { useSWRConfig } from 'swr';
 import { Button } from '../../src/components/Button';
 import { CheckboxContainer } from '../../src/components/CheckboxContainer';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
+import { Layout } from '../../src/components/Layout';
 import { Message } from '../../src/components/Message';
 import { Select } from '../../src/components/Select';
 import { Title } from '../../src/components/Title';
@@ -35,7 +35,6 @@ const AddNewProject = () => {
   });
   const [users, setUsers] = useState<any[]>([]);
   const [clients, setClients] = useState<any[]>([]);
-  const [response, setResponse] = useState({ type: 'none', response: '' });
   const [isDisabled, setIsDisabled] = useState(false);
 
   function handleSelectClient(value: string) {
@@ -231,5 +230,7 @@ const AddNewProject = () => {
     </section>
   );
 };
-
+AddNewProject.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
 export default AddNewProject;

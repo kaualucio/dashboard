@@ -1,4 +1,7 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useSWRConfig } from 'swr';
 import { useFetch } from '../../../src/hooks/useFetch';
 import { Loading } from '../../../src/components/Loading';
 import { useRouter } from 'next/router';
@@ -7,9 +10,7 @@ import { TextEditor } from '../../../src/components/TextEditor';
 import { Button } from '../../../src/components/Button';
 import { Select } from '../../../src/components/Select';
 import { Header } from '../../../src/components/Header';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import { useSWRConfig } from 'swr';
+import { Layout } from '../../../src/components/Layout';
 
 const ArticleSingle = () => {
   const { mutate: globalMutate } = useSWRConfig();
@@ -197,6 +198,10 @@ const ArticleSingle = () => {
       </div>
     </section>
   );
+};
+
+ArticleSingle.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default ArticleSingle;

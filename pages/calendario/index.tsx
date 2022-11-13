@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, ReactElement } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -6,6 +6,7 @@ import listPlugin from '@fullcalendar/list';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Title } from '../../src/components/Title';
 import AddToCalendarModal from '../../src/components/AddToCalendarModal';
+import { Layout } from '../../src/components/Layout';
 
 const Calendar = () => {
   const calendarRef = useRef(null);
@@ -85,6 +86,10 @@ const Calendar = () => {
       </div>
     </section>
   );
+};
+
+Calendar.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default Calendar;

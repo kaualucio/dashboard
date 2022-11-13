@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -10,10 +11,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Widget {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+}
+
 model Articles {
-  id           String   @id @unique @default(uuid())
-  title        String   @unique
-  slug         String   @unique
+  id           String    @id @unique @default(uuid())
+  title        String    @unique
+  slug         String    @unique
   description  String
   key_words    String[]
   reading_time Int
@@ -21,32 +26,36 @@ model Articles {
   isPublished  Boolean
   thumbnail    String
   published_at DateTime?
-  created_at   DateTime @default(now())
-  updated_at   DateTime @default(now())
-  category     Category @relation(fields: [categoryId], references: [id])
-  categoryId   String
-  author       User     @relation(fields: [authorId], references: [id])
-  authorId     String
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @default(now())
+  category     Category? @relation(fields: [categoryId], references: [id])
+  categoryId   String?
+  author       User?     @relation(fields: [authorId], references: [id])
+  authorId     String?
 
   @@map("articles")
 }
 
 model User {
-  id              String     @id @unique @default(uuid())
-  name            String
-  articles        Articles[]
-  role            String
-  about           String?
-  sex             String?
-  age             Int?
-  email           String
-  login           String
-  password        String
-  phone           String?
-  profile_picture String?
-  created_at      DateTime   @default(now())
-  updated_at      DateTime   @default(now())
-  Project         Project[]
+  id                String     @id @unique @default(uuid())
+  name              String
+  articles          Articles[]
+  role              String
+  about             String?
+  sex               String?
+  age               Int?
+  email             String
+  login             String
+  password          String
+  phone             String?
+  profile_picture   String?
+  created_at        DateTime   @default(now())
+  updated_at        DateTime   @default(now())
+  Project           Project[]
+  author            Todo[]     @relation("Author")
+  completed_by_user Todo[]     @relation("Completed_By")
+  Account           Account[]
+  Session           Session[]
 
   @@map("user")
 }
@@ -83,7 +92,7 @@ model Project {
   client         Client    @relation(fields: [client_id], references: [id])
   client_id      String
   description    String
-  objective       String
+  objective      String
   phone          String?
   type_service   String[]
   budget         Float
@@ -108,4 +117,59 @@ model Client {
   Project    Project[]
 
   @@map("client")
+}
+
+model Todo {
+  id                   String    @id @unique @default(uuid())
+  title                String
+  description          String?
+  author               User      @relation("Author", fields: [author_id], references: [id])
+  author_id            String
+  completed_by_user    User?     @relation("Completed_By", fields: [completed_by_user_id], references: [id])
+  completed_by_user_id String?
+  priority             String
+  has_to_start_at      DateTime  @default(now())
+  has_to_finish_at     DateTime  @default(now())
+  completed_in_time    Boolean?
+  completed            Boolean   @default(false)
+  completed_at         DateTime?
+  created_at           DateTime  @default(now())
+  updated_at           DateTime  @default(now())
+
+  @@map("todo")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }

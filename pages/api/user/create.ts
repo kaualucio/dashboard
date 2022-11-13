@@ -86,6 +86,8 @@ export default async function handler(
       });
     }
 
+    // const randomLogin = 'admin';
+    // const randomPassword = '12345678';
     const randomLogin = loginGenerator();
     const randomPassword = passwordGenerator();
 

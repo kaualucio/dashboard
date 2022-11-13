@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactElement } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import axios from 'axios';
 import { Header } from '../../src/components/Header';
 import { useFetch } from '../../src/hooks/useFetch';
 import { Loading } from '../../src/components/Loading';
+import { Layout } from '../../src/components/Layout';
 
 const SortTestimonials = () => {
   const [testimonials, setTestimonials] = useState<any[]>([]);
@@ -70,6 +71,10 @@ const SortTestimonials = () => {
       </div>
     </section>
   );
+};
+
+SortTestimonials.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default SortTestimonials;

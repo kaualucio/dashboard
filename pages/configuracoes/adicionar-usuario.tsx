@@ -1,9 +1,9 @@
 import axios from 'axios';
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, ReactElement, FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
-import { Message } from '../../src/components/Message';
+import { Layout } from '../../src/components/Layout';
 import { Select } from '../../src/components/Select';
 import { Title } from '../../src/components/Title';
 import { emailValidation } from '../../src/utils/email-validation';
@@ -102,6 +102,10 @@ const AddUser = () => {
       </div>
     </section>
   );
+};
+
+AddUser.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default AddUser;

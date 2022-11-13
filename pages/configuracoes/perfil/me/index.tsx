@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React from 'react';
+import React, { ReactElement } from 'react';
 
 import { BsPatchCheckFill, BsPencilFill } from 'react-icons/bs';
 import { IoMdConstruct } from 'react-icons/io';
@@ -15,8 +15,9 @@ import { Title } from '../../../../src/components/Title';
 import { IconButton } from '../../../../src/components/IconButton';
 import Link from 'next/link';
 import { Header } from '../../../../src/components/Header';
+import { Layout } from '../../../../src/components/Layout';
 
-const Perfil = () => {
+const Profile = () => {
   return (
     <section className="w-full p-5 h-full">
       <Header
@@ -148,4 +149,8 @@ const Perfil = () => {
   );
 };
 
-export default Perfil;
+Profile.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
+};
+
+export default Profile;

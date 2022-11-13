@@ -1,12 +1,10 @@
 import axios from 'axios';
-import Link from 'next/link';
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, ReactElement, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
-import { Message } from '../../src/components/Message';
-import { Title } from '../../src/components/Title';
+import { Layout } from '../../src/components/Layout';
 
 const AddNewClient = () => {
   const [newClient, setNewClient] = useState({
@@ -99,6 +97,10 @@ const AddNewClient = () => {
       </div>
     </section>
   );
+};
+
+AddNewClient.getLayout = function getLayout(page: ReactElement) {
+  return <Layout>{page}</Layout>;
 };
 
 export default AddNewClient;
