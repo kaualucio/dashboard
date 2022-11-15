@@ -1,3 +1,7 @@
+
+import { GetServerSideProps } from 'next';
+import { unstable_getServerSession } from 'next-auth';
+import Head from 'next/head';
 import Image from 'next/image';
 import React, { ReactElement } from 'react';
 
@@ -11,15 +15,27 @@ import {
   AiFillFacebook,
 } from 'react-icons/ai';
 
-import { Title } from '../../../../src/components/Title';
 import { IconButton } from '../../../../src/components/IconButton';
-import Link from 'next/link';
 import { Header } from '../../../../src/components/Header';
 import { Layout } from '../../../../src/components/Layout';
 
-const Profile = () => {
+import { authOptions } from '../../../api/auth/[...nextauth]';
+import { UserType } from '../../../../src/types/User';
+import { roles } from '../../../../src/utils/roles';
+import { phoneMask } from '../../../../src/utils/phone-mask';
+
+import placeholderProfilePicture from '../../../../public/images/placeholder_profile_picture.jpg';
+
+interface ProfileProps {
+  user: UserType;
+}
+
+const Profile = ({ user }: ProfileProps) => {
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Meu Perfil</title>
+      </Head>
       <Header
         titlePage="Meu perfil"
         link="/configuracoes/perfil/me/editar"
@@ -30,7 +46,11 @@ const Profile = () => {
           <div className="w-full md:w-96 md:max-w-sm bg-[#fff] px-5 py-7 rounded-lg text-center">
             <div className="relative z-10 w-44 h-44 mx-auto rounded-full border-4 border-black">
               <Image
-                src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGVyc29ufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
+                src={
+                  user.profile_picture
+                    ? user.profile_picture
+                    : placeholderProfilePicture
+                }
                 alt=""
                 height={208}
                 width={208}
@@ -53,8 +73,8 @@ const Profile = () => {
               </div>
             </div>
             <div className="mt-5">
-              <h2 className="text-black text-lg font-bold">Nome da pessoa</h2>
-              <p className="text-text text-md">Product Manager</p>
+              <h2 className="text-black text-lg font-bold">{user.name}</h2>
+              <p className="text-text text-md">{roles[user.role]}</p>
             </div>
             <div className="mt-10 flex flex-col gap-7">
               <div className="flex px-3 items-center justify-between ">
@@ -62,21 +82,27 @@ const Profile = () => {
                   <BsPatchCheckFill />
                   <p>Projetos completos:</p>
                 </div>
-                <p className="text-primary text-md font-bold">25</p>
+                <p className="text-primary text-md font-bold">
+                  {user.Project.length}
+                </p>
               </div>
               <div className="flex px-3 items-center justify-between ">
                 <div className="flex items-center text-sm xl:text-md font-medium gap-2 text-text">
                   <IoMdConstruct />
                   <p>Projetos atuais:</p>
                 </div>
-                <p className="text-primary text-md font-bold">5</p>
+                <p className="text-primary text-md font-bold">
+                  {user.Project.length}
+                </p>
               </div>
               <div className="flex px-3 items-center justify-between ">
                 <div className="flex items-center text-sm xl:text-md font-medium gap-2 text-text">
                   <BsPencilFill />
                   <p>Artigos Escritos:</p>
                 </div>
-                <p className="text-primary text-md font-bold">10</p>
+                <p className="text-primary text-md font-bold">
+                  {user.articles.length}
+                </p>
               </div>
             </div>
           </div>
@@ -84,40 +110,43 @@ const Profile = () => {
             <div>
               <h4 className="text-text text-md font-medium mb-2">Sobre min:</h4>
               <p className="text-black text-md ">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio
-                voluptatem mollitia, harum fuga aut rerum culpa iusto obcaecati
-                porro dolorem reprehenderit ullam autem hic? Voluptates sit
-                sapiente in eveniet vel!
+                {user.about ? user.about : ''}
               </p>
             </div>
             <div className="mt-5 mb-10 grid grid-cols-1 lg:grid-cols-2 gap-7">
               <div>
                 <h4 className="text-text text-md font-medium mb-2">Nome:</h4>
-                <p className="text-black text-md ">Nome completo da pessoa</p>
+                <p className="text-black text-md ">{user.name}</p>
               </div>
               <div>
                 <h4 className="text-text text-md font-medium mb-2">Cargo:</h4>
-                <p className="text-black text-md ">Product Manager</p>
+                <p className="text-black text-md ">{roles[user.role]}</p>
               </div>
 
               <div>
                 <h4 className="text-text text-md font-medium mb-2">E-mail:</h4>
-                <p className="text-black text-md ">email@exemplo.com</p>
+                <p className="text-black text-md ">{user.email}</p>
               </div>
               <div>
                 <h4 className="text-text text-md font-medium mb-2">
                   Telefone:
                 </h4>
-                <p className="text-black text-md ">(84) 98130-6435</p>
+                <p className="text-black text-md ">
+                  {user.phone ? phoneMask(user.phone) : ''}
+                </p>
               </div>
 
               <div>
                 <h4 className="text-text text-md font-medium mb-2">Sexo:</h4>
-                <p className="text-black text-md ">Feminino</p>
+                <p className="text-black text-md ">
+                  {user.sex ? user.sex : ''}
+                </p>
               </div>
               <div>
                 <h4 className="text-text text-md font-medium mb-2">Idade:</h4>
-                <p className="text-black text-md ">26</p>
+                <p className="text-black text-md ">
+                  {user.age ? user.age : ''}
+                </p>
               </div>
             </div>
             <div className="flex items-center sm:flex-row flex-col gap-3">
@@ -147,6 +176,32 @@ const Profile = () => {
       </div>
     </section>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await unstable_getServerSession(
+    ctx.req,
+    ctx.res,
+    authOptions
+  );
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  const result = await api.get(
+    `http://localhost:3000/api/me/${session?.user?.id}`
+  );
+  return {
+    props: {
+      user: result.data,
+    },
+  };
 };
 
 Profile.getLayout = function getLayout(page: ReactElement) {

@@ -4,22 +4,22 @@ import { isAuthenticated } from '../../../src/lib/isAuthenticated';
 
 const prisma = new PrismaClient();
 
-async function get() {
+async function getMyData(id: string | any) {
   try {
-    const allArticles = await prisma.todo.findMany({
-      include: {
-        author: true,
-        completed_by_user: true,
+    const me = await prisma.user.findUnique({
+      where: {
+        id,
       },
-      orderBy: {
-        completed_at: 'asc',
+      include: {
+        Project: true,
+        articles: true,
       },
     });
 
-    return allArticles;
+    return me;
   } catch (error) {
     console.log(error);
-    return 'Ocorreu um erro durante a busca dos artigos';
+    return 'Ocorreu ao buscar seus dados, tente novamente';
   }
 }
 
@@ -27,6 +27,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const { id } = req.query;
   const { authorization } = req.headers;
 
   const isUserAuthenticated = isAuthenticated(authorization);
@@ -36,13 +37,9 @@ export default async function handler(
     });
   }
 
-  const result = await get().finally(async () => {
+  const response = await getMyData(id).finally(async () => {
     await prisma.$disconnect();
   });
 
-  if (typeof result === 'object') {
-    return res.status(200).json(result);
-  } else {
-    return res.status(400).json(result);
-  }
+  return res.status(200).json(response);
 }

@@ -1,4 +1,4 @@
-import axios from 'axios';
+
 import React, { useState, ReactElement, FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
@@ -6,6 +6,7 @@ import { FormControl } from '../../src/components/FormControl';
 import { Layout } from '../../src/components/Layout';
 import { Select } from '../../src/components/Select';
 import { Title } from '../../src/components/Title';
+import { api } from '../../src/service/api/api';
 import { emailValidation } from '../../src/utils/email-validation';
 import { rolesOptions } from '../../src/utils/roles';
 
@@ -33,7 +34,7 @@ const AddUser = () => {
       return toast.error('Email inválido, corrija-o para continuar');
     }
 
-    const result: any = await axios.post('/api/user/create', newUser);
+    const result: any = await api.post('/api/user/create', newUser);
     setNewUser({
       name: '',
       email: '',

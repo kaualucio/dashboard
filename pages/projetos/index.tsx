@@ -4,13 +4,15 @@ import React, { ReactElement, FormEvent, useMemo, useCallback } from 'react';
 import { BiDetail, BiCheckDouble, BiTrash } from 'react-icons/bi';
 import { FaTimes } from 'react-icons/fa';
 
-import axios from 'axios';
+
 import Status from '../../src/components/Status';
 import { useSWRConfig } from 'swr';
 import { Loading } from '../../src/components/Loading';
 import { Header } from '../../src/components/Header';
 import { useFetch } from '../../src/hooks/useFetch';
 import { Layout } from '../../src/components/Layout';
+import Head from 'next/head';
+import { api } from '../../src/service/api/api';
 
 const Projects = () => {
   const { mutate: mutateGlobal } = useSWRConfig();
@@ -18,7 +20,7 @@ const Projects = () => {
 
   const handleToCompleteProject = useCallback(
     (id: string) => {
-      axios.post(`/api/projects/complete/${id}`);
+      api.post(`/api/projects/complete/${id}`);
 
       const updatedProjects = data?.map((project: any) => {
         if (project.id === id) {
@@ -36,7 +38,7 @@ const Projects = () => {
 
   const handleToCancelProject = useCallback(
     (id: string) => {
-      axios.post(`/api/projects/cancel/${id}`);
+      api.post(`/api/projects/cancel/${id}`);
 
       const updatedProjects = data?.map((project: any) => {
         if (project.id === id) {
@@ -54,7 +56,7 @@ const Projects = () => {
 
   const handleToDeleteProject = useCallback(
     (id: string) => {
-      axios.post(`/api/projects/delete/${id}`);
+      api.post(`/api/projects/delete/${id}`);
 
       const updatedProjects = data?.filter((project: any) => project.id !== id);
       mutate(updatedProjects, false);
@@ -68,6 +70,9 @@ const Projects = () => {
 
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Projetos</title>
+      </Head>
       <Header
         titlePage="Projetos"
         link="/projetos/novo"

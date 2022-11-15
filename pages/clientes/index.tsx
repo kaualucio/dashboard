@@ -1,5 +1,6 @@
+import Head from 'next/head';
 import Link from 'next/link';
-import axios from 'axios';
+
 import React, { useCallback, useState, ReactElement } from 'react';
 
 import { BiDetail, BiTrash } from 'react-icons/bi';
@@ -8,6 +9,7 @@ import { useFetch } from '../../src/hooks/useFetch';
 import { Loading } from '../../src/components/Loading';
 import { Dialog } from '../../src/components/Dialog';
 import { Layout } from '../../src/components/Layout';
+import { api } from '../../src/service/api/api';
 
 const Clients = () => {
   const { data, mutate } = useFetch('/api/clients/get');
@@ -16,7 +18,7 @@ const Clients = () => {
 
   const handleDeleteClient = useCallback(() => {
     if (deleteClientId) {
-      axios.post(`/api/clients/delete/${deleteClientId}`);
+      api.post(`/api/clients/delete/${deleteClientId}`);
 
       const updatedClients = data?.filter(
         (project: any) => project.id !== deleteClientId
@@ -42,6 +44,9 @@ const Clients = () => {
   if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Clientes</title>
+      </Head>
       {openDialog ? (
         <Dialog
           handleConfirmDelete={handleConfirmDelete}

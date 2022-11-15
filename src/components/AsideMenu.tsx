@@ -1,4 +1,3 @@
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -11,7 +10,8 @@ import { VscSettingsGear } from 'react-icons/vsc';
 import placeholderProfilePicture from '../../public/images/placeholder_profile_picture.jpg';
 
 import styles from '../../styles/asideMenu.module.scss';
-import useWidth from '../hooks/useWidth';
+import { useAuth } from '../context/AuthContext';
+import { useWidth } from '../hooks/useWidth';
 import { roles } from '../utils/roles';
 
 interface AsideMenuProps {
@@ -22,7 +22,7 @@ interface AsideMenuProps {
 const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
   const [submenuIsOpen, setSubmenuIsOpen] = useState(false);
   const screenWidth = useWidth();
-  const { data: session, status } = useSession();
+  const { user } = useAuth();
   function handleOpenSubmenu(e: React.MouseEvent) {
     setSubmenuIsOpen((prevState) => !prevState);
     const numberOfElementInNavTree =
@@ -50,6 +50,7 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
       handleOpenSideBarMenu(true);
     }
   }, [screenWidth]);
+
   return (
     <aside
       className={`${menuIsOpen ? styles.asideMenu : styles.asideMenuClosed}`}
@@ -60,11 +61,7 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
       <div className={styles.profile}>
         <div className={styles.profileImage}>
           <Image
-            src={
-              session && session.user?.image.length > 0
-                ? session.user?.image
-                : placeholderProfilePicture
-            }
+            src={placeholderProfilePicture}
             alt=""
             height={50}
             width={50}
@@ -73,8 +70,8 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
           />
         </div>
         <div className={styles.profileDetails}>
-          <h2>{session?.user?.name}</h2>
-          <p>{roles[session?.user?.role]}</p>
+          <h2>{user?.name}</h2>
+          <p>{roles[user?.role]}</p>
         </div>
       </div>
       <nav>

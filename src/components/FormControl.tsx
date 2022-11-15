@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { DetailedHTMLProps } from 'react';
 
-type FormControlProps = React.HTMLProps<HTMLInputElement> &
+type FormControlProps = DetailedHTMLProps<
+  React.HTMLProps<HTMLInputElement>,
+  HTMLInputElement
+> &
   React.HTMLProps<HTMLTextAreaElement> & {
     label: string;
     type?: string;

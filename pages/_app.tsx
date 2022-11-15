@@ -6,13 +6,14 @@ import '@fullcalendar/daygrid/main.css';
 import '@fullcalendar/timegrid/main.css';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.core.css';
-import { ReactElement, ReactNode, useEffect } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import type { Session } from 'next-auth';
 import { SWRConfig } from 'swr';
 import { Toaster } from 'react-hot-toast';
-import { SessionProvider, signIn, useSession } from 'next-auth/react';
+import { SessionProvider } from 'next-auth/react';
+import { AuthContextProvider } from '../src/context/AuthContext';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -31,7 +32,9 @@ function MyApp({
     <SessionProvider session={session}>
       <SWRConfig value={{ revalidateOnFocus: false, revalidateIfStale: true }}>
         {getLayout ? (
-          <Auth>{getLayout(<Component {...pageProps} />)}</Auth>
+          <AuthContextProvider>
+            {getLayout(<Component {...pageProps} />)}
+          </AuthContextProvider>
         ) : (
           <Component {...pageProps} />
         )}
@@ -69,23 +72,6 @@ function MyApp({
       />
     </SessionProvider>
   );
-}
-
-function Auth({ children }: any) {
-  const { data: session, status } = useSession();
-  const isUser = !!session?.user;
-  useEffect(() => {
-    if (status === 'loading') return;
-    if (!isUser) signIn();
-  }, [isUser, status]);
-
-  if (isUser) {
-    return children;
-  }
-
-  // Session is being fetched, or no user.
-  // If no user, useEffect() will redirect.
-  return <div />;
 }
 
 export default MyApp;

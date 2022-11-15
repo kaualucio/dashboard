@@ -2,13 +2,15 @@ import Link from 'next/link';
 import React, { ReactElement, useState } from 'react';
 
 import { BiPencil, BiTrash } from 'react-icons/bi';
-import axios from 'axios';
+
 import moment from 'moment';
 import { Header } from '../../src/components/Header';
 import { useFetch } from '../../src/hooks/useFetch';
 import { Loading } from '../../src/components/Loading';
 import { Dialog } from '../../src/components/Dialog';
 import { Layout } from '../../src/components/Layout';
+import Head from 'next/head';
+import { api } from '../../src/service/api/api';
 
 const Categories = () => {
   const { data, mutate } = useFetch('/api/categories/get');
@@ -17,7 +19,7 @@ const Categories = () => {
 
   function handleDeleteCategory() {
     if (deleteCategoryId) {
-      axios.post(`/api/categories/delete/${deleteCategoryId}`);
+      api.post(`/api/categories/delete/${deleteCategoryId}`);
 
       const updatedCategories = data?.filter(
         (category: any) => category.id !== deleteCategoryId
@@ -43,6 +45,9 @@ const Categories = () => {
   if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Categorias</title>
+      </Head>
       {openDialog ? (
         <Dialog
           handleConfirmDelete={handleConfirmDelete}

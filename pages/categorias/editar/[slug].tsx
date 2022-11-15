@@ -1,4 +1,5 @@
-import axios from 'axios';
+
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
@@ -24,7 +25,7 @@ const EditCategory = () => {
         return toast.error('Preencha os campos obrigatórios para continuar');
       }
 
-      const result: any = await axios.post(`/api/categories/edit/${data.id}`, {
+      const result: any = await api.post(`/api/categories/edit/${data.id}`, {
         category: newCategory,
       });
 
@@ -50,6 +51,9 @@ const EditCategory = () => {
   if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Editar Categoria</title>
+      </Head>
       <Header
         titlePage={`Editar Categoria: ${data.name}`}
         link="/categorias"

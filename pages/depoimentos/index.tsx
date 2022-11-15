@@ -1,4 +1,5 @@
-import axios from 'axios';
+
+import Head from 'next/head';
 import React, { useCallback, useState, ReactElement } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useSWRConfig } from 'swr';
@@ -7,6 +8,7 @@ import { Layout } from '../../src/components/Layout';
 import { Loading } from '../../src/components/Loading';
 import { Testimonial } from '../../src/components/Testimonial';
 import { useFetch } from '../../src/hooks/useFetch';
+import { api } from '../../src/service/api/api';
 
 const Testimonials = () => {
   const { mutate: mutateGlobal } = useSWRConfig();
@@ -16,7 +18,7 @@ const Testimonials = () => {
   const handleDeleteTestimonial = useCallback(
     (id: string | undefined) => {
       if (id) {
-        axios.post(`/api/testimonials/delete/${id}`);
+        api.post(`/api/testimonials/delete/${id}`);
 
         const updatedTestimonials = data?.filter(
           (testimonial: any) => testimonial.id !== id
@@ -33,6 +35,9 @@ const Testimonials = () => {
   if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Depoimentos</title>
+      </Head>
       <Header
         titlePage="Depoimentos"
         link="/depoimentos/novo"

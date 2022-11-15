@@ -14,4 +14,4 @@ const useWidth = () => {
   return width;
 };
 
-export default useWidth;
+export { useWidth };

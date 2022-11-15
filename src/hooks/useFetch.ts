@@ -1,5 +1,5 @@
-import axios from 'axios';
 import useSWR from 'swr';
+import { api } from '../service/api/api';
 
 export function useFetch<Data = any, Error = any>(
   url: string,
@@ -8,7 +8,7 @@ export function useFetch<Data = any, Error = any>(
   const { data, isValidating, mutate, error } = useSWR(
     url,
     async (url: string) => {
-      const response = await axios.get(url, params);
+      const response = await api.get(url, params);
 
       return response.data;
     }

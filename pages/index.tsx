@@ -1,5 +1,4 @@
-import { getSession, useSession } from 'next-auth/react';
-import axios from 'axios';
+import { api } from '../src/service/api/api';
 import moment from 'moment';
 import styles from '../styles/home.module.scss';
 import { Title } from '../src/components/Title';
@@ -12,11 +11,10 @@ import { useFetch } from '../src/hooks/useFetch';
 import { Loading } from '../src/components/Loading';
 import TaskDetailsModal from '../src/components/Modals/TaskDetailsModal';
 
-import Link from 'next/link';
 import { Layout } from '../src/components/Layout';
-import { GetServerSideProps, GetStaticProps } from 'next';
-import { unstable_getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]';
+import Head from 'next/head';
+import { parseCookies } from 'nookies';
+import { GetServerSideProps } from 'next';
 
 const Home = () => {
   const [openCreateTodoModal, setOpenCreateTodoModal] = useState(false);
@@ -34,7 +32,7 @@ const Home = () => {
   }
 
   function handleCompleteTask(taskId: string) {
-    axios.post(`/api/tasks/complete/${taskId}`, {
+    api.post(`/api/tasks/complete/${taskId}`, {
       completed_by_user_id: '9cfd74d8-b4bc-4c0d-83ed-53bb4cea9e62',
     });
 
@@ -55,30 +53,24 @@ const Home = () => {
   }
 
   function handleDeleteTask(taskId: string) {
-    axios.post(`/api/tasks/delete/${taskId}`);
+    api.post(`/api/tasks/delete/${taskId}`);
 
     const updatedTasks = data?.filter((task: any) => task.id !== taskId);
     handleOpenTaskDetailsModal();
     mutate(updatedTasks, false);
   }
 
-  // if (!session) {
-  //   return (
-  //     <div>
-  //       <h1>ACESSO NEGADO, FAÇA LOGIN PARA CONTINUAR</h1>
-  //       <Link href="/login">Fazer Login</Link>
-  //     </div>
-  //   );
-  // }
-
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Dashboard</title>
+      </Head>
       {openCreateTodoModal ? (
         <ModalContainer
           handleOpenModal={() => handleOpenTaskModal()}
           title="Criar nova tarefa"
         >
-          <TaskForm />
+          <TaskForm tasks={data} />
         </ModalContainer>
       ) : openDetailsTodoModal ? (
         <TaskDetailsModal
@@ -148,7 +140,7 @@ const Home = () => {
             </button>
           </div>
           <div className="h-[400px] mt-7 flex flex-col gap-2 overflow-y-auto">
-            {!data || isValidating ? (
+            {!data && isValidating ? (
               <Loading />
             ) : (
               data.map((task: any) => (
@@ -195,28 +187,24 @@ const Home = () => {
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   const session = await unstable_getServerSession(
-//     ctx.req,
-//     ctx.res,
-//     authOptions
-//   );
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { access_token, refresh_token } = parseCookies(ctx);
 
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: '/login',
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (!access_token && !refresh_token) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  } else if (!access_token && refresh_token) {
+    //use the api api service that make the access_token refresh
+  }
 
-//   return {
-//     props: {
-//       user: session.user,
-//     },
-//   };
-// };
+  return {
+    props: {},
+  };
+};
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;

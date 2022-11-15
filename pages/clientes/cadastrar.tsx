@@ -1,10 +1,12 @@
-import axios from 'axios';
+
+import Head from 'next/head';
 import React, { FormEvent, ReactElement, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
 import { Layout } from '../../src/components/Layout';
+import { api } from '../../src/service/api/api';
 
 const AddNewClient = () => {
   const [newClient, setNewClient] = useState({
@@ -24,10 +26,8 @@ const AddNewClient = () => {
       );
     }
 
-    const result = await axios.post('/api/clients/create', newClient);
-    // mutate('/api/projects/get', null, {
-    //   optimisticData: result.data.project,
-    // });
+    const result = await api.post('/api/clients/create', newClient);
+
     if (result.data.type === 'success') {
       setNewClient({
         name: '',
@@ -45,6 +45,9 @@ const AddNewClient = () => {
 
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Cadastrar Cliente</title>
+      </Head>
       <Header titlePage="Adicionar Cliente" link="/clientes" label="Voltar" />
       <div className="mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5">
         <form

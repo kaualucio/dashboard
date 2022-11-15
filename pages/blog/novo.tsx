@@ -1,4 +1,5 @@
-import axios from 'axios';
+
+import Head from 'next/head';
 import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
@@ -39,7 +40,7 @@ const AddNewBlogPost = () => {
       );
     }
 
-    const result: any = await axios.post('/api/blog/create', {
+    const result: any = await api.post('/api/blog/create', {
       ...newArticle,
       content,
       isPublished: notSaveAsDraft,
@@ -73,16 +74,19 @@ const AddNewBlogPost = () => {
   }
 
   useEffect(() => {
-    axios.get('/api/user/get').then((res) => {
+    api.get('/api/user/get').then((res) => {
       setAuthors(res.data.data);
     });
 
-    axios.get('/api/categories/get').then((res) => {
+    api.get('/api/categories/get').then((res) => {
       setCategories(res.data);
     });
   }, []);
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Novo Artigo</title>
+      </Head>
       <Header titlePage="Novo post" link="/blog" label="Voltar" />
       <div className="mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5">
         <form className="max-w-[800px] mx-auto flex flex-col gap-5">

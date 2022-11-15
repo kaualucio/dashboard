@@ -1,5 +1,6 @@
-import axios from 'axios';
+
 import moment from 'moment';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { ReactElement } from 'react';
 import useSWR from 'swr';
@@ -28,6 +29,9 @@ const Project = () => {
   if (!data) return <Loading />;
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Projeto</title>
+      </Head>
       <Header titlePage="Projeto" link="/projetos" label="Voltar" />
       <div className="max-w-[800px] mx-auto mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5 flex flex-col gap-10">
         <div className="flex flex-col gap-5">

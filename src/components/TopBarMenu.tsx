@@ -5,7 +5,6 @@ import { FaBars } from 'react-icons/fa';
 import { DropDownMenuProfile } from './DropDownMenuProfile';
 
 import placeholderProfilePicture from '../../public/images/placeholder_profile_picture.jpg';
-import { useSession } from 'next-auth/react';
 
 interface TopBarMenuProps {
   menuIsOpen: boolean;
@@ -14,7 +13,7 @@ interface TopBarMenuProps {
 
 const TopBarMenu = ({ menuIsOpen, handleOpenSideBarMenu }: TopBarMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { data: session, status } = useSession();
+  // const user: UserType = useUser();
   function handleOpenDropDownProfileMenu() {
     setIsOpen((prevState) => !prevState);
   }
@@ -30,11 +29,7 @@ const TopBarMenu = ({ menuIsOpen, handleOpenSideBarMenu }: TopBarMenuProps) => {
           className="w-10 h-10 rounded-full border-2 border-[#fff] shadow-md"
         >
           <Image
-            src={
-              session && session.user?.image.length > 0
-                ? session.user?.image
-                : placeholderProfilePicture
-            }
+            src={placeholderProfilePicture}
             alt=""
             height={40}
             width={40}

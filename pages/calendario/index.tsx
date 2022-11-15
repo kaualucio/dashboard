@@ -7,6 +7,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { Title } from '../../src/components/Title';
 import AddToCalendarModal from '../../src/components/AddToCalendarModal';
 import { Layout } from '../../src/components/Layout';
+import Head from 'next/head';
 
 const Calendar = () => {
   const calendarRef = useRef(null);
@@ -28,6 +29,9 @@ const Calendar = () => {
 
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Calendário</title>
+      </Head>
       {openModal && <AddToCalendarModal handleOpenModal={handleOpenModal} />}
       <div className="flex items-center justify-between">
         <Title title="Calendário" size="xl" />

@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
-import axios from 'axios';
+
 import toast from 'react-hot-toast';
 import { useSWRConfig } from 'swr';
 import { useFetch } from '../../../src/hooks/useFetch';
@@ -11,6 +11,7 @@ import { Button } from '../../../src/components/Button';
 import { Select } from '../../../src/components/Select';
 import { Header } from '../../../src/components/Header';
 import { Layout } from '../../../src/components/Layout';
+import Head from 'next/head';
 
 const ArticleSingle = () => {
   const { mutate: globalMutate } = useSWRConfig();
@@ -47,7 +48,7 @@ const ArticleSingle = () => {
       );
     }
 
-    const result: any = await axios.post(`/api/blog/edit/${data.id}`, {
+    const result: any = await api.post(`/api/blog/edit/${data.id}`, {
       ...articleData,
       content,
     });
@@ -70,11 +71,11 @@ const ArticleSingle = () => {
   }
 
   useEffect(() => {
-    axios.get('/api/user/get').then((res) => {
+    api.get('/api/user/get').then((res) => {
       setAuthors(res.data.data);
     });
 
-    axios.get('/api/categories/get').then((res) => {
+    api.get('/api/categories/get').then((res) => {
       setCategories(res.data.data);
     });
   }, []);
@@ -99,6 +100,9 @@ const ArticleSingle = () => {
 
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Editar Artigo</title>
+      </Head>
       <Header
         titlePage={data.isPublished ? 'Editar artigo' : 'Continuar rascunho'}
         link="/blog"

@@ -1,16 +1,18 @@
 import React, { useEffect, useState, ReactElement } from 'react';
 import { ReactSortable } from 'react-sortablejs';
-import axios from 'axios';
+
 import { Header } from '../../src/components/Header';
 import { useFetch } from '../../src/hooks/useFetch';
 import { Loading } from '../../src/components/Loading';
 import { Layout } from '../../src/components/Layout';
+import Head from 'next/head';
+import { api } from '../../src/service/api/api';
 
 const SortTestimonials = () => {
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const { data, mutate } = useFetch('/api/testimonials/getByOrderDate');
   async function handleOrderTestimonial(id: string) {
-    axios.post('/api/testimonials/order', {
+    api.post('/api/testimonials/order', {
       id,
     });
   }
@@ -25,6 +27,9 @@ const SortTestimonials = () => {
 
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Ordenar Depoimentos</title>
+      </Head>
       <Header
         titlePage="Ordenar Depoimentos"
         link="/depoimentos"

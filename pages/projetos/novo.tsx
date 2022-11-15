@@ -1,4 +1,5 @@
-import axios from 'axios';
+
+import Head from 'next/head';
 import React, { useEffect, useState, FormEvent, ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import { useSWRConfig } from 'swr';
@@ -10,6 +11,7 @@ import { Layout } from '../../src/components/Layout';
 import { Message } from '../../src/components/Message';
 import { Select } from '../../src/components/Select';
 import { Title } from '../../src/components/Title';
+import { api } from '../../src/service/api/api';
 import { services } from '../../src/utils/type-services';
 
 const fetcher = async (url: string, method: string) => {
@@ -80,7 +82,7 @@ const AddNewProject = () => {
       );
     }
 
-    const result = await axios.post('/api/projects/create', {
+    const result = await api.post('/api/projects/create', {
       ...newProject,
     });
     mutate('/api/projects/get', null, {
@@ -109,19 +111,22 @@ const AddNewProject = () => {
   }
 
   useEffect(() => {
-    axios.get('/api/user/get').then((res) => {
+    api.get('/api/user/get').then((res) => {
       setUsers(res.data.data);
     });
   }, []);
 
   useEffect(() => {
-    axios.get('/api/clients/get').then((res) => {
+    api.get('/api/clients/get').then((res) => {
       setClients(res.data);
     });
   }, []);
 
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Novo Projeto</title>
+      </Head>
       <Header titlePage="Adicionar Projeto" link="/projetos" label="Voltar" />
       <div className="mt-10 bg-[#fff] rounded-md shadow-md py-10 px-5">
         <form

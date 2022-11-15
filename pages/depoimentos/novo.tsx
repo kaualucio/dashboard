@@ -1,10 +1,12 @@
-import axios from 'axios';
+
+import Head from 'next/head';
 import React, { FormEvent, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
 import { Layout } from '../../src/components/Layout';
+import { api } from '../../src/service/api/api';
 
 const AddTestimonial = () => {
   const [newTestimonial, setNewTestimonial] = useState({
@@ -27,7 +29,7 @@ const AddTestimonial = () => {
       return toast.error('Preencha os campos obrigatório para prosseguir');
     }
 
-    const result: any = await axios.post('/api/testimonials/create', {
+    const result: any = await api.post('/api/testimonials/create', {
       ...newTestimonial,
     });
 
@@ -47,6 +49,9 @@ const AddTestimonial = () => {
 
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Novo Depoimento</title>
+      </Head>
       <Header
         titlePage="Adicionar Depoimento"
         link="/depoimentos"

@@ -1,10 +1,13 @@
-import axios from 'axios';
+
 import { GetStaticPaths, GetStaticProps } from 'next';
+import Head from 'next/head';
 import React, { FormEvent, useState, useEffect, ReactElement } from 'react';
+import toast from 'react-hot-toast';
 import { FormControl } from '../../../src/components/FormControl';
 import { Header } from '../../../src/components/Header';
 import { Layout } from '../../../src/components/Layout';
 import { Message } from '../../../src/components/Message';
+import { api } from '../../../src/service/api/api';
 
 const EditTestimonial = ({ testimonial }: any) => {
   const [editedTestimonial, setEditedTestimonial] = useState({
@@ -13,7 +16,6 @@ const EditTestimonial = ({ testimonial }: any) => {
     hirerCompany: testimonial.hirerCompany,
     testimonial: testimonial.testimonial,
   });
-  const [response, setResponse] = useState({ type: 'none', response: '' });
   const [isDisabled, setIsDisabled] = useState(false);
 
   async function handleEditTestimonial(e: FormEvent, id: string) {
@@ -24,37 +26,26 @@ const EditTestimonial = ({ testimonial }: any) => {
       !editedTestimonial.hirerCompany ||
       !editedTestimonial.testimonial
     ) {
-      return setResponse({
-        type: 'error',
-        response: 'Preencha os campos obrigatório para prosseguir',
-      });
+      return toast.error('Preencha os campos obrigatório para prosseguir');
     }
 
-    const res: any = await axios.post('/api/testimonials/update', {
+    const result: any = await api.post('/api/testimonials/update', {
       ...editedTestimonial,
       id: testimonial.id,
     });
-    setResponse({
-      type: res.data.type,
-      response: res.data.response,
-    });
+    if (result.data.type === 'success') {
+      toast.success(result.data.response);
+    } else {
+      toast.error(result.data.response);
+    }
     setIsDisabled(false);
   }
 
-  useEffect(() => {
-    if (response.type !== 'none') {
-      setTimeout(() => {
-        setResponse({
-          type: 'none',
-          response: '',
-        });
-      }, 5000);
-    }
-  }, [response]);
-
   return (
     <section className="w-full p-5 h-full">
-      <Message type={response.type} text={response.response} />
+      <Head>
+        <title>SITE NAME | Editar Depoimento</title>
+      </Head>
       <Header
         titlePage="Editar Depoimento"
         link="/depoimentos"
@@ -148,12 +139,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { params } = context;
 
-  const res = await axios.get(
-    'http://localhost:3000/api/testimonials/getById',
-    {
-      id: params?.id,
-    }
-  );
+  const res = await api.get('http://localhost:3000/api/testimonials/getById', {
+    id: params?.id,
+  });
 
   return {
     props: {

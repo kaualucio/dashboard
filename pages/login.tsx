@@ -1,28 +1,49 @@
-import axios from 'axios';
-import { signIn } from 'next-auth/react';
-import React, { useState, FormEvent, useEffect } from 'react';
-import { Button } from '../src/components/Button';
-import { FormControl } from '../src/components/FormControl';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { setCookie } from 'nookies';
+import React, { useState, FormEvent } from 'react';
+import toast from 'react-hot-toast';
+import { api } from '../src/service/api/api';
 
 const Login = () => {
-  const [login, setLogin] = useState('admin');
-  const [password, setPassword] = useState('12345678');
-
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
+    try {
+      if (!login || !password) {
+        return toast.error(
+          'Campas em branco não são permitidos, preencha-os para continuar'
+        );
+      }
 
-    const res = await signIn('credentials', {
-      redirect: true,
-      login,
-      password,
-      callbackUrl: '/',
-    });
+      const {
+        data: { access_token, refresh_token },
+      } = await api.post('/api/auth/login', {
+        login,
+        password,
+      });
 
-    // console.log(res);
+      setCookie(null, 'access_token', access_token, {
+        maxAge: 60, // 15 minutes
+      });
+
+      setCookie(null, 'refresh_token', refresh_token, {
+        maxAge: 60 * 60 * 24, // 1 day
+      });
+      api.defaults.headers['Authorization'] = `Bearer ${access_token}`;
+      router.push('/');
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
     <div className="h-screen flex items-center justify-center bg-background p-4">
+      <Head>
+        <title>SITE NAME | Login</title>
+      </Head>
       <div className="flex items-center w-[900px] h-[500px] rounded-lg bg-[#fff] shadow-md">
         <div className="hidden lg:flex flex-col items-center justify-center bg-blue min-w-[370px] max-w-[370px] h-full py-5 px-7 rounded-tl-lg rounded-bl-lg text-center text-[#fff]">
           <h2 className="font-bold text-xl">Olá, bem-vindo ao painel CMS</h2>
@@ -46,6 +67,8 @@ const Login = () => {
                 Login
               </label>
               <input
+                onChange={(e) => setLogin(e.target.value)}
+                value={login}
                 type="text"
                 id="login"
                 name="login"
@@ -60,6 +83,8 @@ const Login = () => {
                 Senha
               </label>
               <input
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
                 type="password"
                 id="password"
                 name="password"

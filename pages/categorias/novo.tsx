@@ -1,14 +1,14 @@
-import axios from 'axios';
+import Head from 'next/head';
 import React, { FormEvent, ReactElement, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
 import { Layout } from '../../src/components/Layout';
+import { api } from '../../src/service/api/api';
 
 const AddNewCategory = () => {
   const [newCategory, setNewCategory] = useState('');
-  const [response, setResponse] = useState({ type: 'none', response: '' });
   const [isDisabled, setIsDisabled] = useState(false);
 
   async function handleCreateNewCategory(e: FormEvent) {
@@ -19,7 +19,7 @@ const AddNewCategory = () => {
         return toast.error('Preencha os campos obrigatórios para continuar');
       }
 
-      const result: any = await axios.post('/api/categories/create', {
+      const result: any = await api.post('/api/categories/create', {
         category: newCategory,
       });
       setNewCategory('');
@@ -37,6 +37,9 @@ const AddNewCategory = () => {
 
   return (
     <section className="w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Cadastrar Categoria</title>
+      </Head>
       <Header
         titlePage="Adicionar Categoria"
         link="/categorias"

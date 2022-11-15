@@ -37,7 +37,7 @@ model Articles {
 }
 
 model User {
-  id                String     @id @unique @default(uuid())
+  id                String         @id @unique @default(uuid())
   name              String
   articles          Articles[]
   role              String
@@ -49,13 +49,12 @@ model User {
   password          String
   phone             String?
   profile_picture   String?
-  created_at        DateTime   @default(now())
-  updated_at        DateTime   @default(now())
+  created_at        DateTime       @default(now())
+  updated_at        DateTime       @default(now())
   Project           Project[]
-  author            Todo[]     @relation("Author")
-  completed_by_user Todo[]     @relation("Completed_By")
-  Account           Account[]
-  Session           Session[]
+  author            Todo[]         @relation("Author")
+  completed_by_user Todo[]         @relation("Completed_By")
+  RefreshToken      RefreshToken[]
 
   @@map("user")
 }
@@ -139,37 +138,13 @@ model Todo {
   @@map("todo")
 }
 
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
+model RefreshToken {
+  id         String   @id @unique @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  expiresIn  Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
+  @@map("refreshToken")
 }
