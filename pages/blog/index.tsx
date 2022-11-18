@@ -7,6 +7,20 @@ import { Loading } from '../../src/components/Loading';
 import { Article } from '../../src/components/Article';
 import { Layout } from '../../src/components/Layout';
 import Head from 'next/head';
+import { api } from '../../src/service/api/api';
+
+export interface Article {
+  title: string;
+  slug: string;
+  description: string;
+  key_words: string[];
+  reading_time: number;
+  content: string;
+  isPublished: boolean;
+  thumbnail: string;
+  categoryId: string;
+  authorId: string;
+}
 
 const Blog = () => {
   const { data, mutate } = useFetch('/api/blog/get');

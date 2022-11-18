@@ -1,17 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+import { v4 as uuid } from 'uuid';
 import { prisma } from '../../../../src/prisma';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== 'POST') {
-    return res.status(405).end();
-  }
   const { id } = req.query;
 
   if (typeof id === 'string') {
-    const taskExists = await prisma.todo
+    const testimonialExists = await prisma.testimonial
       .findFirst({
         where: {
           id,
@@ -21,23 +20,26 @@ export default async function handler(
         await prisma.$disconnect();
       });
 
-    if (!taskExists) {
-      return res.status(404).json({
-        type: 'error',
-        response: 'Não existe nenhuma tarefa com esse ID!',
+    if (!testimonialExists) {
+      res.status(400).json({
+        typpe: 'error',
+        response: 'Não existe nenhum depoimento com esse ID',
       });
     }
 
-    await prisma.todo
-      .delete({
+    await prisma.testimonial
+      .update({
         where: {
           id,
+        },
+        data: {
+          ordered_at: new Date(),
         },
       })
       .finally(async () => {
         await prisma.$disconnect();
       });
 
-    return res.status(200).json({ type: 'success' });
+    return res.status(200);
   }
 }

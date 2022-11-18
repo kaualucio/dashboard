@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { setCookie } from 'nookies';
 import React, { useState, FormEvent } from 'react';
 import toast from 'react-hot-toast';
+import { SITE_NAME } from '../src/constants';
 import { api } from '../src/service/api/api';
 
 const Login = () => {
@@ -19,17 +20,21 @@ const Login = () => {
       }
 
       const {
-        data: { access_token, refresh_token },
+        data: { access_token, refresh_token, session_token },
       } = await api.post('/api/auth/login', {
         login,
         password,
       });
 
-      setCookie(null, 'access_token', access_token, {
-        maxAge: 60, // 15 minutes
+      setCookie(null, 'beru.access_token', access_token, {
+        maxAge: 60 * 15, // 15 minutes
       });
 
-      setCookie(null, 'refresh_token', refresh_token, {
+      setCookie(null, 'beru.refresh_token', refresh_token, {
+        maxAge: 60 * 60 * 24, // 1 day
+      });
+
+      setCookie(null, 'beru.session_token', session_token, {
         maxAge: 60 * 60 * 24, // 1 day
       });
       api.defaults.headers['Authorization'] = `Bearer ${access_token}`;

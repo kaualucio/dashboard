@@ -1,4 +1,3 @@
-
 import moment from 'moment';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -7,24 +6,14 @@ import useSWR from 'swr';
 import { Header } from '../../../src/components/Header';
 import { Layout } from '../../../src/components/Layout';
 import { Loading } from '../../../src/components/Loading';
+import { SITE_NAME } from '../../../src/constants';
+import { useFetch } from '../../../src/hooks/useFetch';
 import { phoneMask } from '../../../src/utils/phone-mask';
 import { typeServices } from '../../../src/utils/type-services';
 
-const fetcher = async (url: string, method: string) => {
-  const { data } = await axios({
-    method,
-    url,
-  });
-
-  return data;
-};
-
 const Project = () => {
   const router = useRouter();
-  const { data, error } = useSWR(
-    `/api/projects/getById/${router.query.id}`,
-    (url: string) => fetcher(url, 'GET')
-  );
+  const { data, error } = useFetch(`/api/projects/getById/${router.query.id}`);
 
   if (!data) return <Loading />;
   return (

@@ -1,34 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+
 import { isAuthenticated } from '../../../src/lib/isAuthenticated';
-
-const prisma = new PrismaClient();
-
-async function get() {
-  try {
-    const allArticles = await prisma.todo.findMany({
-      include: {
-        author: true,
-        completed_by_user: true,
-      },
-      orderBy: {
-        completed_at: 'asc',
-      },
-    });
-
-    return allArticles;
-  } catch (error) {
-    console.log(error);
-    return 'Ocorreu um erro durante a busca dos artigos';
-  }
-}
+import { prisma } from '../../../src/prisma';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { authorization } = req.headers;
-
   const isUserAuthenticated = isAuthenticated(authorization);
   if (isUserAuthenticated === 401) {
     return res.status(isUserAuthenticated).json({
@@ -36,9 +15,19 @@ export default async function handler(
     });
   }
 
-  const result = await get().finally(async () => {
-    await prisma.$disconnect();
-  });
+  const result = await prisma.todo
+    .findMany({
+      include: {
+        author: true,
+        completed_by_user: true,
+      },
+      orderBy: {
+        completed_at: 'asc',
+      },
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
 
   if (typeof result === 'object') {
     return res.status(200).json(result);

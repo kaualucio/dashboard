@@ -8,6 +8,7 @@ import { Title } from '../../src/components/Title';
 import AddToCalendarModal from '../../src/components/AddToCalendarModal';
 import { Layout } from '../../src/components/Layout';
 import Head from 'next/head';
+import { SITE_NAME } from '../../src/constants';
 
 const Calendar = () => {
   const calendarRef = useRef(null);

@@ -1,24 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { v4 as uuid } from 'uuid';
 import { prisma } from '../../../../src/prisma';
-import { slugify } from '../../../../src/utils/slugfy';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { category } = req.body;
   const { id } = req.query;
-
+  const { hirerName, hirerCompany, hirerEmail, testimonial } = req.body;
   if (typeof id === 'string') {
-    if (!category) {
+    if (!hirerName || !hirerEmail || !testimonial || !hirerCompany) {
       res.status(406).json({
-        type: 'error',
-        response: 'Preencha os campos corretamente para prosseguir',
+        typpe: 'error',
+        response: 'Preencha os campos obrigatórios para prosseguir',
       });
     }
 
-    const categoryExists = await prisma.category
+    const testimonialExists = await prisma.testimonial
       .findFirst({
         where: {
           id,
@@ -28,22 +27,23 @@ export default async function handler(
         await prisma.$disconnect();
       });
 
-    if (!categoryExists) {
-      return res.status(403).json({
-        type: 'error',
-        response: 'Não existe essa categoria',
+    if (!testimonialExists) {
+      res.status(400).json({
+        typpe: 'error',
+        response: 'Não existe nenhum depoimento com esse ID',
       });
     }
 
-    const response = await prisma.category
+    await prisma.testimonial
       .update({
         where: {
           id,
         },
         data: {
-          name: category,
-          slug: slugify(category),
-          updated_at: new Date(),
+          hirerName,
+          hirerCompany,
+          hirerEmail,
+          testimonial,
         },
       })
       .finally(async () => {
@@ -52,7 +52,7 @@ export default async function handler(
 
     return res.status(200).json({
       type: 'success',
-      response: `A categoria foi atualizada com sucesso.`,
+      response: `O depoimento foi atualizado com sucesso.`,
     });
   }
 }

@@ -4,7 +4,6 @@ import React, { ReactElement, FormEvent, useMemo, useCallback } from 'react';
 import { BiDetail, BiCheckDouble, BiTrash } from 'react-icons/bi';
 import { FaTimes } from 'react-icons/fa';
 
-
 import Status from '../../src/components/Status';
 import { useSWRConfig } from 'swr';
 import { Loading } from '../../src/components/Loading';
@@ -13,6 +12,7 @@ import { useFetch } from '../../src/hooks/useFetch';
 import { Layout } from '../../src/components/Layout';
 import Head from 'next/head';
 import { api } from '../../src/service/api/api';
+import { SITE_NAME } from '../../src/constants';
 
 const Projects = () => {
   const { mutate: mutateGlobal } = useSWRConfig();

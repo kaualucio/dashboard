@@ -5,7 +5,10 @@ import axios from 'axios';
 //para todas as requisições browser to backend (backend proprio) não passar context(ctx)
 
 export function getApiClient(ctx?: any) {
-  const { access_token, refresh_token } = parseCookies(ctx);
+  const {
+    'beru.access_token': access_token,
+    'beru.refresh_token': refresh_token,
+  } = parseCookies(ctx);
   const api = axios.create({
     baseURL: 'http://localhost:3000',
     headers: {
@@ -14,37 +17,46 @@ export function getApiClient(ctx?: any) {
   });
   let isRefreshing = false;
 
-  if (access_token) {
-    api.defaults.headers['Authorization'] = `Bearer ${access_token}`;
-  }
-
-  api.interceptors.request.use((config) => {
-    return config;
-  });
+  api.interceptors.request.use(
+    async (config) => {
+      if (access_token && config.headers) {
+        config.headers['Authorization'] = `Bearer ${access_token}`;
+      }
+      return config;
+    },
+    (error) => {
+      console.log(error);
+      return Promise.reject(error);
+    }
+  );
 
   api.interceptors.response.use(
     (response) => response,
     async (error) => {
       const originalRequest = error.config;
       if (
-        !isRefreshing &&
+        // !isRefreshing &&
         !originalRequest._retry &&
-        (error.response.status === 401 || error.response.status === 403)
+        error.response.status === 401
       ) {
         originalRequest._retry = true;
-        isRefreshing = true;
-        const { data } = await api.post('/api/tokens/refresh-token', {
-          refresh_token,
-        });
-        setCookie(ctx, 'access_token', data.access_token, {
-          maxAge: 60, // 15 minutes
-        });
-        originalRequest.headers = {
-          Authorization: 'Bearer ' + data.access_token,
-          'Content-Type': 'application/json',
-        };
-        console.log(originalRequest);
-        return api(originalRequest);
+        // isRefreshing = true;
+        try {
+          const { data } = await api.post('/api/tokens/refresh-token', {
+            refresh_token,
+          });
+          setCookie(ctx, 'beru.access_token', data.access_token, {
+            maxAge: 30, // 15 minutes
+          });
+          originalRequest.headers = {
+            Authorization: 'Bearer ' + data.access_token,
+            'Content-Type': 'application/json',
+          };
+          return api(originalRequest);
+        } catch (error) {
+          console.log('catch error', error);
+          return Promise.reject(error);
+        }
       }
       return Promise.reject(error);
     }

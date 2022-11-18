@@ -13,7 +13,6 @@ interface TopBarMenuProps {
 
 const TopBarMenu = ({ menuIsOpen, handleOpenSideBarMenu }: TopBarMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  // const user: UserType = useUser();
   function handleOpenDropDownProfileMenu() {
     setIsOpen((prevState) => !prevState);
   }

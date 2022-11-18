@@ -1,25 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-async function getBySlug(slug: string | any) {
-  try {
-    const project = await prisma.articles.findFirst({
-      where: {
-        slug,
-      },
-      include: {
-        author: true,
-        category: true,
-      },
-    });
-    return project;
-  } catch (error) {
-    // console.log(error)
-    return 'Ocorreu um erro ao buscar os dados do artigo';
-  }
-}
+import { prisma } from '../../../../src/prisma';
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,12 +8,20 @@ export default async function handler(
   try {
     const { slug } = req.query;
 
-    if (slug) {
-      console.log(slug);
-      const response = await getBySlug(slug).finally(async () => {
-        await prisma.$disconnect();
-      });
-      console.log(response);
+    if (typeof slug === 'string') {
+      const response = await prisma.articles
+        .findFirst({
+          where: {
+            slug,
+          },
+          include: {
+            author: true,
+            category: true,
+          },
+        })
+        .finally(async () => {
+          await prisma.$disconnect();
+        });
       return res.status(200).json(response);
     }
   } catch (error) {

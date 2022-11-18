@@ -15,6 +15,9 @@ import { Layout } from '../src/components/Layout';
 import Head from 'next/head';
 import { parseCookies } from 'nookies';
 import { GetServerSideProps } from 'next';
+import { StatisticSingle } from '../src/components/StatisticSingle';
+import GridContainer from '../src/components/GridContainer';
+import { SITE_NAME } from '../src/constants';
 
 const Home = () => {
   const [openCreateTodoModal, setOpenCreateTodoModal] = useState(false);
@@ -60,6 +63,8 @@ const Home = () => {
     mutate(updatedTasks, false);
   }
 
+  // console.log(data);
+
   return (
     <section className="w-full p-5 h-full">
       <Head>
@@ -87,123 +92,59 @@ const Home = () => {
         <div
           className={`col-span-6 xl:col-span-4 row-span-1 xl:col-span-4 ${styles.metric} grid grid-cols-3 gap-5`}
         >
-          <div className="col-span-3 lg:col-span-1 bg-[#fff] h-[100px] max-h-[100px] px-6 md:px-3 shadow-sm rounded-md flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-14 w-14 rounded-xl bg-primary"></div>
-              <div>
-                <h3 className="text-xs text-text font-medium uppercase">
-                  Artigos
-                </h3>
-                <p className="text-xs text-text">Total de artigos:</p>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-black">20</p>
-          </div>
-          <div className="col-span-3 lg:col-span-1 bg-[#fff] h-[100px] max-h-[100px] px-6 md:px-3 shadow-sm rounded-md flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-14 w-14 rounded-xl bg-primary"></div>
-              <div>
-                <h3 className="text-xs text-text font-medium uppercase">
-                  Clientes
-                </h3>
-                <p className="text-xs text-text">Total de clientes:</p>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-black">150</p>
-          </div>
-          <div className="col-span-3 lg:col-span-1 bg-[#fff] h-[100px] max-h-[100px] px-6 md:px-3 shadow-sm rounded-md flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-14 w-14 rounded-xl bg-primary"></div>
-              <div>
-                <h3 className="text-xs text-text font-medium uppercase">
-                  Projetos
-                </h3>
-                <p className="text-xs text-text">Total de projetos:</p>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-black">200</p>
-          </div>
+          <StatisticSingle title="Artigos" value="20" label="Teste" />
+
+          <StatisticSingle title="Visitas" value="150" label="Teste" />
+
+          <StatisticSingle title="Projetos" value="200" label="Teste" />
         </div>
-        <div
-          className={`col-span-6 lg:col-span-3 xl:col-span-2 row-span-3 rounded-md shadow-sm bg-[#fff] p-6`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 text-black font-bold text-xl">
-              <FaTasks />
-              <h2>Tarefas</h2>
+        <GridContainer gridClass="col-span-6 lg:col-span-3 xl:col-span-2 row-span-3">
+          <>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1 text-black font-bold text-xl">
+                <FaTasks />
+                <h2>Tarefas</h2>
+              </div>
+              <button
+                onClick={handleOpenTaskModal}
+                className="p-1 rounded-full text-xl text-blue font-bold cursor-pointer transition duration-300 hover:text-darkBlue  hover:bg-[#EFEFEF]"
+              >
+                <AiOutlinePlus />
+              </button>
             </div>
-            <button
-              onClick={handleOpenTaskModal}
-              className="p-1 rounded-full text-xl text-blue font-bold cursor-pointer transition duration-300 hover:text-darkBlue  hover:bg-[#EFEFEF]"
-            >
-              <AiOutlinePlus />
-            </button>
-          </div>
-          <div className="h-[400px] mt-7 flex flex-col gap-2 overflow-y-auto">
-            {!data && isValidating ? (
-              <Loading />
-            ) : (
-              data.map((task: any) => (
-                <button
-                  key={task.id}
-                  onClick={() => handleOpenTaskDetailsModal(task)}
-                  className="border-b-[3px] border-b-[#ccc] px-2 py-3 rounded-md transition duration-300 hover:border-b-blue hover:bg-[#faf5f5]"
-                >
-                  <h3
-                    className={`text-black font-medium ${
-                      task.completed ? 'line-through' : ''
-                    }`}
+            <div className="mt-7 flex flex-col gap-2 overflow-y-auto h-96 lg:min-h-auto">
+              {!data && isValidating ? (
+                <Loading />
+              ) : (
+                data.map((task: any) => (
+                  <button
+                    key={task.id}
+                    onClick={() => handleOpenTaskDetailsModal(task)}
+                    className="border-b-[3px] border-b-[#ccc] px-2 py-3 rounded-md transition duration-300 hover:border-b-blue hover:bg-[#faf5f5]"
                   >
-                    {task.title}
-                  </h3>
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-        <div
-          className={`col-span-6 lg:col-span-3 xl:col-span-4 row-span-2  rounded-md shadow-sm h-96 bg-[#fff] p-3`}
-        ></div>
-        <div
-          className={`col-span-6 md:col-span-3 xl:col-span-2 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
-        ></div>
-        <div
-          className={`col-span-6 md:col-span-3 xl:col-span-2 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
-        ></div>
-        <div
-          className={`col-span-6 md:col-span-3 xl:col-span-2 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
-        ></div>
-        <div
-          className={`col-span-6 md:col-span-3 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
-        ></div>
-        <div
-          className={`col-span-6 md:col-span-3 row-span-2 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
-        ></div>
-        <div
-          className={`col-span-6 rounded-md shadow-sm h-96 bg-[#fff] p-3`}
-        ></div>
+                    <h3
+                      className={`text-black font-medium ${
+                        task.completed ? 'line-through' : ''
+                      }`}
+                    >
+                      {task.title}
+                    </h3>
+                  </button>
+                ))
+              )}
+            </div>
+          </>
+        </GridContainer>
+        <GridContainer gridClass=" h-96 col-span-6 lg:col-span-3 xl:col-span-4 row-span-2"></GridContainer>
+        <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 xl:col-span-2 row-span-2"></GridContainer>
+        <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 xl:col-span-2 row-span-2"></GridContainer>
+        <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 xl:col-span-2 row-span-2"></GridContainer>
+        <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 row-span-2"></GridContainer>
+        <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 row-span-2"></GridContainer>
+        <GridContainer gridClass=" h-96 col-span-6"></GridContainer>
       </div>
     </section>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { access_token, refresh_token } = parseCookies(ctx);
-
-  if (!access_token && !refresh_token) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  } else if (!access_token && refresh_token) {
-    //use the api api service that make the access_token refresh
-  }
-
-  return {
-    props: {},
-  };
 };
 
 Home.getLayout = function getLayout(page: ReactElement) {

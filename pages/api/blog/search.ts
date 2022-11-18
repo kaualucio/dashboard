@@ -1,29 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
-async function search(term: string) {
-  try {
-    const searchedArticles = await prisma.articles.findMany({
-      include: {
-        author: true,
-        category: true,
-      },
-      where: {
-        title: {
-          contains: term,
-          mode: 'insensitive',
-        },
-      },
-    });
-
-    return searchedArticles;
-  } catch (error) {
-    console.log(error);
-    return 'Ocorreu um erro durante a busca dos artigos';
-  }
-}
+import { prisma } from '../../../src/prisma';
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,12 +8,23 @@ export default async function handler(
 ) {
   try {
     const { searchTerm } = req.body;
-    console.log(searchTerm);
-    const response = await search(searchTerm).finally(async () => {
-      await prisma.$disconnect();
-    });
-    console.log(response);
-    return res.status(200).json(response);
+    const searchedArticles = await prisma.articles
+      .findMany({
+        include: {
+          author: true,
+          category: true,
+        },
+        where: {
+          title: {
+            contains: searchTerm,
+            mode: 'insensitive',
+          },
+        },
+      })
+      .finally(async () => {
+        await prisma.$disconnect();
+      });
+    return res.status(200).json(searchedArticles);
   } catch (error) {
     console.log(error);
     return res.status(400).json({ type: 'error', response: error });

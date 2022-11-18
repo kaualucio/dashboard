@@ -1,4 +1,3 @@
-
 import Head from 'next/head';
 import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
@@ -8,6 +7,8 @@ import { Header } from '../../src/components/Header';
 import { Layout } from '../../src/components/Layout';
 import { Select } from '../../src/components/Select';
 import { TextEditor } from '../../src/components/TextEditor';
+import { SITE_NAME } from '../../src/constants';
+import { api } from '../../src/service/api/api';
 
 const AddNewBlogPost = () => {
   const [newArticle, setNewArticle] = useState({

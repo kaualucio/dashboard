@@ -1,4 +1,3 @@
-
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import React, { FormEvent, useState, useEffect, ReactElement } from 'react';
@@ -7,6 +6,7 @@ import { FormControl } from '../../../src/components/FormControl';
 import { Header } from '../../../src/components/Header';
 import { Layout } from '../../../src/components/Layout';
 import { Message } from '../../../src/components/Message';
+import { SITE_NAME } from '../../../src/constants';
 import { api } from '../../../src/service/api/api';
 
 const EditTestimonial = ({ testimonial }: any) => {
@@ -29,10 +29,10 @@ const EditTestimonial = ({ testimonial }: any) => {
       return toast.error('Preencha os campos obrigatório para prosseguir');
     }
 
-    const result: any = await api.post('/api/testimonials/update', {
-      ...editedTestimonial,
-      id: testimonial.id,
-    });
+    const result: any = await api.post(
+      `/api/testimonials/edit/${testimonial.id}`,
+      editedTestimonial
+    );
     if (result.data.type === 'success') {
       toast.success(result.data.response);
     } else {
@@ -139,9 +139,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { params } = context;
 
-  const res = await api.get('http://localhost:3000/api/testimonials/getById', {
-    id: params?.id,
-  });
+  const res = await api.get(
+    `http://localhost:3000/api/testimonials/getById/${params?.id}`
+  );
 
   return {
     props: {

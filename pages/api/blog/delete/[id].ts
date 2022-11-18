@@ -1,38 +1,42 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-async function deleteArticle(id: string | any) {
-  try {
-    await prisma.articles.delete({
-      where: {
-        id,
-      },
-    });
-    return;
-  } catch (error) {
-    // console.log(error)
-    return 'Ocorreu um erro ao deletar o artigo';
-  }
-}
+import { prisma } from '../../../../src/prisma';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
-    try {
-      const { id } = req.query;
-
-      await deleteArticle(id).finally(async () => {
+  if (req.method !== 'POST') {
+    return res.status(405).end();
+  }
+  const { id } = req.query;
+  if (typeof id === 'string') {
+    const articleExists = await prisma.articles
+      .findFirst({
+        where: {
+          id,
+        },
+      })
+      .finally(async () => {
         await prisma.$disconnect();
       });
 
-      return res.status(200).json({ type: 'success' });
-    } catch (error) {
-      console.log(error);
-      return res.status(400).json({ type: 'error', response: error });
+    if (!articleExists) {
+      return res.status(404).json({
+        type: 'error',
+        response: 'Não existe nenhum artigo com esse título',
+      });
     }
+
+    await prisma.articles
+      .delete({
+        where: {
+          id,
+        },
+      })
+      .finally(async () => {
+        await prisma.$disconnect();
+      });
+
+    return res.status(200).json({ type: 'success' });
   }
 }

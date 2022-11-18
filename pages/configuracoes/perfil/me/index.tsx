@@ -1,4 +1,3 @@
-
 import { GetServerSideProps } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import Head from 'next/head';
@@ -19,18 +18,13 @@ import { IconButton } from '../../../../src/components/IconButton';
 import { Header } from '../../../../src/components/Header';
 import { Layout } from '../../../../src/components/Layout';
 
-import { authOptions } from '../../../api/auth/[...nextauth]';
-import { UserType } from '../../../../src/types/User';
 import { roles } from '../../../../src/utils/roles';
 import { phoneMask } from '../../../../src/utils/phone-mask';
 
 import placeholderProfilePicture from '../../../../public/images/placeholder_profile_picture.jpg';
+import { SITE_NAME } from '../../../../src/constants';
 
-interface ProfileProps {
-  user: UserType;
-}
-
-const Profile = ({ user }: ProfileProps) => {
+const Profile = () => {
   return (
     <section className="w-full p-5 h-full">
       <Head>
@@ -46,11 +40,7 @@ const Profile = ({ user }: ProfileProps) => {
           <div className="w-full md:w-96 md:max-w-sm bg-[#fff] px-5 py-7 rounded-lg text-center">
             <div className="relative z-10 w-44 h-44 mx-auto rounded-full border-4 border-black">
               <Image
-                src={
-                  user.profile_picture
-                    ? user.profile_picture
-                    : placeholderProfilePicture
-                }
+                src={placeholderProfilePicture}
                 alt=""
                 height={208}
                 width={208}
@@ -73,8 +63,8 @@ const Profile = ({ user }: ProfileProps) => {
               </div>
             </div>
             <div className="mt-5">
-              <h2 className="text-black text-lg font-bold">{user.name}</h2>
-              <p className="text-text text-md">{roles[user.role]}</p>
+              <h2 className="text-black text-lg font-bold"></h2>
+              <p className="text-text text-md"></p>
             </div>
             <div className="mt-10 flex flex-col gap-7">
               <div className="flex px-3 items-center justify-between ">
@@ -82,71 +72,57 @@ const Profile = ({ user }: ProfileProps) => {
                   <BsPatchCheckFill />
                   <p>Projetos completos:</p>
                 </div>
-                <p className="text-primary text-md font-bold">
-                  {user.Project.length}
-                </p>
+                <p className="text-primary text-md font-bold"></p>
               </div>
               <div className="flex px-3 items-center justify-between ">
                 <div className="flex items-center text-sm xl:text-md font-medium gap-2 text-text">
                   <IoMdConstruct />
                   <p>Projetos atuais:</p>
                 </div>
-                <p className="text-primary text-md font-bold">
-                  {user.Project.length}
-                </p>
+                <p className="text-primary text-md font-bold"></p>
               </div>
               <div className="flex px-3 items-center justify-between ">
                 <div className="flex items-center text-sm xl:text-md font-medium gap-2 text-text">
                   <BsPencilFill />
                   <p>Artigos Escritos:</p>
                 </div>
-                <p className="text-primary text-md font-bold">
-                  {user.articles.length}
-                </p>
+                <p className="text-primary text-md font-bold"></p>
               </div>
             </div>
           </div>
           <div className="bg-[#fff] w-full md:max-w-[820px] p-5 rounded-lg">
             <div>
               <h4 className="text-text text-md font-medium mb-2">Sobre min:</h4>
-              <p className="text-black text-md ">
-                {user.about ? user.about : ''}
-              </p>
+              <p className="text-black text-md "></p>
             </div>
             <div className="mt-5 mb-10 grid grid-cols-1 lg:grid-cols-2 gap-7">
               <div>
                 <h4 className="text-text text-md font-medium mb-2">Nome:</h4>
-                <p className="text-black text-md ">{user.name}</p>
+                <p className="text-black text-md "></p>
               </div>
               <div>
                 <h4 className="text-text text-md font-medium mb-2">Cargo:</h4>
-                <p className="text-black text-md ">{roles[user.role]}</p>
+                <p className="text-black text-md "></p>
               </div>
 
               <div>
                 <h4 className="text-text text-md font-medium mb-2">E-mail:</h4>
-                <p className="text-black text-md ">{user.email}</p>
+                <p className="text-black text-md "></p>
               </div>
               <div>
                 <h4 className="text-text text-md font-medium mb-2">
                   Telefone:
                 </h4>
-                <p className="text-black text-md ">
-                  {user.phone ? phoneMask(user.phone) : ''}
-                </p>
+                <p className="text-black text-md "></p>
               </div>
 
               <div>
                 <h4 className="text-text text-md font-medium mb-2">Sexo:</h4>
-                <p className="text-black text-md ">
-                  {user.sex ? user.sex : ''}
-                </p>
+                <p className="text-black text-md "></p>
               </div>
               <div>
                 <h4 className="text-text text-md font-medium mb-2">Idade:</h4>
-                <p className="text-black text-md ">
-                  {user.age ? user.age : ''}
-                </p>
+                <p className="text-black text-md "></p>
               </div>
             </div>
             <div className="flex items-center sm:flex-row flex-col gap-3">
@@ -176,32 +152,6 @@ const Profile = ({ user }: ProfileProps) => {
       </div>
     </section>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions
-  );
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  const result = await api.get(
-    `http://localhost:3000/api/me/${session?.user?.id}`
-  );
-  return {
-    props: {
-      user: result.data,
-    },
-  };
 };
 
 Profile.getLayout = function getLayout(page: ReactElement) {

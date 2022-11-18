@@ -11,6 +11,7 @@ import { Dialog } from '../../src/components/Dialog';
 import { Layout } from '../../src/components/Layout';
 import Head from 'next/head';
 import { api } from '../../src/service/api/api';
+import { SITE_NAME } from '../../src/constants';
 
 const Categories = () => {
   const { data, mutate } = useFetch('/api/categories/get');

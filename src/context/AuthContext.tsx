@@ -1,5 +1,4 @@
-
-import { parseCookies } from 'nookies';
+import { destroyCookie, parseCookies } from 'nookies';
 import React, {
   useEffect,
   PropsWithChildren,
@@ -10,38 +9,47 @@ import React, {
 
 import jwt_decode from 'jwt-decode';
 
-import { UserType } from '../types/User';
-import { DecodedJWT } from '../types/DecodedJWT';
+import { UserType } from '../@types/User';
 import { api } from '../service/api/api';
-
+import { useFetch } from '../hooks/useFetch';
+import { useRouter } from 'next/router';
 interface AuthContextProps {
   user: UserType | null;
+  handleLogout: () => void;
 }
 
 export const AuthContext = createContext({} as AuthContextProps);
 
 const AuthContextProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<UserType | null>(null);
-  const { access_token } = parseCookies();
-
+  const { 'beru.session_token': session_token } = parseCookies();
+  const router = useRouter();
   useEffect(() => {
-    if (access_token) {
-      const { sub: userId }: DecodedJWT = jwt_decode(access_token);
+    if (session_token) {
+      const { uid: userId }: any = jwt_decode(session_token);
       api.get(`/api/me/${userId}`).then((res) => {
         setUser(res.data);
       });
     }
-  }, [access_token]);
+  }, [session_token]);
+  function handleLogout() {
+    destroyCookie(null, 'beru.refresh_token');
+    destroyCookie(null, 'beru.access_token');
+    destroyCookie(null, 'beru.session_token');
+    router.push('/login');
+  }
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, handleLogout }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 
 const useAuth = () => {
-  const { user } = useContext(AuthContext);
+  const { user, handleLogout } = useContext(AuthContext);
 
-  return { user };
+  return { user, handleLogout };
 };
 
 export { AuthContextProvider, useAuth };

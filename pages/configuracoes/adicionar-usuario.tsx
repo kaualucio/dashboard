@@ -1,11 +1,12 @@
-
 import React, { useState, ReactElement, FormEvent } from 'react';
 import toast from 'react-hot-toast';
+import Head from 'next/head';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Layout } from '../../src/components/Layout';
 import { Select } from '../../src/components/Select';
 import { Title } from '../../src/components/Title';
+import { SITE_NAME } from '../../src/constants';
 import { api } from '../../src/service/api/api';
 import { emailValidation } from '../../src/utils/email-validation';
 import { rolesOptions } from '../../src/utils/roles';
@@ -51,6 +52,9 @@ const AddUser = () => {
 
   return (
     <section className="relative w-full p-5 h-full">
+      <Head>
+        <title>SITE NAME | Adicionar novo usuário</title>
+      </Head>
       <div className="flex items-center justify-between">
         <Title title="Adicionar Usuário" size="xl" />
       </div>

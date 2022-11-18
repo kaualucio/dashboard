@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { setCookie } from 'nookies';
 import { v4 as uuid } from 'uuid';
 import { prisma } from '../../../src/prisma';
+import { generateToken } from '../../../src/utils/generate_token';
 
 export default async function handler(
   req: NextApiRequest,
@@ -48,16 +49,15 @@ export default async function handler(
     },
   });
 
-  const access_token = sign({}, 'supersecretsecreta', {
-    expiresIn: 1200, //20 minutes
-    subject: userExists.id,
+  const access_token = generateToken({ userId: userExists.id, expiresIn: 15 });
+  const session_token = generateToken({
+    payload: { uid: userExists.id },
+    expiresIn: '1 day',
   });
-
   if (refreshToken) {
     const refreshTokenExpired = moment().isAfter(
       moment.unix(refreshToken.expiresIn)
     );
-    console.log('token expirou', refreshTokenExpired, refreshToken.id);
     if (refreshTokenExpired) {
       await prisma.refreshToken.delete({
         where: {
@@ -73,14 +73,16 @@ export default async function handler(
         },
       });
 
-      return res
-        .status(200)
-        .json({ access_token, refresh_token: newRefreshToken.id });
+      return res.status(200).json({
+        access_token,
+        refresh_token: newRefreshToken.id,
+        session_token,
+      });
     }
 
     return res
       .status(200)
-      .json({ access_token, refresh_token: refreshToken.id });
+      .json({ access_token, refresh_token: refreshToken.id, session_token });
   }
 
   const newRefreshToken = await prisma.refreshToken.create({
@@ -93,5 +95,5 @@ export default async function handler(
 
   return res
     .status(200)
-    .json({ access_token, refresh_token: newRefreshToken.id });
+    .json({ access_token, refresh_token: newRefreshToken.id, session_token });
 }

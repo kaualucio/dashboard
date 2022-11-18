@@ -23,6 +23,7 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
   const [submenuIsOpen, setSubmenuIsOpen] = useState(false);
   const screenWidth = useWidth();
   const { user } = useAuth();
+
   function handleOpenSubmenu(e: React.MouseEvent) {
     setSubmenuIsOpen((prevState) => !prevState);
     const numberOfElementInNavTree =

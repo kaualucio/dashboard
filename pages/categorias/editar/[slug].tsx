@@ -1,4 +1,3 @@
-
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
@@ -9,6 +8,7 @@ import { FormControl } from '../../../src/components/FormControl';
 import { Header } from '../../../src/components/Header';
 import { Layout } from '../../../src/components/Layout';
 import { Loading } from '../../../src/components/Loading';
+import { SITE_NAME } from '../../../src/constants';
 import { useFetch } from '../../../src/hooks/useFetch';
 
 const EditCategory = () => {

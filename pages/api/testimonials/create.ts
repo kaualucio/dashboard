@@ -1,38 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-import { v4 as uuid } from 'uuid';
 
-const prisma = new PrismaClient();
+import { v4 as uuid } from 'uuid';
+import { prisma } from '../../../src/prisma';
 
 interface Testimonial {
   hirerName: string;
   hirerCompany: string;
   hirerEmail: string;
   testimonial: string;
-}
-
-async function create({
-  hirerName,
-  hirerCompany,
-  hirerEmail,
-  testimonial,
-}: Testimonial) {
-  try {
-    const newTestimonial = await prisma.testimonial.create({
-      data: {
-        id: uuid(),
-        hirerName,
-        hirerCompany,
-        hirerEmail,
-        testimonial,
-      },
-    });
-
-    return newTestimonial;
-  } catch (error) {
-    // console.log(error)
-    return 'Ocorreu um erro durante a criação do depoimento, tente novamente';
-  }
 }
 
 export default async function handler(
@@ -44,19 +19,24 @@ export default async function handler(
 
     if (!hirerName || !hirerEmail || !testimonial || !hirerCompany) {
       res.status(406).json({
-        typpe: 'error',
+        type: 'error',
         response: 'Preencha os campos obrigatórios para prosseguir',
       });
     }
 
-    const response = await create({
-      hirerName,
-      hirerCompany,
-      hirerEmail,
-      testimonial,
-    }).finally(async () => {
-      await prisma.$disconnect();
-    });
+    await prisma.testimonial
+      .create({
+        data: {
+          id: uuid(),
+          hirerName,
+          hirerCompany,
+          hirerEmail,
+          testimonial,
+        },
+      })
+      .finally(async () => {
+        await prisma.$disconnect();
+      });
 
     return res.status(201).json({
       type: 'success',

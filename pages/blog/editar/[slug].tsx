@@ -12,6 +12,8 @@ import { Select } from '../../../src/components/Select';
 import { Header } from '../../../src/components/Header';
 import { Layout } from '../../../src/components/Layout';
 import Head from 'next/head';
+import { SITE_NAME } from '../../../src/constants';
+import { api } from '../../../src/service/api/api';
 
 const ArticleSingle = () => {
   const { mutate: globalMutate } = useSWRConfig();

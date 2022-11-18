@@ -1,7 +1,6 @@
 import { prisma } from './../../../src/prisma/index';
 import { NextApiRequest, NextApiResponse } from 'next';
-import moment from 'moment';
-import { generateAccessToken } from '../../../src/utils/generate_access_token';
+import { generateToken } from '../../../src/utils/generate_token';
 
 export default async function handler(
   req: NextApiRequest,
@@ -27,7 +26,7 @@ export default async function handler(
     return res.status(403).json({ message: 'Refresh Token não existe' });
   }
 
-  const access_token = generateAccessToken({
+  const access_token = generateToken({
     userId: refreshTokenExists.userId,
   });
 

@@ -1,25 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
-async function get() {
-  try {
-    const users = await prisma.user.findMany();
-    // console.log(users);
-    return users;
-  } catch (error) {
-    // console.log(error)
-    return 'Ocorreu um erro durante a busca de dados sobre as categorias';
-  }
-}
+import { prisma } from '../../../src/prisma';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    const response = await get().finally(async () => {
+    const response = await prisma.user.findMany().finally(async () => {
       await prisma.$disconnect();
     });
 

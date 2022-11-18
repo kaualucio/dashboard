@@ -1,4 +1,3 @@
-
 import Head from 'next/head';
 import React, { useCallback, useState, ReactElement } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
@@ -7,6 +6,7 @@ import { Header } from '../../src/components/Header';
 import { Layout } from '../../src/components/Layout';
 import { Loading } from '../../src/components/Loading';
 import { Testimonial } from '../../src/components/Testimonial';
+import { SITE_NAME } from '../../src/constants';
 import { useFetch } from '../../src/hooks/useFetch';
 import { api } from '../../src/service/api/api';
 
