@@ -2,9 +2,11 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 
 import { FaBars } from 'react-icons/fa';
-import { DropDownMenuProfile } from './DropDownMenuProfile';
+import { MdOutlineLogout } from 'react-icons/md';
+import { AiFillLayout } from 'react-icons/ai';
+import { BsSunFill, BsMoonFill } from 'react-icons/bs';
 
-import placeholderProfilePicture from '../../public/images/placeholder_profile_picture.jpg';
+import { useAuth } from '../context/AuthContext';
 
 interface TopBarMenuProps {
   menuIsOpen: boolean;
@@ -12,31 +14,36 @@ interface TopBarMenuProps {
 }
 
 const TopBarMenu = ({ menuIsOpen, handleOpenSideBarMenu }: TopBarMenuProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  function handleOpenDropDownProfileMenu() {
-    setIsOpen((prevState) => !prevState);
-  }
+  const { handleLogout } = useAuth();
+
+  function handleChangeLayout() {}
+  function handleChangeTheme() {}
 
   return (
     <div className="w-full h-16 flex items-center justify-between px-5 shadow-md ">
       <button onClick={() => handleOpenSideBarMenu(menuIsOpen ? false : true)}>
         <FaBars size={25} />
       </button>
-      <div className="relative">
+      <div className="relative flex items-center gap-3">
         <button
-          onClick={handleOpenDropDownProfileMenu}
-          className="w-10 h-10 rounded-full border-2 border-[#fff] shadow-md"
+          onClick={handleChangeLayout}
+          className={`text-text font-medium text-sm flex items-center gap-1 p-2 rounded-full transition-all duration-300 hover:bg-[#E0E0E0] hover:text-primary`}
         >
-          <Image
-            src={placeholderProfilePicture}
-            alt=""
-            height={40}
-            width={40}
-            objectFit="cover"
-            style={{ borderRadius: 999 }}
-          />
+          <AiFillLayout size={20} />
         </button>
-        <DropDownMenuProfile isOpen={isOpen} />
+        <button
+          onClick={handleChangeTheme}
+          className={`text-text font-medium text-sm flex items-center gap-1 p-2 rounded-full transition-all duration-300 hover:bg-[#E0E0E0] hover:text-primary`}
+        >
+          <BsSunFill size={20} />
+        </button>
+          <button
+          onClick={handleLogout}
+          className={`text-text font-medium text-sm flex items-center gap-1 py-2 transition-all duration-300 hover:text-primary`}
+        >
+          <MdOutlineLogout size={20} />
+          <p>Sair</p>
+        </button>
       </div>
     </div>
   );

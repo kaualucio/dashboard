@@ -9,6 +9,7 @@ export function getApiClient(ctx?: any) {
     'beru.access_token': access_token,
     'beru.refresh_token': refresh_token,
   } = parseCookies(ctx);
+  // const { handleChangeHasToFetchUser } = useFetchUserData()
   const api = axios.create({
     baseURL: 'http://localhost:3000',
     headers: {
@@ -35,18 +36,18 @@ export function getApiClient(ctx?: any) {
     async (error) => {
       const originalRequest = error.config;
       if (
-        // !isRefreshing &&
+        !isRefreshing &&
         !originalRequest._retry &&
         error.response.status === 401
       ) {
         originalRequest._retry = true;
-        // isRefreshing = true;
+        isRefreshing = true;
         try {
           const { data } = await api.post('/api/tokens/refresh-token', {
             refresh_token,
           });
           setCookie(ctx, 'beru.access_token', data.access_token, {
-            maxAge: 30, // 15 minutes
+            maxAge: 60 * 60 * 24, // 15 minutes
           });
           originalRequest.headers = {
             Authorization: 'Bearer ' + data.access_token,

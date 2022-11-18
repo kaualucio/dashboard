@@ -30,15 +30,7 @@ const DropDownMenuProfile = ({ isOpen }: DropDownMenuProfileProps) => {
           <p>Meu perfil</p>
         </a>
       </Link>
-      <button
-        onClick={handleLogout}
-        className={`text-text font-medium text-sm flex items-center gap-2 py-2 ${
-          isOpen ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <MdOutlineLogout size={20} />
-        <p>Sair</p>
-      </button>
+      
     </div>
   );
 };

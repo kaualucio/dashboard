@@ -20,7 +20,7 @@ const StatisticSingle = ({
           <div className="h-14 w-14 rounded-xl bg-primary">{icon}</div>
           <div className="flex flex-col">
             <h3 className="text-sm text-text font-medium uppercase">{title}</h3>
-            <p className="block lg:hidden text-sm text-text ">{label}</p>
+            <p className="text-sm text-text ">{label}</p>
           </div>
         </div>
         <p className="text-2xl font-bold text-black">{value}</p>

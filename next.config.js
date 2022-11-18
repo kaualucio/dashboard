@@ -9,9 +9,6 @@ const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
   },
-  experimental: {
-    allowMiddlewareResponseBody: false,
-  },
 };
 
 const withTM = require('next-transpile-modules')([

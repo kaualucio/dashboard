@@ -90,7 +90,7 @@ const Home = () => {
       <Title title="Dashboard" size="xl" />
       <div className={`mt-10 grid grid-cols-6 grid-rows-8 gap-6`}>
         <div
-          className={`col-span-6 xl:col-span-4 row-span-1 xl:col-span-4 ${styles.metric} grid grid-cols-3 gap-5`}
+          className={`col-span-6  row-span-1 ${styles.metric} grid grid-cols-3 gap-5`}
         >
           <StatisticSingle title="Artigos" value="20" label="Teste" />
 
@@ -98,7 +98,8 @@ const Home = () => {
 
           <StatisticSingle title="Projetos" value="200" label="Teste" />
         </div>
-        <GridContainer gridClass="col-span-6 lg:col-span-3 xl:col-span-2 row-span-3">
+        <GridContainer gridClass="h-96 col-span-6 lg:col-span-3 xl:col-span-4 row-span-2"></GridContainer>
+        <GridContainer gridClass="col-span-6 lg:col-span-3 xl:col-span-2 row-span-4">
           <>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1 text-black font-bold text-xl">
@@ -113,7 +114,7 @@ const Home = () => {
               </button>
             </div>
             <div className="mt-7 flex flex-col gap-2 overflow-y-auto h-96 lg:min-h-auto">
-              {!data && isValidating ? (
+              {(!data && isValidating) || (!data && !isValidating) ? (
                 <Loading />
               ) : (
                 data.map((task: any) => (
@@ -135,9 +136,8 @@ const Home = () => {
             </div>
           </>
         </GridContainer>
-        <GridContainer gridClass=" h-96 col-span-6 lg:col-span-3 xl:col-span-4 row-span-2"></GridContainer>
         <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 xl:col-span-2 row-span-2"></GridContainer>
-        <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 xl:col-span-2 row-span-2"></GridContainer>
+        {/* <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 xl:col-span-2 row-span-2"></GridContainer> */}
         <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 xl:col-span-2 row-span-2"></GridContainer>
         <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 row-span-2"></GridContainer>
         <GridContainer gridClass=" h-96 col-span-6 md:col-span-3 row-span-2"></GridContainer>

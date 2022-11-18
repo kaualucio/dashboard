@@ -4,7 +4,7 @@ export const prisma = new PrismaClient();
 
 (async () => {
   try {
-    console.log(await prisma.widget.create({ data: {} }));
+    console.log('EXECUTING QUERY');
   } catch (err) {
     console.error('error executing query:', err);
   } finally {

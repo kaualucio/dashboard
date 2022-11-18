@@ -1,17 +1,19 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { setCookie } from 'nookies';
-import React, { useState, FormEvent } from 'react';
+import { TailSpin } from 'react-loader-spinner'
+import React, { useState, FormEvent, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { SITE_NAME } from '../src/constants';
 import { api } from '../src/service/api/api';
-
 const Login = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter();
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
+    setIsLoading(true)
     try {
       if (!login || !password) {
         return toast.error(
@@ -27,16 +29,14 @@ const Login = () => {
       });
 
       setCookie(null, 'beru.access_token', access_token, {
-        maxAge: 60 * 15, // 15 minutes
+        maxAge: 60 * 60 * 24, // 1 day
       });
 
       setCookie(null, 'beru.refresh_token', refresh_token, {
         maxAge: 60 * 60 * 24, // 1 day
       });
 
-      setCookie(null, 'beru.session_token', session_token, {
-        maxAge: 60 * 60 * 24, // 1 day
-      });
+      setIsLoading(false)
       api.defaults.headers['Authorization'] = `Bearer ${access_token}`;
       router.push('/');
     } catch (error) {
@@ -96,9 +96,16 @@ const Login = () => {
                 className="block h-10 border border-text rounded-md"
               />
             </div>
-            <div className="flex flex-col gap-2 sm:w-[400px] w-full mx-auto">
-              <button className="mt-5 w-[400] text-[#fff] h-12 rounded-md text-center bg-blue transition duration-300 hover:bg-darkBlue">
-                Entrar
+            <div 
+            className="flex flex-col gap-2 sm:w-[400px] w-full mx-auto">
+              <button
+              disabled={isLoading}
+              className={`mt-5 w-[400] text-[#fff] h-12 rounded-md text-center ${isLoading ? 'bg-darkBlue cursor cursor-default' : 'bg-blue'} transition duration-300 hover:bg-darkBlue`}>
+                {!isLoading ? 'Entrar' : (
+                  <div className="flex items-center justify-center">
+                    <TailSpin radius={1} height="15" width="15" color="#fff" visible={true}/>
+                  </div>
+                ) }
               </button>
             </div>
           </form>
