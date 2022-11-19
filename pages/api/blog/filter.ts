@@ -7,6 +7,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
+    if(req.method !== 'POST') {
+      return res.status(405).end()
+    }
     const { filters } = req.body;
     const searchedArticles = await prisma.articles
       .findMany({

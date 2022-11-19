@@ -12,45 +12,52 @@ export default async function handler(
   }
 
   const { category } = req.body;
-
-  if (!category) {
-    res.status(406).json({
+  try {
+  
+    if (!category) {
+      res.status(406).json({
+        type: 'error',
+        response: 'Preencha os campos corretamente para prosseguir',
+      });
+    }
+  
+    const categoryExists = await prisma.category
+      .findFirst({
+        where: {
+          name: category,
+        },
+      })
+      .finally(async () => {
+        await prisma.$disconnect();
+      });
+  
+    if (categoryExists) {
+      return res.status(403).json({
+        type: 'error',
+        response: 'Já existe uma categoria com esse nome',
+      });
+    }
+  
+    await prisma.category
+      .create({
+        data: {
+          id: uuid(),
+          name: category,
+          slug: slugify(category),
+        },
+      })
+      .finally(async () => {
+        await prisma.$disconnect();
+      });
+  
+    return res.status(201).json({
+      type: 'success',
+      response: `A categoria ${category} foi criada com sucesso.`,
+    });
+  } catch (error) {
+    return res.status(400).json({
       type: 'error',
-      response: 'Preencha os campos corretamente para prosseguir',
+      response: `Ocorreu um erro ao criar a categoria ${category}.`,
     });
   }
-
-  const categoryExists = await prisma.category
-    .findFirst({
-      where: {
-        name: category,
-      },
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-
-  if (categoryExists) {
-    return res.status(403).json({
-      type: 'error',
-      response: 'Já existe uma categoria com esse nome',
-    });
-  }
-
-  await prisma.category
-    .create({
-      data: {
-        id: uuid(),
-        name: category,
-        slug: slugify(category),
-      },
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-
-  return res.status(201).json({
-    type: 'success',
-    response: `A categoria ${category} foi criada com sucesso.`,
-  });
 }

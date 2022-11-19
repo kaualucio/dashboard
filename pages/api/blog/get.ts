@@ -7,6 +7,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
+    if(req.method !== 'GET') {
+      return res.status(405).end()
+    }
     const allArticles = await prisma.articles
       .findMany({
         include: {

@@ -15,6 +15,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
+    if (req.method !== 'POST') {
+      return res.status(405).end();
+    }
     const { hirerName, hirerCompany, hirerEmail, testimonial } = req.body;
 
     if (!hirerName || !hirerEmail || !testimonial || !hirerCompany) {

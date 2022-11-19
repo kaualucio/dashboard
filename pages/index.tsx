@@ -18,12 +18,15 @@ import { GetServerSideProps } from 'next';
 import { StatisticSingle } from '../src/components/StatisticSingle';
 import GridContainer from '../src/components/GridContainer';
 import { SITE_NAME } from '../src/constants';
+import { OpenTaskButton } from '../src/components/Buttons/OpenTaskButton';
+import toast from 'react-hot-toast';
 
 const Home = () => {
   const [openCreateTodoModal, setOpenCreateTodoModal] = useState(false);
   const [openDetailsTodoModal, setOpenDetailsTodoModal] = useState(false);
   const [task, setTask] = useState<any>(null);
-  const { data, isValidating, mutate } = useFetch('/api/tasks/get');
+  const { data: tasks, isValidating, mutate } = useFetch('/api/tasks/get');
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleOpenTaskModal() {
     setOpenCreateTodoModal((prevState) => !prevState);
@@ -39,7 +42,7 @@ const Home = () => {
       completed_by_user_id: '9cfd74d8-b4bc-4c0d-83ed-53bb4cea9e62',
     });
 
-    const updatedTasks = data?.map((task: any) => {
+    const updatedTasks = tasks?.map((task: any) => {
       if (task.id === taskId) {
         return {
           ...task,
@@ -55,15 +58,19 @@ const Home = () => {
     mutate(updatedTasks, false);
   }
 
-  function handleDeleteTask(taskId: string) {
-    api.post(`/api/tasks/delete/${taskId}`);
-
-    const updatedTasks = data?.filter((task: any) => task.id !== taskId);
-    handleOpenTaskDetailsModal();
-    mutate(updatedTasks, false);
+  async function handleDeleteTask(taskId: string) {
+    setIsLoading(true)
+    const { data } = await api.post(`/api/tasks/delete/${taskId}`);
+    if(data.type === 'success') {
+      toast.success(data.response)
+      const updatedTasks = tasks?.filter((task: any) => task.id !== taskId);
+      handleOpenTaskDetailsModal();
+      mutate(updatedTasks, false);
+    }else if(data.type === 'error') {
+      toast.error(data.response)
+    }
+    setIsLoading(false)
   }
-
-  // console.log(data);
 
   return (
     <section className="w-full p-5 h-full">
@@ -75,11 +82,12 @@ const Home = () => {
           handleOpenModal={() => handleOpenTaskModal()}
           title="Criar nova tarefa"
         >
-          <TaskForm tasks={data} />
+          <TaskForm tasks={tasks} />
         </ModalContainer>
       ) : openDetailsTodoModal ? (
         <TaskDetailsModal
           task={task}
+          isLoading={isLoading}
           handleDeleteTask={handleDeleteTask}
           handleCompleteTask={handleCompleteTask}
           handleOpenTaskDetailsModal={handleOpenTaskDetailsModal}
@@ -92,16 +100,16 @@ const Home = () => {
         <div
           className={`col-span-6  row-span-1 ${styles.metric} grid grid-cols-3 gap-5`}
         >
-          <StatisticSingle title="Artigos" value="20" label="Teste" />
+          <StatisticSingle title="Artigos" value="20" label="Total artigos" />
 
-          <StatisticSingle title="Visitas" value="150" label="Teste" />
+          <StatisticSingle title="Visitas" value="150" label="Total de visitas" />
 
-          <StatisticSingle title="Projetos" value="200" label="Teste" />
+          <StatisticSingle title="Projetos" value="200" label="Total de projetos" />
         </div>
         <GridContainer gridClass="h-96 col-span-6 lg:col-span-3 xl:col-span-4 row-span-2"></GridContainer>
         <GridContainer gridClass="col-span-6 lg:col-span-3 xl:col-span-2 row-span-4">
           <>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between p-3">
               <div className="flex items-center gap-1 text-black font-bold text-xl">
                 <FaTasks />
                 <h2>Tarefas</h2>
@@ -113,24 +121,18 @@ const Home = () => {
                 <AiOutlinePlus />
               </button>
             </div>
-            <div className="mt-7 flex flex-col gap-2 overflow-y-auto h-96 lg:min-h-auto">
-              {(!data && isValidating) || (!data && !isValidating) ? (
+            <div className="mt-7 flex flex-col gap-2 overflow-y-auto lg:min-h-auto">
+              {(!tasks && isValidating) || (!tasks && !isValidating) ? (
                 <Loading />
+              ) : tasks.length === 0 ? (
+                <p className="text-text font-sm text-center font-medium">Nenhuma tarefa pendente</p>
               ) : (
-                data.map((task: any) => (
-                  <button
-                    key={task.id}
-                    onClick={() => handleOpenTaskDetailsModal(task)}
-                    className="border-b-[3px] border-b-[#ccc] px-2 py-3 rounded-md transition duration-300 hover:border-b-blue hover:bg-[#faf5f5]"
-                  >
-                    <h3
-                      className={`text-black font-medium ${
-                        task.completed ? 'line-through' : ''
-                      }`}
-                    >
-                      {task.title}
-                    </h3>
-                  </button>
+                tasks.map((task: any) => (
+                  <OpenTaskButton 
+                    key={task.id} 
+                    task={task}
+                    handleOpenTaskDetailsModal={handleOpenTaskDetailsModal}
+                  />
                 ))
               )}
             </div>

@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { FaBars } from 'react-icons/fa';
 import { MdOutlineLogout } from 'react-icons/md';

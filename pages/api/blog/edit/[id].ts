@@ -6,6 +6,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if(req.method !== 'POST') {
+    return res.status(405).end()
+  }
   const {
     title,
     description,
@@ -17,7 +20,8 @@ export default async function handler(
     categoryId,
     authorId,
   } = req.body;
-  const { id } = req.query;
+  try {
+    const { id } = req.query;
   if (typeof id === 'string') {
     if (
       !title ||
@@ -82,6 +86,14 @@ export default async function handler(
       response: isPublished
         ? 'O artigo foi editado com sucesso!'
         : 'A continuação do rascunho foi salvo com sucesso!',
+    });
+  }
+  } catch (error) {
+    return res.status(400).json({
+      type: 'error',
+      response: isPublished
+        ? 'Ocorreu um erro ao editar e lançar o artigo, tente novamente!'
+        : 'Ocorreu um erro ao salvar a continuação do rascunho do artigo, tente novamente !',
     });
   }
 }

@@ -14,8 +14,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
     try {
+      if(req.method !== 'POST') {
+        return res.status(405).end()
+      }
       const { id } = req.query;
       if (typeof id === 'string') {
         await prisma.articles
@@ -37,5 +39,4 @@ export default async function handler(
       console.log(error);
       return res.status(400).json({ type: 'error', response: error });
     }
-  }
 }

@@ -5,23 +5,33 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { id } = req.query;
-  if (typeof id === 'string') {
-    await prisma.project
-      .update({
-        where: {
-          id,
-        },
-        data: {
-          status: 'Completo',
-          completed: true,
-          completed_at: new Date(),
-        },
-      })
-      .finally(async () => {
-        await prisma.$disconnect();
-      });
-
-    return res.status(200);
+  try {
+    if (req.method !== 'POST') {
+      return res.status(405).end();
+    }
+    const { id } = req.query;
+    if (typeof id === 'string') {
+      await prisma.project
+        .update({
+          where: {
+            id,
+          },
+          data: {
+            status: 'Completo',
+            completed: true,
+            completed_at: new Date(),
+          },
+        })
+        .finally(async () => {
+          await prisma.$disconnect();
+        });
+  
+      return res.status(200);
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({
+      type: 'error', 
+      response: `Ocorreu um erro ao completar o projeto, tente novamente.`});
   }
 }

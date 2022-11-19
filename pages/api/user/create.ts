@@ -24,52 +24,60 @@ export default async function handler(
   }
 
   const { name, email, role, profile_picture } = req.body;
-
-  if (!name || !email || !role) {
-    res.status(406).json({
-      typpe: 'error',
-      response: 'Preencha os campos corretamente para prosseguir',
+  try {
+  
+    if (!name || !email || !role) {
+      res.status(406).json({
+        typpe: 'error',
+        response: 'Preencha os campos corretamente para prosseguir',
+      });
+    }
+  
+    const userExistsByEmail = await prisma.user
+      .findFirst({
+        where: {
+          email,
+        },
+      })
+      .finally(async () => {
+        await prisma.$disconnect();
+      });
+  
+    if (userExistsByEmail) {
+      return res.status(403).json({
+        type: 'error',
+        response: 'Já existe um usuário com esse email',
+      });
+    }
+  
+    const randomLogin = loginGenerator();
+    const hashedPassword = await hash(passwordGenerator(), 10);
+  
+    const result = await prisma.user
+      .create({
+        data: {
+          id: uuid(),
+          name,
+          email,
+          role,
+          login: randomLogin,
+          password: hashedPassword,
+          profile_picture,
+        },
+      })
+      .finally(async () => {
+        await prisma.$disconnect();
+      });
+  
+    return res.status(201).json({
+      type: 'success',
+      response: `Usuário ${name} foi criado com sucesso! Um email com um link verificação e informações de login para enviados para o email usado no cadastro.`,
     });
-  }
-
-  const userExistsByEmail = await prisma.user
-    .findFirst({
-      where: {
-        email,
-      },
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-
-  if (userExistsByEmail) {
-    return res.status(403).json({
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({
       type: 'error',
-      response: 'Já existe um usuário com esse email',
+      response: `Ocorreu um erro ao cadastrar o usuário ${name}, tente novamente.`,
     });
   }
-
-  const randomLogin = loginGenerator();
-  const hashedPassword = await hash(passwordGenerator(), 10);
-
-  const result = await prisma.user
-    .create({
-      data: {
-        id: uuid(),
-        name,
-        email,
-        role,
-        login: randomLogin,
-        password: hashedPassword,
-        profile_picture,
-      },
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-
-  return res.status(201).json({
-    type: 'success',
-    response: `Usuário ${name} foi criado com sucesso! Um email com um link verificação e informações de login para enviados para o email usado no cadastro.`,
-  });
 }

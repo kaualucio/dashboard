@@ -64,8 +64,8 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
           <Image
             src={placeholderProfilePicture}
             alt=""
-            height={50}
-            width={50}
+            height={60}
+            width={60}
             objectFit="cover"
             style={{ borderRadius: 999 }}
           />

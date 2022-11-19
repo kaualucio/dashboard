@@ -6,60 +6,67 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== 'POST') {
-    return res.status(405).end();
-  }
-
-  const {
-    client_id,
-    responsible_id,
-    title,
-    objective,
-    description,
-    phone,
-    type_service,
-    budget,
-  } = req.body;
-
-  if (
-    !client_id ||
-    !responsible_id ||
-    !title ||
-    !objective ||
-    !description ||
-    !type_service ||
-    !budget
-  ) {
-    res.status(406).json({
+  try {
+    if (req.method !== 'POST') {
+      return res.status(405).end();
+    }
+  
+    const {
+      client_id,
+      responsible_id,
+      title,
+      objective,
+      description,
+      phone,
+      type_service,
+      budget,
+    } = req.body;
+  
+    if (
+      !client_id ||
+      !responsible_id ||
+      !title ||
+      !objective ||
+      !description ||
+      !type_service ||
+      !budget
+    ) {
+      res.status(406).json({
+        type: 'error',
+        response: 'Preencha os campos obrigatórios para prosseguir',
+      });
+    }
+  
+    const response = await prisma.project
+      .create({
+        data: {
+          id: uuid(),
+          client_id,
+          title,
+          objective,
+          description,
+          phone,
+          responsible_id,
+          type_service,
+          budget,
+          status,
+          completed: false,
+          canceled: false,
+        },
+      })
+      .finally(async () => {
+        await prisma.$disconnect();
+      });
+  
+    return res.status(201).json({
+      type: 'success',
+      response: `O projeto foi cadastrado com sucesso.`,
+      project: response,
+    });
+  } catch (error) {
+    return res.status(400).json({
       type: 'error',
-      response: 'Preencha os campos obrigatórios para prosseguir',
+      response: `Ocorreu um erro ao cadastrar o projeto, tente novamente.`,
     });
   }
-
-  const response = await prisma.project
-    .create({
-      data: {
-        id: uuid(),
-        client_id,
-        title,
-        objective,
-        description,
-        phone,
-        responsible_id,
-        type_service,
-        budget,
-        status,
-        completed: false,
-        canceled: false,
-      },
-    })
-    .finally(async () => {
-      await prisma.$disconnect();
-    });
-
-  return res.status(201).json({
-    type: 'success',
-    response: `O projeto foi cadastrado com sucesso.`,
-    project: response,
-  });
 }

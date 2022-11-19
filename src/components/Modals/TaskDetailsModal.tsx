@@ -1,5 +1,6 @@
 import moment from 'moment';
 import React from 'react';
+import { taskPriority } from '../../utils/task-priority';
 import { ModalContainer } from '../ModalContainer';
 
 interface TaskDetailsModalProps {
@@ -9,6 +10,7 @@ interface TaskDetailsModalProps {
   task: any;
   titleModal: string;
   descriptionModal?: string;
+  isLoading: boolean
 }
 
 const TaskDetailsModal = ({
@@ -18,6 +20,7 @@ const TaskDetailsModal = ({
   task,
   titleModal,
   descriptionModal,
+  isLoading
 }: TaskDetailsModalProps) => {
   return (
     <ModalContainer
@@ -59,7 +62,7 @@ const TaskDetailsModal = ({
             <h3 className="text-black text-lg font-bold mb-1">
               Nível de urgência:
             </h3>
-            <p className="text-text text-md font-light">{task.priority}</p>
+            <p className="text-text text-md font-light">{taskPriority[task.priority]}</p>
           </div>
           <div className="w-full">
             <h3 className="text-black text-lg font-bold mb-1">Status:</h3>
@@ -102,7 +105,7 @@ const TaskDetailsModal = ({
         ) : null}
         <div className="mt-5 flex items-center gap-3">
           <button
-            disabled={task.completed ? true : false}
+            disabled={task.completed ? true : isLoading ? true : false}
             onClick={() => handleCompleteTask(task.id)}
             className={`w-full py-2 rounded-md text-md text-[#fff] font-bold  ${
               task.completed
@@ -114,8 +117,9 @@ const TaskDetailsModal = ({
           </button>
 
           <button
+          disabled={isLoading}
             onClick={() => handleDeleteTask(task.id)}
-            className="w-full py-2 rounded-md text-md text-[#fff] font-bold cursor-pointer bg-red transition duration-300 hover:bg-darkRed"
+            className={`w-full py-2 rounded-md text-md text-[#fff] font-bold cursor-pointer bg-red transition duration-300 hover:bg-darkRed ${isLoading ? 'bg-darkRed cursor-default' : ''}`}
           >
             Excluir
           </button>

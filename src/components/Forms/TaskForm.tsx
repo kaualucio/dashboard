@@ -2,9 +2,14 @@
 import React, { FormEvent, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useSWRConfig } from 'swr';
+import { api } from '../../service/api/api';
 import { Button } from '../Button';
 
-const TaskForm = ({ tasks }: any) => {
+interface TaskForm {
+  tasks: any[]
+}
+
+const TaskForm = ({ tasks }: TaskForm) => {
   const { mutate } = useSWRConfig();
   const [taskInfo, setTaskInfo] = useState({
     title: '',
@@ -13,12 +18,12 @@ const TaskForm = ({ tasks }: any) => {
     has_to_start_at: '',
     has_to_finish_at: '',
   });
-  const [isDisabled, setIsDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleCreateTask(e: FormEvent) {
     e.preventDefault();
     try {
-      setIsDisabled(true);
+      setIsLoading(true);
       if (
         !taskInfo.title ||
         !taskInfo.has_to_finish_at ||
@@ -28,12 +33,26 @@ const TaskForm = ({ tasks }: any) => {
           'Preencha os campos obrigatórios para prosseguir com o cadastro da tarefa.'
         );
       }
-
-      const result = await api.post('/api/tasks/create', {
+      
+      const {data} = await api.post('/api/tasks/create', {
         ...taskInfo,
         author_id: '9cfd74d8-b4bc-4c0d-83ed-53bb4cea9e62',
       });
-      // tasks.push()
+      if(data.type === 'success') {
+        toast.success(data.response)
+        tasks.push({
+          ...taskInfo,
+          author: {
+            name: 'Kauã',
+          },
+          completed: false,
+          completed_by_user: null,
+          completed_in_time: null,
+        });
+        mutate('/api/tasks/get', tasks, { revalidate: true });
+      }else if(data.type === 'error') {
+        toast.error(data.response)
+      }
       setTaskInfo({
         title: '',
         description: '',
@@ -41,28 +60,13 @@ const TaskForm = ({ tasks }: any) => {
         has_to_start_at: '',
         has_to_finish_at: '',
       });
-      tasks.push({
-        ...taskInfo,
-        author: {
-          name: 'Kauã',
-        },
-        completed: false,
-        completed_by_user: null,
-        completed_in_time: null,
-      });
-
-      mutate('/api/tasks/get', tasks, { revalidate: true });
-      if (result.data.type === 'success') {
-        toast.success(result.data.message);
-      } else if (result.data.type === 'error') {
-        toast.error(result.data.message);
-      }
+      
     } catch (error) {
       return toast.error(
         'Ocorreu um erro ao cadastra a tarefa, tente novamente.'
       );
     } finally {
-      setIsDisabled(false);
+      setIsLoading(false);
     }
   }
 
@@ -73,6 +77,7 @@ const TaskForm = ({ tasks }: any) => {
           Título
         </label>
         <input
+          value={taskInfo.title}
           onChange={(e) =>
             setTaskInfo((prevState) => ({
               ...prevState,
@@ -88,6 +93,7 @@ const TaskForm = ({ tasks }: any) => {
           Descrição
         </label>
         <textarea
+        value={taskInfo.description}
           onChange={(e) =>
             setTaskInfo((prevState) => ({
               ...prevState,
@@ -102,6 +108,7 @@ const TaskForm = ({ tasks }: any) => {
           Nível de Urgência
         </label>
         <select
+        value={taskInfo.priority}
           name=""
           id=""
           className="block w-full h-10 border border-text rounded-md"
@@ -127,6 +134,7 @@ const TaskForm = ({ tasks }: any) => {
             Data Início
           </label>
           <input
+          value={taskInfo.has_to_start_at}
             onChange={(e) =>
               setTaskInfo((prevState) => ({
                 ...prevState,
@@ -143,6 +151,7 @@ const TaskForm = ({ tasks }: any) => {
             Data Fim
           </label>
           <input
+          value={taskInfo.has_to_finish_at}
             onChange={(e) =>
               setTaskInfo((prevState) => ({
                 ...prevState,
@@ -155,7 +164,7 @@ const TaskForm = ({ tasks }: any) => {
           />
         </div>
       </div>
-      <Button disabled={isDisabled} type="submit" label="Criar tarefa" fullW />
+      <Button disabled={isLoading} type="submit" label="Criar tarefa" fullW />
     </form>
   );
 };

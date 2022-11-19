@@ -9,7 +9,7 @@ module.exports = {
       primary: '#040622',
       red: '#F56E6E',
       red2: '#D2505B',
-      darkRed2: '#B0374C',
+      darkRed: '#B0374C',
       blue: '#3B76E1',
       darkBlue: '#2B5BC1',
       green: '#63AD6F',

@@ -52,7 +52,7 @@ const Blog = () => {
 
   useEffect(() => {
     if (searchTerm.length > 0) {
-      axios
+      api
         .post('/api/blog/search/', {
           searchTerm,
         })
