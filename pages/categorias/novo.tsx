@@ -5,7 +5,7 @@ import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
 import { Layout } from '../../src/components/Layout';
-import { SITE_NAME } from '../../src/constants';
+
 import { api } from '../../src/service/api/api';
 
 const AddNewCategory = () => {

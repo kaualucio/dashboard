@@ -6,7 +6,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    if (req.method === 'GET') {
+    if (req.method !== 'GET') {
       return res.status(405).end();
     }
     const response = await prisma.project

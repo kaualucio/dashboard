@@ -3,18 +3,21 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-interface TestomialData {
+import placeholderProfilePicture from '../../public/images/placeholder_profile_picture.jpg';
+
+interface TestimonialData {
   id: string;
   hirerName: string;
   hirerCompany: string;
   hirerEmail: string;
+  hirerPhoto: string;
   testimonial: string;
   created_at: number;
   updated_at: number;
 }
 
-interface TesmonialProps {
-  data?: TestomialData;
+interface TestimonialProps {
+  data?: TestimonialData;
   handleDeleteTestimonial: (id: string | undefined) => void;
   isDisabled: boolean;
 }
@@ -23,14 +26,14 @@ const Testimonial = ({
   data,
   handleDeleteTestimonial,
   isDisabled,
-}: TesmonialProps) => {
+}: TestimonialProps) => {
   return (
     <div className="min-h-[300px] max-w-[300px] flex flex-col justify-between bg-[#fff] rounded-md shadow-md p-5">
       <div>
         <div className="flex items-center justify-center flex-col gap-1 ">
           <div className="w-20 h-20 mx-auto rounded-full border-4 border-black shadow-lg">
             <Image
-              src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGVyc29ufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
+              src={data?.hirerPhoto ? data?.hirerPhoto : placeholderProfilePicture }
               alt=""
               height={80}
               width={80}

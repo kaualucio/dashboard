@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 interface AuthContextProps {
   user: UserType | null;
   handleLogout: () => void;
+  handleUpdateUserData: (pictureUrl: string) => void;
 }
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -34,6 +35,12 @@ const AuthContextProvider = ({ children }: PropsWithChildren) => {
     }
   }, [access_token]);
   
+  function handleUpdateUserData(pictureUrl: string) {
+    if(pictureUrl ) {
+      setUser((prevState) => ({ ...prevState, profile_picture: pictureUrl } as UserType))
+    }
+  }
+
   function handleLogout() {
     destroyCookie(null, 'beru.refresh_token');
     destroyCookie(null, 'beru.access_token');
@@ -41,16 +48,16 @@ const AuthContextProvider = ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, handleLogout }}>
+    <AuthContext.Provider value={{ user, handleLogout, handleUpdateUserData }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 const useAuth = () => {
-  const { user, handleLogout } = useContext(AuthContext);
+  const user = useContext(AuthContext);
 
-  return { user, handleLogout };
+  return { ...user };
 };
 
 export { AuthContextProvider, useAuth };

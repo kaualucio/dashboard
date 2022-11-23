@@ -1,11 +1,13 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Head from 'next/head';
 import { FormControl } from '../../../../src/components/FormControl';
 import { Header } from '../../../../src/components/Header';
 import { Layout } from '../../../../src/components/Layout';
-import { SITE_NAME } from '../../../../src/constants';
+
 
 const EditProfile = () => {
+  
+
   return (
     <section className="w-full p-5 h-full">
       <Head>

@@ -4,18 +4,20 @@ import toast from 'react-hot-toast';
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
+import { InputFile } from '../../src/components/Inputs/InputFile';
 import { Layout } from '../../src/components/Layout';
-import { SITE_NAME } from '../../src/constants';
+
 import { api } from '../../src/service/api/api';
+import { addImageFile } from '../../src/utils/add_image_file';
 
 const AddTestimonial = () => {
   const [newTestimonial, setNewTestimonial] = useState({
     hirerName: '',
     hirerEmail: '',
     hirerCompany: '',
+    hirerPhoto: '',
     testimonial: '',
   });
-  const [response, setResponse] = useState({ type: 'none', response: '' });
   const [isDisabled, setIsDisabled] = useState(false);
 
   async function handleAddNewTestimonial(e: FormEvent) {
@@ -37,6 +39,7 @@ const AddTestimonial = () => {
       hirerName: '',
       hirerEmail: '',
       hirerCompany: '',
+      hirerPhoto: '',
       testimonial: '',
     });
     if (result.data.type === 'success') {
@@ -45,6 +48,19 @@ const AddTestimonial = () => {
       toast.error(result.data.response);
     }
     setIsDisabled(false);
+  }
+
+  async function handleSelectThumbnail(thumbnail: File) {
+    if(thumbnail) {
+      const result = await addImageFile(thumbnail, 'articles_thumbnail');
+
+      if(result.type === 'success') {
+        toast.success('A capa do artigo foi selecionada com sucesso!')
+        setNewTestimonial(prevState => ({ ...prevState, hirerPhoto: result.picture_url }))
+      }else if(result.type === 'error') {
+        toast.success('Não foi possível selecionar a capa do artigo, tente novamente!')
+      }
+    }
   }
 
   return (
@@ -117,6 +133,12 @@ const AddTestimonial = () => {
                 testimonial: e.target.value,
               }))
             }
+          />
+        <InputFile
+            onChange={(e) => e.currentTarget.files ? handleSelectThumbnail(e.currentTarget.files[0]) : null}
+            label="Capa"
+            name="thumbnail"
+            type="file"
           />
           <Button disabled={isDisabled} label="Adicionar" />
         </form>

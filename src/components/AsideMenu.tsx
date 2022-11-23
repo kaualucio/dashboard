@@ -62,7 +62,7 @@ const AsideMenu = ({ menuIsOpen, handleOpenSideBarMenu }: AsideMenuProps) => {
       <div className={styles.profile}>
         <div className={styles.profileImage}>
           <Image
-            src={placeholderProfilePicture}
+            src={user && user.profile_picture ? user.profile_picture : placeholderProfilePicture}
             alt=""
             height={60}
             width={60}

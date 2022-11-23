@@ -1,12 +1,13 @@
 import React, { useState, ReactElement, FormEvent } from 'react';
 import toast from 'react-hot-toast';
 import Head from 'next/head';
+
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Layout } from '../../src/components/Layout';
 import { Select } from '../../src/components/Select';
 import { Title } from '../../src/components/Title';
-import { SITE_NAME } from '../../src/constants';
+
 import { api } from '../../src/service/api/api';
 import { emailValidation } from '../../src/utils/email-validation';
 import { rolesOptions } from '../../src/utils/roles';

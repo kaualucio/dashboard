@@ -2,26 +2,17 @@ import Head from 'next/head';
 import React, { useEffect, useState, FormEvent, ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import { useSWRConfig } from 'swr';
+
 import { Button } from '../../src/components/Button';
 import { CheckboxContainer } from '../../src/components/CheckboxContainer';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
 import { Layout } from '../../src/components/Layout';
-import { Message } from '../../src/components/Message';
 import { Select } from '../../src/components/Select';
-import { Title } from '../../src/components/Title';
-import { SITE_NAME } from '../../src/constants';
+
 import { api } from '../../src/service/api/api';
 import { services } from '../../src/utils/type-services';
 
-const fetcher = async (url: string, method: string) => {
-  const { data } = await axios({
-    method,
-    url,
-  });
-
-  return data;
-};
 
 const AddNewProject = () => {
   const { mutate } = useSWRConfig();

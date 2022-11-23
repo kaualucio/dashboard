@@ -3,13 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { v4 as uuid } from 'uuid';
 import { prisma } from '../../../src/prisma';
 
-interface Testimonial {
-  hirerName: string;
-  hirerCompany: string;
-  hirerEmail: string;
-  testimonial: string;
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -18,7 +11,7 @@ export default async function handler(
     if (req.method !== 'POST') {
       return res.status(405).end();
     }
-    const { hirerName, hirerCompany, hirerEmail, testimonial } = req.body;
+    const { hirerName, hirerCompany, hirerEmail, hirerPhoto, testimonial } = req.body;
 
     if (!hirerName || !hirerEmail || !testimonial || !hirerCompany) {
       res.status(406).json({
@@ -34,6 +27,7 @@ export default async function handler(
           hirerName,
           hirerCompany,
           hirerEmail,
+          hirerPhoto,
           testimonial,
         },
       })

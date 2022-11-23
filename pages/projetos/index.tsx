@@ -12,7 +12,7 @@ import { useFetch } from '../../src/hooks/useFetch';
 import { Layout } from '../../src/components/Layout';
 import Head from 'next/head';
 import { api } from '../../src/service/api/api';
-import { SITE_NAME } from '../../src/constants';
+
 
 const Projects = () => {
   const { mutate: mutateGlobal } = useSWRConfig();
@@ -67,7 +67,7 @@ const Projects = () => {
   );
 
   if (!data) return <Loading />;
-
+console.log(data)
   return (
     <section className="w-full p-5 h-full">
       <Head>

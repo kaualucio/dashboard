@@ -7,7 +7,7 @@ import { Loading } from '../../src/components/Loading';
 import { Layout } from '../../src/components/Layout';
 import Head from 'next/head';
 import { api } from '../../src/service/api/api';
-import { SITE_NAME } from '../../src/constants';
+
 
 const SortTestimonials = () => {
   const [testimonials, setTestimonials] = useState<any[]>([]);

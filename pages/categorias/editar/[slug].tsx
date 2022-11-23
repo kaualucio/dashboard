@@ -1,15 +1,17 @@
+import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import { useSWRConfig } from 'swr';
+
 import { Button } from '../../../src/components/Button';
 import { FormControl } from '../../../src/components/FormControl';
 import { Header } from '../../../src/components/Header';
 import { Layout } from '../../../src/components/Layout';
 import { Loading } from '../../../src/components/Loading';
-import { SITE_NAME } from '../../../src/constants';
+
 import { useFetch } from '../../../src/hooks/useFetch';
+import { api } from '../../../src/service/api/api';
 
 const EditCategory = () => {
   const router = useRouter();

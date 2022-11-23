@@ -10,7 +10,7 @@ import { Loading } from '../../src/components/Loading';
 import { Dialog } from '../../src/components/Dialog';
 import { Layout } from '../../src/components/Layout';
 import { api } from '../../src/service/api/api';
-import { SITE_NAME } from '../../src/constants';
+
 
 const Clients = () => {
   const { data, mutate } = useFetch('/api/clients/get');

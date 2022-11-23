@@ -12,8 +12,10 @@ import { Select } from '../../../src/components/Select';
 import { Header } from '../../../src/components/Header';
 import { Layout } from '../../../src/components/Layout';
 import Head from 'next/head';
-import { SITE_NAME } from '../../../src/constants';
+
 import { api } from '../../../src/service/api/api';
+import { InputFile } from '../../../src/components/Inputs/InputFile';
+import { addImageFile } from '../../../src/utils/add_image_file';
 
 const ArticleSingle = () => {
   const { mutate: globalMutate } = useSWRConfig();
@@ -24,8 +26,7 @@ const ArticleSingle = () => {
     description: '',
     authorId: '',
     categoryId: '',
-    thumbnail:
-      'https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    thumbnail:  '',
     key_words: '',
     reading_time: 0,
   });
@@ -72,6 +73,19 @@ const ArticleSingle = () => {
     setArticleData((prevState) => ({ ...prevState, categoryId: value }));
   }
 
+  async function handleSelectThumbnail(thumbnail: File) {
+    const result = await addImageFile(thumbnail, 'articles_thumbnail');
+
+    if(result.type === 'success') {
+      toast.success('A capa do artigo foi selecionada com sucesso!')
+      setArticleData(prevState => ({ ...prevState, thumbnail: result.picture_url }))
+    }else if(result.type === 'error') {
+      toast.success('Não foi possível selecionar a capa do artigo, tente novamente!')
+    }
+
+  }
+
+
   useEffect(() => {
     api.get('/api/user/get').then((res) => {
       setAuthors(res.data.data);
@@ -89,8 +103,7 @@ const ArticleSingle = () => {
         description: data?.description,
         authorId: data?.authorId,
         categoryId: data?.categoryId,
-        thumbnail:
-          'https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+        thumbnail: data?.thumbnail,
         key_words: data?.key_words.join(', '),
         reading_time: Number(data?.reading_time),
       });
@@ -182,9 +195,8 @@ const ArticleSingle = () => {
             name="time_lecture"
             type="number"
           />
-          <FormControl
-            value={''}
-            onChange={() => {}}
+          <InputFile
+            onChange={(e) => e.currentTarget.files ? handleSelectThumbnail(e.currentTarget.files[0]) : null}
             label="Capa"
             name="thumbnail"
             type="file"

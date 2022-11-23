@@ -75,6 +75,7 @@ model Testimonial {
   hirerName    String
   hirerEmail   String
   hirerCompany String
+  hirerPhoto   String?
   testimonial  String
   ordered_at   DateTime @default(now())
   created_at   DateTime @default(now())

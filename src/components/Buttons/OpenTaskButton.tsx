@@ -23,7 +23,6 @@ const OpenTaskButton = ({ task, handleOpenTaskDetailsModal }: OpenTaskButtonProp
     priorityColor = 'bg-[#EF7564]'
     priorityColorBg = 'bg-[#F5D3CE]'
   }
-  console.log(priorityColor, priorityColorBg)
   return (
     <button       
       onClick={() => handleOpenTaskDetailsModal(task)}

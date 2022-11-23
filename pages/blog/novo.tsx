@@ -1,14 +1,17 @@
 import Head from 'next/head';
 import React, { FormEvent, useEffect, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
+
 import { Button } from '../../src/components/Button';
 import { FormControl } from '../../src/components/FormControl';
 import { Header } from '../../src/components/Header';
+import { InputFile } from '../../src/components/Inputs/InputFile';
 import { Layout } from '../../src/components/Layout';
 import { Select } from '../../src/components/Select';
 import { TextEditor } from '../../src/components/TextEditor';
-import { SITE_NAME } from '../../src/constants';
+
 import { api } from '../../src/service/api/api';
+import { addImageFile } from '../../src/utils/add_image_file';
 
 const AddNewBlogPost = () => {
   const [newArticle, setNewArticle] = useState({
@@ -16,8 +19,7 @@ const AddNewBlogPost = () => {
     description: '',
     authorId: '',
     categoryId: '',
-    thumbnail:
-      'https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    thumbnail: '',
     key_words: '',
     reading_time: 0,
   });
@@ -46,14 +48,13 @@ const AddNewBlogPost = () => {
       content,
       isPublished: notSaveAsDraft,
     });
-    console.log(result);
+
     setNewArticle({
       title: '',
       description: '',
       authorId: '',
       categoryId: '',
-      thumbnail:
-        'https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+      thumbnail: '',
       key_words: '',
       reading_time: 0,
     });
@@ -72,6 +73,18 @@ const AddNewBlogPost = () => {
 
   function handleSelectCategory(value: string) {
     setNewArticle((prevState) => ({ ...prevState, categoryId: value }));
+  }
+
+  async function handleSelectThumbnail(thumbnail: File) {
+    const result = await addImageFile(thumbnail, 'articles_thumbnail');
+
+    if(result.type === 'success') {
+      toast.success('A capa do artigo foi selecionada com sucesso!')
+      setNewArticle(prevState => ({ ...prevState, thumbnail: result.picture_url }))
+    }else if(result.type === 'error') {
+      toast.success('Não foi possível selecionar a capa do artigo, tente novamente!')
+    }
+
   }
 
   useEffect(() => {
@@ -161,14 +174,12 @@ const AddNewBlogPost = () => {
             name="time_lecture"
             type="number"
           />
-          <FormControl
-            value={''}
-            onChange={() => {}}
+          <InputFile
+            onChange={(e) => e.currentTarget.files ? handleSelectThumbnail(e.currentTarget.files[0]) : null}
             label="Capa"
             name="thumbnail"
             type="file"
           />
-
           <TextEditor label="Conteúdo" value={content} setValue={setContent} />
 
           <div className="mt-20 sm:mt-10 w-full flex items-center justify-end self-start gap-3 sm:flex-row flex-col">

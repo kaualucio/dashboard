@@ -2,6 +2,7 @@ import { ProjectType } from './Project';
 import { ArticlesType } from './Articles';
 
 export type UserType = {
+  id: string;
   name: string;
   role: string;
   about: string;

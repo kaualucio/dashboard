@@ -1,8 +1,6 @@
-import { GetServerSideProps } from 'next';
-import { unstable_getServerSession } from 'next-auth';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 
 import { BsPatchCheckFill, BsPencilFill } from 'react-icons/bs';
 import { IoMdConstruct } from 'react-icons/io';
@@ -22,9 +20,36 @@ import { roles } from '../../../../src/utils/roles';
 import { phoneMask } from '../../../../src/utils/phone-mask';
 
 import placeholderProfilePicture from '../../../../public/images/placeholder_profile_picture.jpg';
-import { SITE_NAME } from '../../../../src/constants';
+
+import { addImageFile } from '../../../../src/utils/add_image_file';
+import { TailSpin } from 'react-loader-spinner';
+import { useAuth } from '../../../../src/context/AuthContext';
+import { api } from '../../../../src/service/api/api';
 
 const Profile = () => {
+  const { user, handleUpdateUserData } = useAuth()
+  const [profilePicture, setProfilePicture] = useState<null | File>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  useEffect(() => {
+    if(profilePicture !== null) {
+      setIsLoading(true)
+      addImageFile(profilePicture, 'profile_pictures')
+        .then(url => {
+          api.post(`/api/user/changeProfilePicture/${user?.id}`, {
+            url: url.picture_url
+          }).then((res) => {
+              handleUpdateUserData(url.picture_url)
+          })
+          setProfilePicture(null)
+        }).catch(error => {
+          console.log(error)
+        }).finally(() => { 
+          setIsLoading(false)
+        })
+    }
+  }, [profilePicture])
+  // console.log(profilePicture)
+
   return (
     <section className="w-full p-5 h-full">
       <Head>
@@ -40,26 +65,35 @@ const Profile = () => {
           <div className="w-full md:w-96 md:max-w-sm bg-[#fff] px-5 py-7 rounded-lg text-center">
             <div className="relative z-10 w-44 h-44 mx-auto rounded-full border-4 border-black">
               <Image
-                src={placeholderProfilePicture}
+                src={user && user.profile_picture ? user.profile_picture : placeholderProfilePicture}
                 alt=""
                 height={208}
                 width={208}
                 objectFit="cover"
                 style={{ borderRadius: 999, zIndex: 30 }}
               />
-              <div className="absolute top-0 left-0 z-40 opacity-0 hover:opacity-100 flex items-center justify-center w-full h-full bg-black/50 rounded-full">
-                <label
+              <div className={`absolute top-0 left-0 z-40  ${isLoading ? 'opacity-100' : 'opacity-0 hover:opacity-100'} flex items-center justify-center w-full h-full bg-black/50 rounded-full`}>
+                {
+                  isLoading ? (
+                      <TailSpin radius={1} height="15" width="15" color="#fff" visible={true}/>
+                  ) : (
+                    <>
+                      <label
                   htmlFor="profile_picture"
                   className="relative cursor-pointer z-50 text-[#fff] flex items-center justify-center w-full h-full  rounded-full"
                 >
                   Mudar Foto
                 </label>
                 <input
+                  onChange={(e) => e.currentTarget.files ? setProfilePicture(e.currentTarget.files[0]) : null}                                                   
                   type="file"
                   name="profile_picture"
                   id="profile_picture"
                   className="hidden"
                 />
+                    </>
+                  )
+                }
               </div>
             </div>
             <div className="mt-5">

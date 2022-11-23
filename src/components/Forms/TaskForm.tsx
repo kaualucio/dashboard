@@ -2,7 +2,9 @@
 import React, { FormEvent, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useSWRConfig } from 'swr';
+import { useAuth } from '../../context/AuthContext';
 import { api } from '../../service/api/api';
+import { maskDate } from '../../utils/date-mask';
 import { Button } from '../Button';
 
 interface TaskForm {
@@ -10,6 +12,7 @@ interface TaskForm {
 }
 
 const TaskForm = ({ tasks }: TaskForm) => {
+  const { user } = useAuth()
   const { mutate } = useSWRConfig();
   const [taskInfo, setTaskInfo] = useState({
     title: '',
@@ -36,7 +39,7 @@ const TaskForm = ({ tasks }: TaskForm) => {
       
       const {data} = await api.post('/api/tasks/create', {
         ...taskInfo,
-        author_id: '9cfd74d8-b4bc-4c0d-83ed-53bb4cea9e62',
+        author_id: user?.id,
       });
       if(data.type === 'success') {
         toast.success(data.response)
@@ -138,12 +141,13 @@ const TaskForm = ({ tasks }: TaskForm) => {
             onChange={(e) =>
               setTaskInfo((prevState) => ({
                 ...prevState,
-                has_to_start_at: e.target.value,
+                has_to_start_at: maskDate(e.target.value),
               }))
             }
-            type="date"
-            placeholder="mm-dd-yyyy"
-            className="block w-full h-10 border border-text rounded-md"
+            type="text"
+            placeholder="DD-MM-YYYY"
+            maxLength={10}
+            className="block w-full h-10 border border-text rounded-md px-3"
           />
         </div>
         <div className="w-full">
@@ -155,12 +159,13 @@ const TaskForm = ({ tasks }: TaskForm) => {
             onChange={(e) =>
               setTaskInfo((prevState) => ({
                 ...prevState,
-                has_to_finish_at: e.target.value,
+                has_to_finish_at: maskDate(e.target.value),
               }))
             }
-            type="date"
-            placeholder="mm-dd-yyyy"
-            className="block w-full h-10 border border-text rounded-md"
+            type="text"
+            maxLength={10}
+            placeholder="DD-MM-YYYY"
+            className="block w-full h-10 border border-text rounded-md px-3"
           />
         </div>
       </div>

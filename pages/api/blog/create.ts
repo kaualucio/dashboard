@@ -66,7 +66,7 @@ export default async function handler(
           title,
           slug,
           description,
-          key_words,
+          key_words: key_wordsArr,
           reading_time,
           content,
           isPublished,

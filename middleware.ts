@@ -6,7 +6,8 @@ export function middleware(request: NextRequest) {
   const refresh_token = request.cookies.get('beru.refresh_token');
 
   if (!access_token && !refresh_token) {
-    return NextResponse.rewrite(new URL(`${request.url}login`));
+
+    return NextResponse.rewrite(new URL('/login', request.url));
   }
 
   return NextResponse.next();

@@ -1,12 +1,11 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
-import React, { FormEvent, useState, useEffect, ReactElement } from 'react';
+import React, { FormEvent, useState, ReactElement } from 'react';
 import toast from 'react-hot-toast';
 import { FormControl } from '../../../src/components/FormControl';
 import { Header } from '../../../src/components/Header';
 import { Layout } from '../../../src/components/Layout';
-import { Message } from '../../../src/components/Message';
-import { SITE_NAME } from '../../../src/constants';
+
 import { api } from '../../../src/service/api/api';
 
 const EditTestimonial = ({ testimonial }: any) => {
@@ -115,7 +114,7 @@ const EditTestimonial = ({ testimonial }: any) => {
           <button
             disabled={isDisabled}
             type="submit"
-            className="mt-5 self-end w-full sm:w-40 text-[#fff] rounded-md py-3 text-center bg-blue"
+            className={`mt-5 self-end w-full sm:w-40 text-[#fff] rounded-md py-3 text-center bg-blue`}
           >
             Editar
           </button>
@@ -128,8 +127,9 @@ const EditTestimonial = ({ testimonial }: any) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   const res = await fetch('http://localhost:3000/api/testimonials/get');
   const result = await res.json();
+  console.log(result)
   return {
-    paths: result.data.map((testimonial: any) => ({
+    paths: result.map((testimonial: any) => ({
       params: { id: testimonial.id },
     })),
     fallback: false,
